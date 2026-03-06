@@ -82,7 +82,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
     getJson(`/publish/jobs?workspaceId=${workspaceId}`),
     getJson('/integrations/apify/health'),
     getJson('/integrations/heygen/health'),
-    getJson(`/intelligence/suggestions?workspaceId=${encodeURIComponent(workspaceId)}&limit=20`),
+    getJson(`/intelligence/suggestions?workspaceId=${encodeURIComponent(workspaceId)}&limit=20&includeBelowThreshold=true`),
     getJson('/integrations/x/drafts?status=draft&limit=12'),
     getJson('/integrations/models'),
     getJson(`/integrations/models/preferences?workspaceId=${encodeURIComponent(workspaceId)}`),

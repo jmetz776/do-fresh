@@ -307,8 +307,15 @@ export async function importTrendSuggestionsAction(formData: FormData) {
   const limit = Number(formData.get('limit') || 100);
   if (!sourceId) return;
 
-  await post('/intelligence/suggestions/import-from-source', { workspaceId, sourceId, limit });
+  const res = await post('/intelligence/suggestions/import-from-source', { workspaceId, sourceId, limit });
   revalidatePath('/ops');
+  if ((res as any)?.ok === false) {
+    const detail = String((res as any)?.detail || 'Import failed').slice(0, 160);
+    redirect(`/ops?notice=${encodeURIComponent(`Import failed: ${detail}`)}`);
+  }
+  const imported = Number((res as any)?.imported || 0);
+  const skipped = Number((res as any)?.skippedDuplicates || 0);
+  redirect(`/ops?notice=${encodeURIComponent(`Imported ${imported} suggestions (${skipped} duplicates skipped)`)}`);
 }
 
 export async function feedbackTrendSuggestionAction(formData: FormData) {
