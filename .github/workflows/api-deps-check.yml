@@ -1,0 +1,44 @@
+name: API dependency install check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/api/**"
+      - ".github/workflows/api-deps-check.yml"
+  pull_request:
+    paths:
+      - "apps/api/**"
+      - ".github/workflows/api-deps-check.yml"
+
+jobs:
+  deps-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate requirements are pinned
+        run: |
+          if grep -Ev '^(#|\s*$|[a-zA-Z0-9_.-]+==[^ ]+)$' requirements.txt; then
+            echo "Found unpinned or invalid requirement entries in apps/api/requirements.txt"
+            exit 1
+          fi
+
+      - name: Install API requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Smoke import check
+        run: |
+          python -c "import fastapi, sqlmodel, psycopg2; print('imports_ok')"
