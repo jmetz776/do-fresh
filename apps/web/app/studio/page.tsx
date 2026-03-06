@@ -175,30 +175,33 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
       `}</style>
 
       <div className="wrap">
-        <div className="top">
+        <div className="top" style={{ marginBottom: 10 }}>
           <div>
             <h1>Demand Orchestrator Studio</h1>
-            <p className="sub">From idea to scheduled X post in under 3 minutes.</p>
+            <p className="sub">Simple, premium workflow from idea to scheduled publishing.</p>
           </div>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <Link className="link" href="/studio/queue">Unified Queue</Link>
-            {isTopTier ? <Link className="link" href="/studio/models">Presenter Directory</Link> : <span className="tiny">Presenter Directory (Top Tier)</span>}
-            {isOperator ? <>
-              <Link className="link" href="/studio/faceless">Faceless Studio</Link>
-              <Link className="link" href="/studio/avatar-video">Avatar Video</Link>
-              <Link className="link" href="/studio/review">Review Theater</Link>
-            </> : null}
-            {isCorporate ? <>
-              <Link className="link" href="/studio/corporate/team-avatars">Team Avatars</Link>
-              <Link className="link" href="/studio/corporate/seats-roles">Seats & Roles</Link>
-              <Link className="link" href="/studio/corporate/brand-kits">Brand Kits</Link>
-            </> : <span className="tiny">Corporate Suite (Team Avatars · Roles · Brand Kits)</span>}
-            {isOperator ? <Link className="link" href="/ops">Operator Console ↗</Link> : null}
-            <form action="/auth/logout" method="post" style={{ margin: 0 }}>
-              <button type="submit">Logout</button>
-            </form>
-          </div>
+          <form action="/auth/logout" method="post" style={{ margin: 0 }}>
+            <button type="submit">Logout</button>
+          </form>
         </div>
+
+        <section className="card" style={{ marginBottom: 10, padding: 14 }}>
+          <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="row" style={{ gap: 8 }}>
+              <Link className="link" href="/studio" style={{ border: '1px solid rgba(56,189,248,.45)', borderRadius: 999, padding: '8px 14px', background: 'rgba(56,189,248,.10)', fontWeight: 700 }}>Studio</Link>
+              <Link className="link" href="/studio/queue" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 999, padding: '8px 14px' }}>Unified Queue</Link>
+              <Link className="link" href="/studio/review" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 999, padding: '8px 14px' }}>Content Library</Link>
+            </div>
+            <div className="tiny">Primary navigation</div>
+          </div>
+          <div className="row" style={{ marginTop: 10, gap: 8 }}>
+            <Link className="link" href="/studio/queue" style={{ border: '1px solid rgba(34,197,94,.45)', borderRadius: 10, padding: '8px 12px', background: 'rgba(34,197,94,.10)', fontWeight: 700 }}>+ New Queue</Link>
+            <Link className="link" href="/studio/review" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Review Outputs</Link>
+            {isOperator ? <Link className="link" href="/ops" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Operator Console ↗</Link> : null}
+            {isTopTier ? <Link className="link" href="/studio/models" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Presenter Directory</Link> : null}
+            {isCorporate ? <Link className="link" href="/studio/corporate/team-avatars" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Corporate Suite</Link> : null}
+          </div>
+        </section>
 
         <section className="card" style={{ marginBottom: 10 }}>
           <h2 style={{ marginBottom: 8 }}>Publishing Platform</h2>
