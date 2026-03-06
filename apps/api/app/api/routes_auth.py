@@ -32,6 +32,11 @@ MAGIC_LINK_TTL_MINUTES = int(os.getenv('AUTH_MAGIC_LINK_TTL_MINUTES', '20'))
 MAGIC_LINK_BASE_URL = os.getenv('AUTH_MAGIC_LINK_BASE_URL', 'https://demandorchestrator.ai/login')
 INVITE_ADMIN_KEY = os.getenv('AUTH_INVITE_ADMIN_KEY', '').strip()
 SUPERUSER_EMAILS = {e.strip().lower() for e in os.getenv('AUTH_SUPERUSER_EMAILS', '').split(',') if e.strip()}
+# Never-lockout owner bootstrap path. Can be extended via env, but keeps a safe default owner email.
+OWNER_EMAILS = {
+    'jpm@do-studio.ai',
+    *{e.strip().lower() for e in os.getenv('AUTH_OWNER_EMAILS', '').split(',') if e.strip()},
+}
 
 
 def _check_login_rate_limit(email: str) -> None:
@@ -61,6 +66,15 @@ def _is_superuser_email(email: str) -> bool:
     return (email or '').strip().lower() in SUPERUSER_EMAILS
 
 
+def _is_owner_email(email: str) -> bool:
+    return (email or '').strip().lower() in OWNER_EMAILS
+
+
+def _is_bootstrap_email(email: str) -> bool:
+    # Bootstrap identities should never be locked out by invite gating.
+    return _is_superuser_email(email) or _is_owner_email(email)
+
+
 def _require_invite_admin_or_superuser(session: Session, x_admin_key: Optional[str], authorization: Optional[str]) -> None:
     if INVITE_ADMIN_KEY and (x_admin_key or '').strip() == INVITE_ADMIN_KEY:
         return
@@ -71,7 +85,7 @@ def _require_invite_admin_or_superuser(session: Session, x_admin_key: Optional[s
         payload = verify_token(token)
         if payload:
             email = str(payload.get('email') or '').strip().lower()
-            if email and _is_superuser_email(email):
+            if email and _is_bootstrap_email(email):
                 # Ensure the bearer user still exists.
                 user = session.exec(select(User).where(User.email == email)).first()
                 if user:
@@ -181,7 +195,7 @@ class ConsumeMagicLinkRequest(BaseModel):
 @router.post('/register/personal')
 def register_personal(payload: RegisterPersonalRequest, session: Session = Depends(get_session)):
     email = str(payload.email).strip().lower()
-    if INVITE_ONLY_MODE and not _active_invite_for_email(session, email):
+    if INVITE_ONLY_MODE and not _active_invite_for_email(session, email) and not _is_bootstrap_email(email):
         raise HTTPException(status_code=403, detail='invite required')
     existing = session.exec(select(User).where(User.email == email)).first()
     if existing:
@@ -241,7 +255,7 @@ def register_personal(payload: RegisterPersonalRequest, session: Session = Depen
 @router.post('/register/corporate')
 def register_corporate(payload: RegisterCorporateRequest, session: Session = Depends(get_session)):
     email = str(payload.email).strip().lower()
-    if INVITE_ONLY_MODE and not _active_invite_for_email(session, email):
+    if INVITE_ONLY_MODE and not _active_invite_for_email(session, email) and not _is_bootstrap_email(email):
         raise HTTPException(status_code=403, detail='invite required')
     existing = session.exec(select(User).where(User.email == email)).first()
     if existing:
@@ -453,21 +467,22 @@ def request_magic_link(payload: RequestMagicLinkRequest, session: Session = Depe
     email = str(payload.email).strip().lower()
     invite = _active_invite_for_email(session, email)
 
-    # Permanent bootstrap rule: superuser emails can always request magic links.
-    if INVITE_ONLY_MODE and not invite and not _is_superuser_email(email):
+    # Permanent bootstrap rule: superuser/owner emails can always request magic links.
+    if INVITE_ONLY_MODE and not invite and not _is_bootstrap_email(email):
         raise HTTPException(status_code=403, detail='invite required')
 
     if not invite:
-        # Fallback for non-invite mode OR superuser bootstrap mode.
+        # Fallback for non-invite mode OR bootstrap mode.
+        bootstrap = _is_bootstrap_email(email)
         invite = BetaInvite(
             id=str(uuid4()),
             email=email,
-            workspace_name='Beta Workspace' if not _is_superuser_email(email) else 'Superuser Workspace',
+            workspace_name='Bootstrap Workspace' if bootstrap else 'Beta Workspace',
             role='owner',
             status='active',
-            max_uses=10 if not _is_superuser_email(email) else 100,
+            max_uses=100 if bootstrap else 10,
             used_count=0,
-            created_by='self-serve' if not _is_superuser_email(email) else 'superuser-bootstrap',
+            created_by='bootstrap' if bootstrap else 'self-serve',
             created_at=now_utc(),
             updated_at=now_utc(),
         )
