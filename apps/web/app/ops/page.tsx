@@ -59,7 +59,7 @@ function isHttpUrl(v?: string) {
   return v.startsWith('http://') || v.startsWith('https://');
 }
 
-export default async function OpsPage({ searchParams }: { searchParams?: { apifyRunId?: string; sourceId?: string; invite?: string; video_notice?: string; video_error?: string } }) {
+export default async function OpsPage({ searchParams }: { searchParams?: { apifyRunId?: string; sourceId?: string; invite?: string; notice?: string; video_notice?: string; video_error?: string } }) {
   const c = cookies();
   const workspaceId = c.get('do_workspace_id')?.value || FALLBACK_WORKSPACE_ID;
   const lastApifyRunId = searchParams?.apifyRunId || c.get('do_last_apify_run_id')?.value || '';
@@ -231,6 +231,13 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
           <section className="card" style={{ marginBottom: 10, borderColor: 'rgba(251,113,133,.55)' }}>
             <h2 style={{ marginBottom: 6 }}>Video action failed</h2>
             <div className="tiny">{decodeURIComponent(String(searchParams.video_error))}</div>
+          </section>
+        ) : null}
+
+        {searchParams?.notice ? (
+          <section className="card" style={{ marginBottom: 10, borderColor: 'rgba(34,197,94,.55)' }}>
+            <h2 style={{ marginBottom: 6 }}>Update</h2>
+            <div className="tiny">{decodeURIComponent(String(searchParams.notice))}</div>
           </section>
         ) : null}
 
@@ -643,7 +650,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
                     <li className="item" key={s.id}>
                       <div><b>{s.topic}</b></div>
                       <div className="meta" style={{ marginTop: 4 }}>
-                        final {Number(s.finalScore || 0).toFixed(3)} · risk {Number(s.policyRiskScore || 0).toFixed(2)} · {s.source}
+                        final {Number(s.finalScore || 0).toFixed(3)} · risk {Number(s.policyRiskScore || 0).toFixed(2)} · {s.source} · status {s.status || 'new'}
                       </div>
                       <div className="tiny" style={{ marginTop: 6 }}>{s.whyNow}</div>
                       <div className="row" style={{ marginTop: 8 }}>
@@ -651,13 +658,13 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
                           <input type="hidden" name="workspace_id" value={workspaceId} />
                           <input type="hidden" name="suggestion_id" value={s.id} />
                           <input type="hidden" name="event_type" value="accepted" />
-                          <button className="btn-primary" type="submit">Accept</button>
+                          <button className="btn-primary" type="submit" disabled={s.status === 'accepted'}>{s.status === 'accepted' ? 'Accepted' : 'Accept'}</button>
                         </form>
                         <form action={feedbackTrendSuggestionAction}>
                           <input type="hidden" name="workspace_id" value={workspaceId} />
                           <input type="hidden" name="suggestion_id" value={s.id} />
                           <input type="hidden" name="event_type" value="rejected" />
-                          <button type="submit">Reject</button>
+                          <button type="submit" disabled={s.status === 'rejected'}>{s.status === 'rejected' ? 'Rejected' : 'Reject'}</button>
                         </form>
                       </div>
                     </li>

@@ -319,6 +319,7 @@ export async function feedbackTrendSuggestionAction(formData: FormData) {
 
   await post('/intelligence/feedback', { workspaceId, suggestionId, eventType });
   revalidatePath('/ops');
+  redirect(`/ops?notice=${encodeURIComponent(`Suggestion ${eventType}`)}`);
 }
 
 export async function approveXDraftAction(formData: FormData) {
