@@ -62,9 +62,11 @@ export default async function AvatarVideoPage({ searchParams }: { searchParams?:
             <textarea name="script_text" required placeholder="Paste script" style={inputArea} />
             <select name="background_template_id" style={input} defaultValue={rows[0]?.id || ''}>
               <option value="">No scene template</option>
-              {rows.map((t: any) => (
-                <option key={t.id} value={t.id}>{t.name || t.id} · {t.tier || 'free'}</option>
-              ))}
+              {rows.map((t: any) => {
+                const tier = String(t.tier || 'free').toLowerCase();
+                const premium = tier === 'premium' || tier === 'pro';
+                return <option key={t.id} value={t.id}>{t.name || t.id} · {premium ? 'PREMIUM' : 'FREE'}</option>;
+              })}
             </select>
             <div style={{ marginTop: 8 }}>
               <button type="submit" style={btn}>Create Video Job</button>

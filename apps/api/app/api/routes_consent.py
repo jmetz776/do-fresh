@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 from uuid import uuid4
 from pathlib import Path
@@ -182,6 +182,47 @@ def _workspace_video_usage(session: Session, workspace_id: str) -> dict:
     return {'monthly_count': monthly_count, 'active_count': active_count, 'month_start': month_start.isoformat()}
 
 
+def _premium_background_limits(plan: str) -> dict:
+    plan_key = str(plan or 'starter').strip().lower()
+    # Included premium background uses per month by plan.
+    if plan_key in {'top', 'top_tier', 'enterprise'}:
+        included = int((os.getenv('DO_PREMIUM_BG_INCLUDED_TOP_TIER') or '120').strip() or '120')
+    elif plan_key in {'pro', 'corporate'}:
+        included = int((os.getenv('DO_PREMIUM_BG_INCLUDED_PRO') or '30').strip() or '30')
+    else:
+        included = int((os.getenv('DO_PREMIUM_BG_INCLUDED_STARTER') or '5').strip() or '5')
+
+    price = float((os.getenv('DO_PREMIUM_BG_OVERAGE_PRICE_USD') or '3.0').strip() or 3.0)
+    overage_enabled = (os.getenv('DO_PREMIUM_BG_OVERAGE_ENABLED') or 'true').strip().lower() == 'true'
+    return {
+        'included_monthly': max(0, included),
+        'overage_enabled': overage_enabled,
+        'overage_price_usd': max(0.0, price),
+    }
+
+
+def _workspace_premium_background_usage(session: Session, workspace_id: str) -> dict:
+    now = datetime.utcnow()
+    month_start = datetime(now.year, now.month, 1)
+
+    templates = _load_background_templates()
+    premium_ids = {
+        str(t.get('id')) for t in templates
+        if str(t.get('tier') or '').strip().lower() in {'premium', 'pro'}
+    }
+    if not premium_ids:
+        return {'monthly_premium_background_count': 0, 'month_start': month_start.isoformat()}
+
+    rows = session.exec(
+        select(VideoRenderBackground).where(VideoRenderBackground.workspace_id == workspace_id)
+    ).all()
+    monthly = sum(
+        1 for r in rows
+        if (r.created_at and r.created_at >= month_start and str(r.background_template_id) in premium_ids)
+    )
+    return {'monthly_premium_background_count': monthly, 'month_start': month_start.isoformat()}
+
+
 def _video_queue_timeout_seconds() -> int:
     try:
         return max(120, int((os.getenv('DO_VIDEO_QUEUE_TIMEOUT_SECONDS') or '600').strip()))
@@ -213,7 +254,7 @@ def _load_background_templates() -> list[dict]:
         return []
 
 
-def _validate_background_template_for_render(template_id: str) -> None:
+def _validate_background_template_for_render(template_id: str, session: Optional[Session] = None, workspace_id: str = '') -> None:
     tid = str(template_id or '').strip()
     if not tid:
         return
@@ -225,6 +266,18 @@ def _validate_background_template_for_render(template_id: str) -> None:
         raise HTTPException(status_code=400, detail='background template is not approved')
     if float(row.get('readabilityScore') or 0.85) < 0.7:
         raise HTTPException(status_code=400, detail='background template failed readability threshold')
+
+    tier = str(row.get('tier') or '').strip().lower()
+    is_premium = tier in {'premium', 'pro'}
+    if is_premium and session is not None and workspace_id:
+        limits = _workspace_video_limits(session, workspace_id)
+        premium_limits = _premium_background_limits(limits.get('plan', 'starter'))
+        usage = _workspace_premium_background_usage(session, workspace_id)
+        used = int(usage.get('monthly_premium_background_count') or 0)
+        included = int(premium_limits.get('included_monthly') or 0)
+        overage_enabled = bool(premium_limits.get('overage_enabled'))
+        if used >= included and not overage_enabled:
+            raise HTTPException(status_code=402, detail='premium background limit reached for current plan')
 
 
 def _persist_render_background(session: Session, workspace_id: str, render_id: str, template_id: str) -> None:
@@ -736,7 +789,17 @@ def video_limits(
 ):
     limits = _workspace_video_limits(session, workspaceId)
     usage = _workspace_video_usage(session, workspaceId)
-    return {'workspaceId': workspaceId, 'limits': limits, 'usage': usage}
+    premium_limits = _premium_background_limits(limits.get('plan', 'starter'))
+    premium_usage = _workspace_premium_background_usage(session, workspaceId)
+    return {
+        'workspaceId': workspaceId,
+        'limits': limits,
+        'usage': usage,
+        'premiumBackgrounds': {
+            **premium_limits,
+            **premium_usage,
+        },
+    }
 
 
 @router.post('/video/renders')
@@ -749,7 +812,7 @@ def create_video_render(payload: CreateVideoRenderRequest, session: Session = De
     if vr.status != 'approved':
         raise HTTPException(status_code=400, detail='voice render must be approved before video render')
 
-    _validate_background_template_for_render(payload.backgroundTemplateId)
+    _validate_background_template_for_render(payload.backgroundTemplateId, session=session, workspace_id=payload.workspaceId)
 
     # Queue hygiene: avoid duplicate inflight jobs and cap active inflight jobs per workspace.
     inflight = session.exec(

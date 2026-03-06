@@ -536,9 +536,11 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
                 <textarea name="script_text" placeholder="Optional override script for video stub" />
                 <select name="background_template_id" defaultValue="">
                   <option value="">Avatar Scene Template (optional)</option>
-                  {(backgroundTemplates?.items || []).map((t: any) => (
-                    <option key={t.id} value={t.id}>{t.name || t.id} · {t.tier || 'free'} · {t.mood || 'premium'}</option>
-                  ))}
+                  {(backgroundTemplates?.items || []).map((t: any) => {
+                    const tier = String(t.tier || 'free').toLowerCase();
+                    const premium = tier === 'premium' || tier === 'pro';
+                    return <option key={t.id} value={t.id}>{t.name || t.id} · {premium ? 'PREMIUM' : 'FREE'} · {t.mood || 'premium'}</option>;
+                  })}
                 </select>
                 <div className="row">
                   <button className="btn-primary" type="submit">Create Video Job</button>
