@@ -23,6 +23,7 @@ from app.models.consent import (
     VideoRenderBackground,
 )
 from app.models.auth import WorkspaceSetting
+from app.models.avatar_marketplace import AvatarListing, AvatarProvider, AvatarPurchase, AvatarUsageEvent
 from app.services.elevenlabs_client import ElevenLabsClient
 from app.services.heygen_client import HeyGenClient
 from app.services.model_registry import pick_model_with_policy
@@ -86,6 +87,7 @@ class CreateVideoRenderRequest(BaseModel):
     voiceRenderId: str
     scriptText: str = ''
     backgroundTemplateId: str = ''
+    avatarListingId: str = ''
 
 
 class FacelessRenderTopRequest(BaseModel):
@@ -221,6 +223,58 @@ def _workspace_premium_background_usage(session: Session, workspace_id: str) -> 
         if (r.created_at and r.created_at >= month_start and str(r.background_template_id) in premium_ids)
     )
     return {'monthly_premium_background_count': monthly, 'month_start': month_start.isoformat()}
+
+
+def _resolve_avatar_listing_for_workspace(session: Session, workspace_id: str, listing_id: str) -> tuple[AvatarListing, AvatarProvider, AvatarPurchase]:
+    lid = str(listing_id or '').strip()
+    if not lid:
+        raise HTTPException(status_code=400, detail='avatar listing id required')
+
+    listing = session.get(AvatarListing, lid)
+    if not listing or (listing.status or '').lower() != 'active':
+        raise HTTPException(status_code=404, detail='avatar listing not found or inactive')
+
+    provider = session.get(AvatarProvider, listing.provider_id)
+    if not provider or (provider.status or '').lower() != 'active':
+        raise HTTPException(status_code=404, detail='avatar provider not found or inactive')
+
+    now = datetime.utcnow()
+    purchases = session.exec(
+        select(AvatarPurchase).where(
+            AvatarPurchase.workspace_id == workspace_id,
+            AvatarPurchase.listing_id == lid,
+            AvatarPurchase.status == 'active',
+        )
+    ).all()
+    valid = [p for p in purchases if (p.valid_to is None or p.valid_to >= now)]
+    if not valid:
+        raise HTTPException(status_code=402, detail='avatar listing requires active purchase')
+
+    purchase = valid[0]
+    return listing, provider, purchase
+
+
+def _record_avatar_usage_event(
+    session: Session,
+    workspace_id: str,
+    listing: AvatarListing,
+    provider: AvatarProvider,
+    purchase: AvatarPurchase,
+    video_render_id: str,
+) -> None:
+    evt = AvatarUsageEvent(
+        id=f'aue_{uuid4().hex[:14]}',
+        workspace_id=workspace_id,
+        listing_id=listing.id,
+        provider_id=provider.id,
+        purchase_id=purchase.id,
+        video_render_id=video_render_id,
+        payout_cents=int(provider.payout_cents_per_use or 0),
+        status='accrued',
+        created_at=datetime.utcnow(),
+    )
+    session.add(evt)
+    session.commit()
 
 
 def _video_queue_timeout_seconds() -> int:
@@ -814,6 +868,16 @@ def create_video_render(payload: CreateVideoRenderRequest, session: Session = De
 
     _validate_background_template_for_render(payload.backgroundTemplateId, session=session, workspace_id=payload.workspaceId)
 
+    avatar_listing = None
+    avatar_provider = None
+    avatar_purchase = None
+    if str(payload.avatarListingId or '').strip():
+        avatar_listing, avatar_provider, avatar_purchase = _resolve_avatar_listing_for_workspace(
+            session=session,
+            workspace_id=payload.workspaceId,
+            listing_id=payload.avatarListingId,
+        )
+
     # Queue hygiene: avoid duplicate inflight jobs and cap active inflight jobs per workspace.
     inflight = session.exec(
         select(VideoRenderJob).where(
@@ -870,6 +934,16 @@ def create_video_render(payload: CreateVideoRenderRequest, session: Session = De
 
     _execute_video_render(job=job, voice_render=vr, session=session)
 
+    if avatar_listing and avatar_provider and avatar_purchase and job.status in {'queued', 'succeeded', 'processing', 'rendering'}:
+        _record_avatar_usage_event(
+            session=session,
+            workspace_id=payload.workspaceId,
+            listing=avatar_listing,
+            provider=avatar_provider,
+            purchase=avatar_purchase,
+            video_render_id=job.id,
+        )
+
     return {
         'id': job.id,
         'status': job.status,
@@ -878,6 +952,7 @@ def create_video_render(payload: CreateVideoRenderRequest, session: Session = De
         'provider': job.provider,
         'providerJobId': job.provider_job_id,
         'backgroundTemplateId': _background_for_render(session, job.id),
+        'avatarListingId': avatar_listing.id if avatar_listing else '',
     }
 
 

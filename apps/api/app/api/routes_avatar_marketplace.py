@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 from sqlmodel import Session, select
 
 from app.db import get_session
-from app.models.avatar_marketplace import AvatarProvider, AvatarListing, AvatarPurchase
+from app.models.avatar_marketplace import AvatarProvider, AvatarListing, AvatarPurchase, AvatarUsageEvent
 from app.services.authz import actor_user_id, require_workspace_role
 
 router = APIRouter(prefix='/v1/avatar-marketplace', tags=['avatar-marketplace'])
@@ -142,6 +142,66 @@ def list_listings(
             },
         })
     return {'count': len(out), 'items': out}
+
+
+@router.get('/purchases')
+def list_purchases(
+    workspaceId: str,
+    limit: int = Query(default=100, ge=1, le=500),
+    session: Session = Depends(get_session),
+    user_id: str = Depends(actor_user_id),
+):
+    require_workspace_role(session, workspace_id=workspaceId, min_role='editor', user_id=user_id)
+
+    rows = session.exec(
+        select(AvatarPurchase)
+        .where(AvatarPurchase.workspace_id == workspaceId)
+        .order_by(AvatarPurchase.created_at.desc())
+        .limit(limit)
+    ).all()
+
+    out = []
+    for r in rows:
+        out.append({
+            'id': r.id,
+            'listingId': r.listing_id,
+            'status': r.status,
+            'quantity': r.quantity,
+            'amountCents': r.amount_cents,
+            'currency': r.currency,
+            'validFrom': r.valid_from.isoformat() if r.valid_from else None,
+            'validTo': r.valid_to.isoformat() if r.valid_to else None,
+            'createdAt': r.created_at.isoformat() if r.created_at else None,
+        })
+    return {'count': len(out), 'items': out}
+
+
+@router.get('/usage-events')
+def list_usage_events(
+    workspaceId: str,
+    limit: int = Query(default=100, ge=1, le=500),
+    session: Session = Depends(get_session),
+    user_id: str = Depends(actor_user_id),
+):
+    require_workspace_role(session, workspace_id=workspaceId, min_role='editor', user_id=user_id)
+
+    rows = session.exec(
+        select(AvatarUsageEvent)
+        .where(AvatarUsageEvent.workspace_id == workspaceId)
+        .order_by(AvatarUsageEvent.created_at.desc())
+        .limit(limit)
+    ).all()
+    items = [{
+        'id': r.id,
+        'listingId': r.listing_id,
+        'providerId': r.provider_id,
+        'purchaseId': r.purchase_id,
+        'videoRenderId': r.video_render_id,
+        'payoutCents': r.payout_cents,
+        'status': r.status,
+        'createdAt': r.created_at.isoformat() if r.created_at else None,
+    } for r in rows]
+    return {'count': len(items), 'items': items}
 
 
 @router.post('/purchases')

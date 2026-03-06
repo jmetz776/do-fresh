@@ -51,3 +51,17 @@ class AvatarPurchase(SQLModel, table=True):
     valid_to: datetime | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class AvatarUsageEvent(SQLModel, table=True):
+    __tablename__ = 'avatar_usage_events'
+
+    id: str = Field(primary_key=True)
+    workspace_id: str = Field(index=True)
+    listing_id: str = Field(index=True)
+    provider_id: str = Field(index=True)
+    purchase_id: str = Field(index=True)
+    video_render_id: str = Field(index=True)
+    payout_cents: int = 0
+    status: str = Field(default='accrued', index=True)  # accrued|settled|reversed
+    created_at: datetime = Field(default_factory=datetime.utcnow)
