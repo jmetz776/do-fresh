@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import {
   approveContentAction,
   createSourceAction,
@@ -59,7 +60,18 @@ function isHttpUrl(v?: string) {
 }
 
 export default async function OpsPage({ searchParams }: { searchParams?: { apifyRunId?: string; sourceId?: string; invite?: string; video_notice?: string; video_error?: string } }) {
-  const workspaceId = cookies().get('do_workspace_id')?.value || FALLBACK_WORKSPACE_ID;
+  const c = cookies();
+  const workspaceId = c.get('do_workspace_id')?.value || FALLBACK_WORKSPACE_ID;
+  const userEmail = (c.get('do_user_email')?.value || '').toLowerCase();
+  const operatorAllowlist = new Set(
+    String(process.env.AUTH_SUPERUSER_EMAILS || process.env.WEB_SUPERUSER_EMAILS || process.env.AUTH_OWNER_EMAILS || '')
+      .split(',')
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean),
+  );
+  if (!operatorAllowlist.has(userEmail)) {
+    redirect('/studio');
+  }
   const [dashboard, sources, content, schedules, failedPublishes, publishJobs, apifyHealth, heygenHealth, trendSuggestions, xDrafts, models, modelPrefs, costsSummary, voiceProfiles, voiceRenders, videoRenders, backgroundTemplates] = await Promise.all([
     getJson(`/dashboard?workspaceId=${workspaceId}`),
     getJson(`/sources?workspaceId=${workspaceId}`),

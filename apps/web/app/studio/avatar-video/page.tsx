@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import type React from 'react';
+import { cookies } from 'next/headers';
 import { bootstrapSampleVoiceRenderAction, createAvatarVideoQuickAction } from '../../actions';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000';
-const WORKSPACE_ID = process.env.NEXT_PUBLIC_WORKSPACE_ID || 'default';
+const FALLBACK_WORKSPACE_ID = process.env.NEXT_PUBLIC_WORKSPACE_ID || 'default';
 
 async function getJson(path: string) {
   const res = await fetch(`${API_BASE}${path}`, { cache: 'no-store' });
@@ -12,9 +13,20 @@ async function getJson(path: string) {
 }
 
 export default async function AvatarVideoPage({ searchParams }: { searchParams?: { notice?: string; error?: string } }) {
+  const c = cookies();
+  const workspaceId = c.get('do_workspace_id')?.value || FALLBACK_WORKSPACE_ID;
+  const userEmail = (c.get('do_user_email')?.value || '').toLowerCase();
+  const operatorAllowlist = new Set(
+    String(process.env.AUTH_SUPERUSER_EMAILS || process.env.WEB_SUPERUSER_EMAILS || process.env.AUTH_OWNER_EMAILS || '')
+      .split(',')
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean),
+  );
+  const isOperator = operatorAllowlist.has(userEmail);
+
   const [templates, approvedVoiceRenders] = await Promise.all([
     getJson('/video/background-templates'),
-    getJson(`/v1/consent/voice/renders?workspaceId=${encodeURIComponent(WORKSPACE_ID)}&limit=25&status=approved`),
+    getJson(`/v1/consent/voice/renders?workspaceId=${encodeURIComponent(workspaceId)}&limit=25&status=approved`),
   ]);
   const rows = Array.isArray(templates?.items) ? templates.items : [];
   const approvedCount = Array.isArray(approvedVoiceRenders?.items) ? approvedVoiceRenders.items.length : 0;
@@ -29,7 +41,7 @@ export default async function AvatarVideoPage({ searchParams }: { searchParams?:
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
             <Link href="/studio" style={{ color: '#cce5ff' }}>Back to Studio</Link>
-            <Link href="/ops" style={{ color: '#cce5ff' }}>Operator Console ↗</Link>
+            {isOperator ? <Link href="/ops" style={{ color: '#cce5ff' }}>Operator Console ↗</Link> : null}
           </div>
         </div>
 
@@ -41,12 +53,12 @@ export default async function AvatarVideoPage({ searchParams }: { searchParams?:
           <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>Approved voice renders available: {approvedCount}</p>
           {approvedCount === 0 ? (
             <form action={bootstrapSampleVoiceRenderAction}>
-              <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+              <input type="hidden" name="workspace_id" value={workspaceId} />
               <button type="submit" style={btnSecondary}>Create sample voice render (one-click)</button>
             </form>
           ) : null}
           <form action={createAvatarVideoQuickAction}>
-            <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+            <input type="hidden" name="workspace_id" value={workspaceId} />
             <textarea name="script_text" required placeholder="Paste script" style={inputArea} />
             <select name="background_template_id" style={input} defaultValue={rows[0]?.id || ''}>
               <option value="">No scene template</option>

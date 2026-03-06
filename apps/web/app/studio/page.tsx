@@ -31,6 +31,14 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
   const WORKSPACE_ID = c.get('do_workspace_id')?.value || FALLBACK_WORKSPACE_ID;
   const token = c.get('do_api_token')?.value || '';
   const actorHeaders = token ? { Authorization: `Bearer ${token}` } : {};
+  const userEmail = (c.get('do_user_email')?.value || '').toLowerCase();
+  const operatorAllowlist = new Set(
+    String(process.env.AUTH_SUPERUSER_EMAILS || process.env.WEB_SUPERUSER_EMAILS || process.env.AUTH_OWNER_EMAILS || '')
+      .split(',')
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean),
+  );
+  const isOperator = operatorAllowlist.has(userEmail);
 
   const [sources, content, accountsResp, meResp, trendSuggestions, heygenHealth] = await Promise.all([
     getJson(`/sources?workspaceId=${WORKSPACE_ID}`, actorHeaders),
@@ -182,7 +190,7 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
               <Link className="link" href="/studio/corporate/seats-roles">Seats & Roles</Link>
               <Link className="link" href="/studio/corporate/brand-kits">Brand Kits</Link>
             </> : <span className="tiny">Corporate Suite (Team Avatars · Roles · Brand Kits)</span>}
-            <Link className="link" href="/ops">Operator Console ↗</Link>
+            {isOperator ? <Link className="link" href="/ops">Operator Console ↗</Link> : null}
             <form action="/auth/logout" method="post" style={{ margin: 0 }}>
               <button type="submit">Logout</button>
             </form>
@@ -239,7 +247,7 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
                 </span>
               );
             })}
-            <Link className="link" href="/ops">Manage Connections</Link>
+            {isOperator ? <Link className="link" href="/ops">Manage Connections</Link> : <span className="tiny">Connections managed by Ops</span>}
           </div>
         </section>
 
