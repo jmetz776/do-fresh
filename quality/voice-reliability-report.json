@@ -1,0 +1,30 @@
+{
+  "captured_at_utc": "2026-02-28T23:20:00.539434+00:00",
+  "total": 20,
+  "succeeded": 20,
+  "failed": 0,
+  "failure_rate_pct": 0.0,
+  "pass_failure_gate_leq_2pct": true,
+  "render_ids": [
+    "954a87c8-54f4-4dfd-b664-dd009f2a709e",
+    "5e0e370d-4224-4b91-91fb-325d5a954659",
+    "5125f9d0-4a62-4366-a107-cedf0c5e049b",
+    "f7b7cb4b-93f4-4f9d-9277-23a5e5bc278c",
+    "a0297f4e-d91b-4c9f-97a2-ca9abc020fe1",
+    "649a8f6b-f8f0-4d78-9fe0-37b2a667c708",
+    "686c3bb0-f3b3-4903-be5a-9b4717b7dd28",
+    "610f8070-0ee8-48fd-b98e-aede5848e75e",
+    "642a64e0-e9e9-4529-abd8-5b8040c4b98b",
+    "17b2bb8f-1de3-49d5-8d36-ec382587e642",
+    "f0d18549-6363-4265-855c-7d0cd76b7b28",
+    "a156705e-8d98-425b-97a3-78d673cc0246",
+    "e6be8fad-ecdf-4192-98be-4e530f06a752",
+    "776ea713-0876-4434-b2ee-67779c4aa40c",
+    "336c2b37-bffb-47d0-acfd-40986ee4d8a5",
+    "1f7362fe-c236-4783-99c6-fd50acd60c7e",
+    "b9d6d1ed-fb9a-43c2-8584-873566c16cf9",
+    "f6e7a1c3-db15-49f5-9b16-1631be8f668b",
+    "2a605ddc-5792-418d-b3e8-16af54237338",
+    "c76290da-27f9-4428-b970-f0666d7109ae"
+  ]
+}

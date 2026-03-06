@@ -1,0 +1,21 @@
+{
+  "workspaces": {
+    "default": {
+      "oauth_state": {
+        "linkedin": "7a51b2b6-99f5-406b-9a7b-e495fd3f4b23"
+      },
+      "platforms": {
+        "linkedin": {
+          "connected": true,
+          "connectedAt": "2026-03-02T02:23:07.565484+00:00",
+          "scope": "w_member_social",
+          "authMode": "oauth-code-received",
+          "codePresent": true
+        }
+      },
+      "linkedin": {
+        "selectedOrgUrn": "urn:li:organization:107479374"
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+VIDEO_RENDER_STUB
+voice_render_id=37acb583-b266-485b-8125-bfd7dd7f7a4a
+audio_uri=/Users/jaredmetz/.openclaw/workspace/business/demandorchestrator/quality/audio/renders/37acb583-b266-485b-8125-bfd7dd7f7a4a.mp3
+script=heygen pipeline test

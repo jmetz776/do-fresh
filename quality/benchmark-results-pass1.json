@@ -1,0 +1,224 @@
+{
+  "items": [
+    {
+      "prompt_id": "x_launch_01",
+      "channel": "x",
+      "task": "social_post",
+      "goal": "Drive waitlist signups",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Announce a new content engine for founders that turns ideas into published posts and tracks lead outcomes.\n\nStraight take: simplify execution, then scale output.\n[openai:gpt-5-mini]",
+      "scores": {
+        "clarity": 6,
+        "channel_fit": 4,
+        "hook_strength": 3,
+        "conversion_intent": 3,
+        "brand_voice": 5,
+        "specificity": 3,
+        "safety_trust": 9
+      },
+      "average": 4.71,
+      "keep_or_rewrite": "rewrite",
+      "rewrite_notes": "Reads like a prompt echo, not a launch-ready X post with CTA."
+    },
+    {
+      "prompt_id": "linkedin_case_01",
+      "channel": "linkedin",
+      "task": "social_post",
+      "goal": "Thought leadership",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Share a concise lesson about why content teams fail due to execution bottlenecks, not idea quality.\n\nStraight take: simplify execution, then scale output.\n[openai:gpt-5-mini]",
+      "scores": {
+        "clarity": 6,
+        "channel_fit": 4,
+        "hook_strength": 3,
+        "conversion_intent": 4,
+        "brand_voice": 5,
+        "specificity": 3,
+        "safety_trust": 9
+      },
+      "average": 4.86,
+      "keep_or_rewrite": "rewrite",
+      "rewrite_notes": "Too generic for LinkedIn thought leadership; lacks concrete lesson."
+    },
+    {
+      "prompt_id": "email_nurture_01",
+      "channel": "email",
+      "task": "email",
+      "goal": "Re-engage inactive leads",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Subject: Quick way to fix your content workflow\n\nWrite a short re-engagement email for leads who signed up but never replied.\n\n\u2014 Built with openai:gpt-5-mini",
+      "scores": {
+        "clarity": 5,
+        "channel_fit": 4,
+        "hook_strength": 4,
+        "conversion_intent": 3,
+        "brand_voice": 4,
+        "specificity": 2,
+        "safety_trust": 9
+      },
+      "average": 4.43,
+      "keep_or_rewrite": "rewrite",
+      "rewrite_notes": "Not an actual nurture email body; instruction leaked into output."
+    },
+    {
+      "prompt_id": "x_reply_01",
+      "channel": "x",
+      "task": "reply",
+      "goal": "Helpful conversation reply",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Reply to a founder asking how to stay consistent with content without hiring a full team.\n\nStraight take: simplify execution, then scale output.\n[openai:gpt-5-mini]",
+      "scores": {
+        "clarity": 5,
+        "channel_fit": 4,
+        "hook_strength": 3,
+        "conversion_intent": 4,
+        "brand_voice": 5,
+        "specificity": 3,
+        "safety_trust": 9
+      },
+      "average": 4.71,
+      "keep_or_rewrite": "rewrite",
+      "rewrite_notes": "Not a conversational reply; no personalized guidance."
+    },
+    {
+      "prompt_id": "hook_01",
+      "channel": "generic",
+      "task": "hook",
+      "goal": "Strong opening",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "1) Stop posting blindly.\n2) Your content isn\u2019t broken\u2014your workflow is.\n3) Create 5 hooks for a post about content ops and lead generation.\n4) Consistency comes from systems, not motivation.\n5) Ship faster with less chaos.\n\n[openai:gpt-5-mini]",
+      "scores": {
+        "clarity": 6,
+        "channel_fit": 5,
+        "hook_strength": 5,
+        "conversion_intent": 4,
+        "brand_voice": 6,
+        "specificity": 4,
+        "safety_trust": 9
+      },
+      "average": 5.57,
+      "keep_or_rewrite": "rewrite",
+      "rewrite_notes": "Some usable lines, but one line repeats the prompt instruction."
+    },
+    {
+      "prompt_id": "short_script_01",
+      "channel": "short-form",
+      "task": "script",
+      "goal": "Short video script",
+      "model_id": "anthropic:claude-sonnet",
+      "provider": "anthropic",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Write a 30-second script explaining why most creators waste time on manual posting workflows.\n\nStraight take: simplify execution, then scale output.\n[anthropic:claude-sonnet]",
+      "scores": {
+        "clarity": 5,
+        "channel_fit": 4,
+        "hook_strength": 3,
+        "conversion_intent": 4,
+        "brand_voice": 5,
+        "specificity": 3,
+        "safety_trust": 9
+      },
+      "average": 4.71,
+      "keep_or_rewrite": "rewrite",
+      "rewrite_notes": "Not formatted as a 30-second script with beats/timing."
+    },
+    {
+      "prompt_id": "x_offer_01",
+      "channel": "x",
+      "task": "social_post",
+      "goal": "Offer clarity",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Explain what DemandOrchestrator does in plain English for non-technical founders.\n\nStraight take: simplify execution, then scale output.\n[openai:gpt-5-mini]",
+      "scores": {
+        "clarity": 6,
+        "channel_fit": 4,
+        "hook_strength": 3,
+        "conversion_intent": 4,
+        "brand_voice": 5,
+        "specificity": 3,
+        "safety_trust": 9
+      },
+      "average": 4.86,
+      "keep_or_rewrite": "rewrite",
+      "rewrite_notes": "Still generic and abstract; needs plain-English concrete value."
+    },
+    {
+      "prompt_id": "email_offer_01",
+      "channel": "email",
+      "task": "email",
+      "goal": "Early access conversion",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Subject: Quick way to fix your content workflow\n\nWrite an early-access invite email that sounds premium and clear, not hypey.\n\n\u2014 Built with openai:gpt-5-mini",
+      "scores": {
+        "clarity": 5,
+        "channel_fit": 4,
+        "hook_strength": 4,
+        "conversion_intent": 4,
+        "brand_voice": 4,
+        "specificity": 2,
+        "safety_trust": 9
+      },
+      "average": 4.57,
+      "keep_or_rewrite": "rewrite",
+      "rewrite_notes": "Email prompt repeated rather than persuasive invite copy."
+    },
+    {
+      "prompt_id": "linkedin_story_01",
+      "channel": "linkedin",
+      "task": "social_post",
+      "goal": "Narrative + CTA",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Tell a short founder story about moving from content chaos to a repeatable system.\n\nStraight take: simplify execution, then scale output.\n[openai:gpt-5-mini]",
+      "scores": {
+        "clarity": 5,
+        "channel_fit": 4,
+        "hook_strength": 3,
+        "conversion_intent": 4,
+        "brand_voice": 5,
+        "specificity": 3,
+        "safety_trust": 9
+      },
+      "average": 4.71,
+      "keep_or_rewrite": "rewrite",
+      "rewrite_notes": "No founder narrative arc; just a generic statement."
+    },
+    {
+      "prompt_id": "x_contra_01",
+      "channel": "x",
+      "task": "social_post",
+      "goal": "Opinionated stance",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Write an opinionated post: scheduling tools alone don't drive pipeline.\n\nStraight take: simplify execution, then scale output.\n[openai:gpt-5-mini]",
+      "scores": {
+        "clarity": 6,
+        "channel_fit": 5,
+        "hook_strength": 4,
+        "conversion_intent": 4,
+        "brand_voice": 6,
+        "specificity": 4,
+        "safety_trust": 9
+      },
+      "average": 5.43,
+      "keep_or_rewrite": "rewrite",
+      "rewrite_notes": "Closest to usable, but still light on punch and proof."
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "plans": {
+    "starter": {
+      "included_monthly_cost_usd": 10,
+      "hard_cap_monthly_cost_usd": 25,
+      "allowed_quality_tiers": ["standard", "high"],
+      "allow_advanced_models": false
+    },
+    "pro": {
+      "included_monthly_cost_usd": 50,
+      "hard_cap_monthly_cost_usd": 120,
+      "allowed_quality_tiers": ["standard", "high"],
+      "allow_advanced_models": true
+    },
+    "growth": {
+      "included_monthly_cost_usd": 200,
+      "hard_cap_monthly_cost_usd": 500,
+      "allowed_quality_tiers": ["standard", "high", "best"],
+      "allow_advanced_models": true
+    }
+  },
+  "default_plan": "starter"
+}

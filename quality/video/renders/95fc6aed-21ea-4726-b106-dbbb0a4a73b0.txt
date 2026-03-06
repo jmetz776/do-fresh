@@ -1,0 +1,4 @@
+VIDEO_RENDER_STUB
+voice_render_id=a9bf0c6a-1c09-4853-8547-f8197643b6fd
+audio_uri=/Users/jaredmetz/.openclaw/workspace/business/demandorchestrator/quality/audio/renders/a9bf0c6a-1c09-4853-8547-f8197643b6fd.mp3
+script=DemandOrchestrator live HeyGen test with avatar.

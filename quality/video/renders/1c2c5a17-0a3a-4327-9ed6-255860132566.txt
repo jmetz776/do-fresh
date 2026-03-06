@@ -1,0 +1,4 @@
+VIDEO_RENDER_STUB
+voice_render_id=588b6ff2-f873-474a-8f82-a8c181ab42af
+audio_uri=/Users/jaredmetz/.openclaw/workspace/business/demandorchestrator/quality/audio/renders/588b6ff2-f873-474a-8f82-a8c181ab42af.mp3
+script=video stub from approved

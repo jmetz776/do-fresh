@@ -1,0 +1,512 @@
+[
+  {
+    "id": "news-neon-ticker-01",
+    "name": "News Neon Ticker 01",
+    "tier": "free",
+    "category": "news",
+    "tags": ["news", "ticker", "macro"],
+    "mood": "urgent",
+    "motionLevel": "low",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/news-neon-ticker-01/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/news-neon-ticker-01/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/news-neon-ticker-01/16x9.mp4"
+    },
+    "readabilityScore": 0.84,
+    "provenance": { "source": "storyblocks", "licenseType": "commercial", "licenseRef": "SB-BG-2026-0305-001", "creator": "licensed_pool", "costUsd": 12.0 }
+  },
+  {
+    "id": "newsroom-dark-desk-02",
+    "name": "Newsroom Dark Desk 02",
+    "tier": "free",
+    "category": "news",
+    "tags": ["newsroom", "anchor", "brief"],
+    "mood": "urgent",
+    "motionLevel": "low",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/newsroom-dark-desk-02/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/newsroom-dark-desk-02/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/newsroom-dark-desk-02/16x9.mp4"
+    },
+    "readabilityScore": 0.86,
+    "provenance": { "source": "storyblocks", "licenseType": "commercial", "licenseRef": "SB-BG-2026-0305-002", "creator": "licensed_pool", "costUsd": 12.0 }
+  },
+  {
+    "id": "market-grid-blue-03",
+    "name": "Market Grid Blue 03",
+    "tier": "pro",
+    "category": "news",
+    "tags": ["market", "finance", "grid"],
+    "mood": "urgent",
+    "motionLevel": "medium",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/market-grid-blue-03/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/market-grid-blue-03/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/market-grid-blue-03/16x9.mp4"
+    },
+    "readabilityScore": 0.81,
+    "provenance": { "source": "envato", "licenseType": "commercial", "licenseRef": "EV-BG-2026-0305-003", "creator": "licensed_pool", "costUsd": 16.0 }
+  },
+  {
+    "id": "global-map-alert-04",
+    "name": "Global Map Alert 04",
+    "tier": "pro",
+    "category": "news",
+    "tags": ["global", "map", "alert"],
+    "mood": "urgent",
+    "motionLevel": "medium",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/global-map-alert-04/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/global-map-alert-04/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/global-map-alert-04/16x9.mp4"
+    },
+    "readabilityScore": 0.79,
+    "provenance": { "source": "envato", "licenseType": "commercial", "licenseRef": "EV-BG-2026-0305-004", "creator": "licensed_pool", "costUsd": 16.0 }
+  },
+  {
+    "id": "finance-terminal-soft-05",
+    "name": "Finance Terminal Soft 05",
+    "tier": "pro",
+    "category": "news",
+    "tags": ["terminal", "finance", "stocks"],
+    "mood": "premium",
+    "motionLevel": "low",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/finance-terminal-soft-05/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/finance-terminal-soft-05/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/finance-terminal-soft-05/16x9.mp4"
+    },
+    "readabilityScore": 0.83,
+    "provenance": { "source": "adobe_stock", "licenseType": "commercial", "licenseRef": "AS-BG-2026-0305-005", "creator": "licensed_pool", "costUsd": 18.0 }
+  },
+  {
+    "id": "urgent-headlines-red-06",
+    "name": "Urgent Headlines Red 06",
+    "tier": "pro",
+    "category": "news",
+    "tags": ["headlines", "urgent", "breaking"],
+    "mood": "urgent",
+    "motionLevel": "medium",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/urgent-headlines-red-06/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/urgent-headlines-red-06/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/urgent-headlines-red-06/16x9.mp4"
+    },
+    "readabilityScore": 0.78,
+    "provenance": { "source": "storyblocks", "licenseType": "commercial", "licenseRef": "SB-BG-2026-0305-006", "creator": "licensed_pool", "costUsd": 12.0 }
+  },
+  {
+    "id": "macro-brief-cyan-07",
+    "name": "Macro Brief Cyan 07",
+    "tier": "free",
+    "category": "news",
+    "tags": ["macro", "brief", "analysis"],
+    "mood": "calm",
+    "motionLevel": "none",
+    "assetType": "image",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/macro-brief-cyan-07/9x16.png",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/macro-brief-cyan-07/1x1.png",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/macro-brief-cyan-07/16x9.png"
+    },
+    "readabilityScore": 0.9,
+    "provenance": { "source": "owned", "licenseType": "owned", "licenseRef": "DO-OWNED-BG-007", "creator": "do_design", "costUsd": 0.0 }
+  },
+  {
+    "id": "stocks-motion-lines-08",
+    "name": "Stocks Motion Lines 08",
+    "tier": "pro",
+    "category": "news",
+    "tags": ["stocks", "motion", "market"],
+    "mood": "urgent",
+    "motionLevel": "medium",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/stocks-motion-lines-08/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/stocks-motion-lines-08/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/stocks-motion-lines-08/16x9.mp4"
+    },
+    "readabilityScore": 0.77,
+    "provenance": { "source": "envato", "licenseType": "commercial", "licenseRef": "EV-BG-2026-0305-008", "creator": "licensed_pool", "costUsd": 16.0 }
+  },
+  {
+    "id": "gradient-calm-slate-01",
+    "name": "Gradient Calm Slate 01",
+    "tier": "free",
+    "category": "minimal",
+    "tags": ["gradient", "calm", "explainer"],
+    "mood": "calm",
+    "motionLevel": "none",
+    "assetType": "image",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/gradient-calm-slate-01/9x16.png",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/gradient-calm-slate-01/1x1.png",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/gradient-calm-slate-01/16x9.png"
+    },
+    "readabilityScore": 0.92,
+    "provenance": { "source": "owned", "licenseType": "owned", "licenseRef": "DO-OWNED-BG-009", "creator": "do_design", "costUsd": 0.0 }
+  },
+  {
+    "id": "gradient-calm-teal-02",
+    "name": "Gradient Calm Teal 02",
+    "tier": "free",
+    "category": "minimal",
+    "tags": ["gradient", "teal", "clean"],
+    "mood": "calm",
+    "motionLevel": "none",
+    "assetType": "image",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/gradient-calm-teal-02/9x16.png",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/gradient-calm-teal-02/1x1.png",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/gradient-calm-teal-02/16x9.png"
+    },
+    "readabilityScore": 0.91,
+    "provenance": { "source": "owned", "licenseType": "owned", "licenseRef": "DO-OWNED-BG-010", "creator": "do_design", "costUsd": 0.0 }
+  },
+  {
+    "id": "clean-paper-soft-03",
+    "name": "Clean Paper Soft 03",
+    "tier": "free",
+    "category": "minimal",
+    "tags": ["clean", "paper", "education"],
+    "mood": "calm",
+    "motionLevel": "none",
+    "assetType": "image",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/clean-paper-soft-03/9x16.png",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/clean-paper-soft-03/1x1.png",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/clean-paper-soft-03/16x9.png"
+    },
+    "readabilityScore": 0.93,
+    "provenance": { "source": "owned", "licenseType": "owned", "licenseRef": "DO-OWNED-BG-011", "creator": "do_design", "costUsd": 0.0 }
+  },
+  {
+    "id": "abstract-waves-low-04",
+    "name": "Abstract Waves Low 04",
+    "tier": "pro",
+    "category": "minimal",
+    "tags": ["abstract", "waves", "explainer"],
+    "mood": "premium",
+    "motionLevel": "low",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/abstract-waves-low-04/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/abstract-waves-low-04/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/abstract-waves-low-04/16x9.mp4"
+    },
+    "readabilityScore": 0.85,
+    "provenance": { "source": "storyblocks", "licenseType": "commercial", "licenseRef": "SB-BG-2026-0305-012", "creator": "licensed_pool", "costUsd": 12.0 }
+  },
+  {
+    "id": "blueprint-lines-05",
+    "name": "Blueprint Lines 05",
+    "tier": "pro",
+    "category": "edu",
+    "tags": ["blueprint", "saas", "system"],
+    "mood": "premium",
+    "motionLevel": "low",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/blueprint-lines-05/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/blueprint-lines-05/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/blueprint-lines-05/16x9.mp4"
+    },
+    "readabilityScore": 0.82,
+    "provenance": { "source": "envato", "licenseType": "commercial", "licenseRef": "EV-BG-2026-0305-013", "creator": "licensed_pool", "costUsd": 16.0 }
+  },
+  {
+    "id": "minimal-light-grid-06",
+    "name": "Minimal Light Grid 06",
+    "tier": "pro",
+    "category": "minimal",
+    "tags": ["minimal", "grid", "clean"],
+    "mood": "calm",
+    "motionLevel": "none",
+    "assetType": "image",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/minimal-light-grid-06/9x16.png",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/minimal-light-grid-06/1x1.png",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/minimal-light-grid-06/16x9.png"
+    },
+    "readabilityScore": 0.9,
+    "provenance": { "source": "adobe_stock", "licenseType": "commercial", "licenseRef": "AS-BG-2026-0305-014", "creator": "licensed_pool", "costUsd": 18.0 }
+  },
+  {
+    "id": "subtle-depth-dark-07",
+    "name": "Subtle Depth Dark 07",
+    "tier": "pro",
+    "category": "minimal",
+    "tags": ["depth", "dark", "b2b"],
+    "mood": "premium",
+    "motionLevel": "none",
+    "assetType": "image",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/subtle-depth-dark-07/9x16.png",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/subtle-depth-dark-07/1x1.png",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/subtle-depth-dark-07/16x9.png"
+    },
+    "readabilityScore": 0.89,
+    "provenance": { "source": "owned", "licenseType": "owned", "licenseRef": "DO-OWNED-BG-015", "creator": "do_design", "costUsd": 0.0 }
+  },
+  {
+    "id": "educational-board-08",
+    "name": "Educational Board 08",
+    "tier": "free",
+    "category": "edu",
+    "tags": ["education", "board", "lesson"],
+    "mood": "calm",
+    "motionLevel": "low",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/educational-board-08/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/educational-board-08/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/educational-board-08/16x9.mp4"
+    },
+    "readabilityScore": 0.87,
+    "provenance": { "source": "storyblocks", "licenseType": "commercial", "licenseRef": "SB-BG-2026-0305-016", "creator": "licensed_pool", "costUsd": 12.0 }
+  },
+  {
+    "id": "creator-bold-pop-01",
+    "name": "Creator Bold Pop 01",
+    "tier": "free",
+    "category": "promo",
+    "tags": ["creator", "launch", "bold"],
+    "mood": "bold",
+    "motionLevel": "medium",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/creator-bold-pop-01/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/creator-bold-pop-01/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/creator-bold-pop-01/16x9.mp4"
+    },
+    "readabilityScore": 0.76,
+    "provenance": { "source": "envato", "licenseType": "commercial", "licenseRef": "EV-BG-2026-0305-017", "creator": "licensed_pool", "costUsd": 16.0 }
+  },
+  {
+    "id": "launch-energy-purple-02",
+    "name": "Launch Energy Purple 02",
+    "tier": "pro",
+    "category": "promo",
+    "tags": ["launch", "energy", "promo"],
+    "mood": "bold",
+    "motionLevel": "medium",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/launch-energy-purple-02/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/launch-energy-purple-02/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/launch-energy-purple-02/16x9.mp4"
+    },
+    "readabilityScore": 0.75,
+    "provenance": { "source": "envato", "licenseType": "commercial", "licenseRef": "EV-BG-2026-0305-018", "creator": "licensed_pool", "costUsd": 16.0 }
+  },
+  {
+    "id": "kinetic-spotlight-03",
+    "name": "Kinetic Spotlight 03",
+    "tier": "pro",
+    "category": "promo",
+    "tags": ["kinetic", "spotlight", "social"],
+    "mood": "bold",
+    "motionLevel": "medium",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/kinetic-spotlight-03/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/kinetic-spotlight-03/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/kinetic-spotlight-03/16x9.mp4"
+    },
+    "readabilityScore": 0.74,
+    "provenance": { "source": "storyblocks", "licenseType": "commercial", "licenseRef": "SB-BG-2026-0305-019", "creator": "licensed_pool", "costUsd": 12.0 }
+  },
+  {
+    "id": "social-hype-neon-04",
+    "name": "Social Hype Neon 04",
+    "tier": "pro",
+    "category": "promo",
+    "tags": ["hype", "neon", "trend"],
+    "mood": "bold",
+    "motionLevel": "medium",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/social-hype-neon-04/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/social-hype-neon-04/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/social-hype-neon-04/16x9.mp4"
+    },
+    "readabilityScore": 0.73,
+    "provenance": { "source": "envato", "licenseType": "commercial", "licenseRef": "EV-BG-2026-0305-020", "creator": "licensed_pool", "costUsd": 16.0 }
+  },
+  {
+    "id": "product-drop-countdown-05",
+    "name": "Product Drop Countdown 05",
+    "tier": "pro",
+    "category": "promo",
+    "tags": ["countdown", "product", "drop"],
+    "mood": "bold",
+    "motionLevel": "medium",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/product-drop-countdown-05/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/product-drop-countdown-05/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/product-drop-countdown-05/16x9.mp4"
+    },
+    "readabilityScore": 0.72,
+    "provenance": { "source": "storyblocks", "licenseType": "commercial", "licenseRef": "SB-BG-2026-0305-021", "creator": "licensed_pool", "costUsd": 12.0 }
+  },
+  {
+    "id": "trend-loop-flash-06",
+    "name": "Trend Loop Flash 06",
+    "tier": "free",
+    "category": "promo",
+    "tags": ["trend", "loop", "flash"],
+    "mood": "bold",
+    "motionLevel": "low",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/trend-loop-flash-06/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/trend-loop-flash-06/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/trend-loop-flash-06/16x9.mp4"
+    },
+    "readabilityScore": 0.78,
+    "provenance": { "source": "storyblocks", "licenseType": "commercial", "licenseRef": "SB-BG-2026-0305-022", "creator": "licensed_pool", "costUsd": 12.0 }
+  },
+  {
+    "id": "ecom-product-shelf-01",
+    "name": "Ecom Product Shelf 01",
+    "tier": "pro",
+    "category": "industry",
+    "tags": ["ecom", "product", "shelf"],
+    "mood": "premium",
+    "motionLevel": "none",
+    "assetType": "image",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/ecom-product-shelf-01/9x16.png",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/ecom-product-shelf-01/1x1.png",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/ecom-product-shelf-01/16x9.png"
+    },
+    "readabilityScore": 0.88,
+    "provenance": { "source": "adobe_stock", "licenseType": "commercial", "licenseRef": "AS-BG-2026-0305-023", "creator": "licensed_pool", "costUsd": 18.0 }
+  },
+  {
+    "id": "ecommerce-clean-cta-02",
+    "name": "Ecommerce Clean CTA 02",
+    "tier": "pro",
+    "category": "industry",
+    "tags": ["ecom", "cta", "clean"],
+    "mood": "premium",
+    "motionLevel": "none",
+    "assetType": "image",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/ecommerce-clean-cta-02/9x16.png",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/ecommerce-clean-cta-02/1x1.png",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/ecommerce-clean-cta-02/16x9.png"
+    },
+    "readabilityScore": 0.9,
+    "provenance": { "source": "owned", "licenseType": "owned", "licenseRef": "DO-OWNED-BG-024", "creator": "do_design", "costUsd": 0.0 }
+  },
+  {
+    "id": "realestate-luxury-interior-03",
+    "name": "Real Estate Luxury Interior 03",
+    "tier": "pro",
+    "category": "industry",
+    "tags": ["realestate", "luxury", "interior"],
+    "mood": "premium",
+    "motionLevel": "low",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/realestate-luxury-interior-03/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/realestate-luxury-interior-03/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/realestate-luxury-interior-03/16x9.mp4"
+    },
+    "readabilityScore": 0.82,
+    "provenance": { "source": "storyblocks", "licenseType": "commercial", "licenseRef": "SB-BG-2026-0305-025", "creator": "licensed_pool", "costUsd": 12.0 }
+  },
+  {
+    "id": "realestate-modern-tour-04",
+    "name": "Real Estate Modern Tour 04",
+    "tier": "pro",
+    "category": "industry",
+    "tags": ["realestate", "modern", "tour"],
+    "mood": "premium",
+    "motionLevel": "low",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/realestate-modern-tour-04/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/realestate-modern-tour-04/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/realestate-modern-tour-04/16x9.mp4"
+    },
+    "readabilityScore": 0.81,
+    "provenance": { "source": "envato", "licenseType": "commercial", "licenseRef": "EV-BG-2026-0305-026", "creator": "licensed_pool", "costUsd": 16.0 }
+  },
+  {
+    "id": "healthcare-clinic-calm-05",
+    "name": "Healthcare Clinic Calm 05",
+    "tier": "free",
+    "category": "industry",
+    "tags": ["healthcare", "clinic", "calm"],
+    "mood": "calm",
+    "motionLevel": "none",
+    "assetType": "image",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/healthcare-clinic-calm-05/9x16.png",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/healthcare-clinic-calm-05/1x1.png",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/healthcare-clinic-calm-05/16x9.png"
+    },
+    "readabilityScore": 0.94,
+    "provenance": { "source": "adobe_stock", "licenseType": "commercial", "licenseRef": "AS-BG-2026-0305-027", "creator": "licensed_pool", "costUsd": 18.0 }
+  },
+  {
+    "id": "healthcare-explainer-clean-06",
+    "name": "Healthcare Explainer Clean 06",
+    "tier": "pro",
+    "category": "industry",
+    "tags": ["healthcare", "explainer", "clean"],
+    "mood": "calm",
+    "motionLevel": "none",
+    "assetType": "image",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/healthcare-explainer-clean-06/9x16.png",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/healthcare-explainer-clean-06/1x1.png",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/healthcare-explainer-clean-06/16x9.png"
+    },
+    "readabilityScore": 0.93,
+    "provenance": { "source": "owned", "licenseType": "owned", "licenseRef": "DO-OWNED-BG-028", "creator": "do_design", "costUsd": 0.0 }
+  },
+  {
+    "id": "saas-dashboard-depth-07",
+    "name": "SaaS Dashboard Depth 07",
+    "tier": "pro",
+    "category": "industry",
+    "tags": ["saas", "dashboard", "b2b"],
+    "mood": "premium",
+    "motionLevel": "low",
+    "assetType": "video-loop",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/saas-dashboard-depth-07/9x16.mp4",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/saas-dashboard-depth-07/1x1.mp4",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/saas-dashboard-depth-07/16x9.mp4"
+    },
+    "readabilityScore": 0.83,
+    "provenance": { "source": "storyblocks", "licenseType": "commercial", "licenseRef": "SB-BG-2026-0305-029", "creator": "licensed_pool", "costUsd": 12.0 }
+  },
+  {
+    "id": "b2b-boardroom-authority-08",
+    "name": "B2B Boardroom Authority 08",
+    "tier": "free",
+    "category": "industry",
+    "tags": ["b2b", "boardroom", "authority"],
+    "mood": "premium",
+    "motionLevel": "none",
+    "assetType": "image",
+    "platformVariants": {
+      "vertical_9_16": "https://cdn.demandorchestrator.ai/backgrounds/b2b-boardroom-authority-08/9x16.png",
+      "square_1_1": "https://cdn.demandorchestrator.ai/backgrounds/b2b-boardroom-authority-08/1x1.png",
+      "landscape_16_9": "https://cdn.demandorchestrator.ai/backgrounds/b2b-boardroom-authority-08/16x9.png"
+    },
+    "readabilityScore": 0.9,
+    "provenance": { "source": "adobe_stock", "licenseType": "commercial", "licenseRef": "AS-BG-2026-0305-030", "creator": "licensed_pool", "costUsd": 18.0 }
+  }
+]

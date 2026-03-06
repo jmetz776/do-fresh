@@ -1,0 +1,224 @@
+{
+  "items": [
+    {
+      "prompt_id": "x_launch_01",
+      "channel": "x",
+      "task": "social_post",
+      "goal": "Drive waitlist signups",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Most content teams don\u2019t have an idea problem \u2014 they have an execution problem.\nWhen draft, review, publish, and lead tracking are disconnected, output drops and pipeline suffers.\nDemandOrchestrator fixes that loop: one idea in, channel-ready content out, plus clear lead attribution.\nIf you want the early-access walkthrough, comment \"DO\" and I\u2019ll send it.",
+      "scores": {
+        "clarity": null,
+        "channel_fit": null,
+        "hook_strength": null,
+        "conversion_intent": null,
+        "brand_voice": null,
+        "specificity": null,
+        "safety_trust": null
+      },
+      "average": null,
+      "keep_or_rewrite": null,
+      "rewrite_notes": ""
+    },
+    {
+      "prompt_id": "linkedin_case_01",
+      "channel": "linkedin",
+      "task": "social_post",
+      "goal": "Thought leadership",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Most content teams don\u2019t have an idea problem \u2014 they have an execution problem.\nWhen draft, review, publish, and lead tracking are disconnected, output drops and pipeline suffers.\nDemandOrchestrator fixes that loop: one idea in, channel-ready content out, plus clear lead attribution.\nIf you want the early-access walkthrough, comment \"DO\" and I\u2019ll send it.",
+      "scores": {
+        "clarity": null,
+        "channel_fit": null,
+        "hook_strength": null,
+        "conversion_intent": null,
+        "brand_voice": null,
+        "specificity": null,
+        "safety_trust": null
+      },
+      "average": null,
+      "keep_or_rewrite": null,
+      "rewrite_notes": ""
+    },
+    {
+      "prompt_id": "email_nurture_01",
+      "channel": "email",
+      "task": "email",
+      "goal": "Re-engage inactive leads",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Subject: A faster way to publish content that actually converts\n\nHey \u2014 quick note. Most teams don\u2019t struggle with ideas, they struggle with execution.\n\nDemandOrchestrator helps you turn one idea into channel-ready drafts, review quickly, publish safely, and see which posts generate real leads.\n\nIf you want, I can send a 5-minute walkthrough and get you early access.\n\n\u2014 Jared",
+      "scores": {
+        "clarity": null,
+        "channel_fit": null,
+        "hook_strength": null,
+        "conversion_intent": null,
+        "brand_voice": null,
+        "specificity": null,
+        "safety_trust": null
+      },
+      "average": null,
+      "keep_or_rewrite": null,
+      "rewrite_notes": ""
+    },
+    {
+      "prompt_id": "x_reply_01",
+      "channel": "x",
+      "task": "reply",
+      "goal": "Helpful conversation reply",
+      "model_id": "openrouter:google/gemini-2.0-flash-lite-001",
+      "provider": "openrouter",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "You don\u2019t need a full team to stay consistent \u2014 you need a repeatable workflow. Batch 3-5 source ideas weekly, turn them into drafts in one session, and schedule with a built-in review step. That removes daily context switching and keeps output steady.",
+      "scores": {
+        "clarity": null,
+        "channel_fit": null,
+        "hook_strength": null,
+        "conversion_intent": null,
+        "brand_voice": null,
+        "specificity": null,
+        "safety_trust": null
+      },
+      "average": null,
+      "keep_or_rewrite": null,
+      "rewrite_notes": ""
+    },
+    {
+      "prompt_id": "hook_01",
+      "channel": "generic",
+      "task": "hook",
+      "goal": "Strong opening",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "1) Your content strategy isn\u2019t broken \u2014 your workflow is.\n2) If posting feels chaotic, you don\u2019t need more ideas. You need a system.\n3) Most creators lose consistency in execution, not creativity.\n4) Stop scheduling noise. Start shipping content that drives pipeline.\n5) One idea. Multiple channels. Zero fire drills.",
+      "scores": {
+        "clarity": null,
+        "channel_fit": null,
+        "hook_strength": null,
+        "conversion_intent": null,
+        "brand_voice": null,
+        "specificity": null,
+        "safety_trust": null
+      },
+      "average": null,
+      "keep_or_rewrite": null,
+      "rewrite_notes": ""
+    },
+    {
+      "prompt_id": "short_script_01",
+      "channel": "short-form",
+      "task": "script",
+      "goal": "Short video script",
+      "model_id": "openrouter:google/gemini-2.0-flash-lite-001",
+      "provider": "openrouter",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "[0-3s] Hook: Most creators don\u2019t fail from bad ideas \u2014 they fail from messy execution.\n[4-10s] Problem: Drafting, reviewing, posting, and tracking live in different tools, so consistency dies.\n[11-22s] Solution: DemandOrchestrator turns one idea into publish-ready content, with approvals and retries built in.\n[23-30s] CTA: If you want content output without chaos, join early access and I\u2019ll show you the workflow.",
+      "scores": {
+        "clarity": null,
+        "channel_fit": null,
+        "hook_strength": null,
+        "conversion_intent": null,
+        "brand_voice": null,
+        "specificity": null,
+        "safety_trust": null
+      },
+      "average": null,
+      "keep_or_rewrite": null,
+      "rewrite_notes": ""
+    },
+    {
+      "prompt_id": "x_offer_01",
+      "channel": "x",
+      "task": "social_post",
+      "goal": "Offer clarity",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Most content teams don\u2019t have an idea problem \u2014 they have an execution problem.\nWhen draft, review, publish, and lead tracking are disconnected, output drops and pipeline suffers.\nDemandOrchestrator fixes that loop: one idea in, channel-ready content out, plus clear lead attribution.\nIf you want the early-access walkthrough, comment \"DO\" and I\u2019ll send it.",
+      "scores": {
+        "clarity": null,
+        "channel_fit": null,
+        "hook_strength": null,
+        "conversion_intent": null,
+        "brand_voice": null,
+        "specificity": null,
+        "safety_trust": null
+      },
+      "average": null,
+      "keep_or_rewrite": null,
+      "rewrite_notes": ""
+    },
+    {
+      "prompt_id": "email_offer_01",
+      "channel": "email",
+      "task": "email",
+      "goal": "Early access conversion",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Subject: A faster way to publish content that actually converts\n\nHey \u2014 quick note. Most teams don\u2019t struggle with ideas, they struggle with execution.\n\nDemandOrchestrator helps you turn one idea into channel-ready drafts, review quickly, publish safely, and see which posts generate real leads.\n\nIf you want, I can send a 5-minute walkthrough and get you early access.\n\n\u2014 Jared",
+      "scores": {
+        "clarity": null,
+        "channel_fit": null,
+        "hook_strength": null,
+        "conversion_intent": null,
+        "brand_voice": null,
+        "specificity": null,
+        "safety_trust": null
+      },
+      "average": null,
+      "keep_or_rewrite": null,
+      "rewrite_notes": ""
+    },
+    {
+      "prompt_id": "linkedin_story_01",
+      "channel": "linkedin",
+      "task": "social_post",
+      "goal": "Narrative + CTA",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Most content teams don\u2019t have an idea problem \u2014 they have an execution problem.\nWhen draft, review, publish, and lead tracking are disconnected, output drops and pipeline suffers.\nDemandOrchestrator fixes that loop: one idea in, channel-ready content out, plus clear lead attribution.\nIf you want the early-access walkthrough, comment \"DO\" and I\u2019ll send it.",
+      "scores": {
+        "clarity": null,
+        "channel_fit": null,
+        "hook_strength": null,
+        "conversion_intent": null,
+        "brand_voice": null,
+        "specificity": null,
+        "safety_trust": null
+      },
+      "average": null,
+      "keep_or_rewrite": null,
+      "rewrite_notes": ""
+    },
+    {
+      "prompt_id": "x_contra_01",
+      "channel": "x",
+      "task": "social_post",
+      "goal": "Opinionated stance",
+      "model_id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "effective_prompt_preview": "[SYSTEM]\nYou are a high-quality content generation engine. Be clear, concise, and conversion-oriented. Avoid fluff.\n\n[PRODUCT]\nOutput must be channel-ready and practical. Prioritize readability, scannability, and strong ",
+      "output": "Most content teams don\u2019t have an idea problem \u2014 they have an execution problem.\nWhen draft, review, publish, and lead tracking are disconnected, output drops and pipeline suffers.\nDemandOrchestrator fixes that loop: one idea in, channel-ready content out, plus clear lead attribution.\nIf you want the early-access walkthrough, comment \"DO\" and I\u2019ll send it.",
+      "scores": {
+        "clarity": null,
+        "channel_fit": null,
+        "hook_strength": null,
+        "conversion_intent": null,
+        "brand_voice": null,
+        "specificity": null,
+        "safety_trust": null
+      },
+      "average": null,
+      "keep_or_rewrite": null,
+      "rewrite_notes": ""
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "mentions": {
+    "meta": {
+      "result_count": 0
+    }
+  },
+  "drafts": {
+    "drafts": []
+  },
+  "summary": {
+    "mentions_seen": 0,
+    "drafts_generated": 0,
+    "new_drafts_queued": 0,
+    "queue_path": "x_reply_drafts.ndjson",
+    "auto_reply_enabled": false
+  }
+}

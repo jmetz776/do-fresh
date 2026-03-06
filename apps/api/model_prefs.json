@@ -1,0 +1,10 @@
+{
+  "default": {
+    "mode": "auto",
+    "overrides": {
+      "text": "",
+      "image": "",
+      "video": ""
+    }
+  }
+}

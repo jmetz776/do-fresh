@@ -1,0 +1,4 @@
+VIDEO_RENDER_STUB
+voice_render_id=6e7ea077-65ba-45bb-aba7-5399890f0e6b
+audio_uri=/Users/jaredmetz/.openclaw/workspace/business/demandorchestrator/quality/audio/renders/6e7ea077-65ba-45bb-aba7-5399890f0e6b.mp3
+script=This is a launch-readiness video pipeline test from DemandOrchestrator.

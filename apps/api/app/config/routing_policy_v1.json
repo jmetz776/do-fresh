@@ -1,0 +1,70 @@
+{
+  "version": "2026-03-04",
+  "strategy": "two_lane_cost_quality",
+  "lanes": {
+    "intelligence": {
+      "description": "Low-cost text generation for ingest, clustering, hooks, drafts, rewrites",
+      "capabilities": ["text"],
+      "preference": "speed",
+      "tasks": [
+        "trend_cluster",
+        "angle_select",
+        "hook",
+        "draft",
+        "rewrite",
+        "beatmap_draft"
+      ],
+      "model_pool": [
+        "openrouter:google/gemini-2.0-flash-lite-001",
+        "openai:gpt-5-mini"
+      ],
+      "max_rewrites": 2
+    },
+    "premium_render": {
+      "description": "High-quality cinematic/faceless render lane",
+      "capabilities": ["video"],
+      "preference": "quality",
+      "tasks": [
+        "faceless_video_render",
+        "cinematic_video_render"
+      ],
+      "model_pool": [
+        "heygen:digital-twin-v2",
+        "runway:gen-3-alpha"
+      ],
+      "max_attempts_per_script": 2,
+      "max_batch_ratio": 0.35
+    }
+  },
+  "gates": {
+    "required_minimums": {
+      "hook_score": 0.72,
+      "clarity_score": 0.7,
+      "narrative_score": 0.72,
+      "cta_fit_score": 0.68,
+      "policy_safety_score": 0.9,
+      "visual_beatmap_score": 0.75
+    },
+    "render_readiness": {
+      "formula": "0.22*hook + 0.18*clarity + 0.2*narrative + 0.12*cta_fit + 0.13*policy_safety + 0.15*visual_beatmap",
+      "pass_threshold": 0.72,
+      "rewrite_threshold": 0.55
+    }
+  },
+  "routing": {
+    "on_pass": "route_premium_render",
+    "on_rewrite_band": "rewrite_and_rescore",
+    "on_fail": "regenerate_from_new_cluster"
+  },
+  "fallback_chain": [
+    "retry_same_provider_once",
+    "route_backup_premium_provider",
+    "queue_operator_review"
+  ],
+  "kpi_targets": {
+    "premium_lane_utilization_max": 0.35,
+    "gate_pass_rate_target": 0.45,
+    "premium_render_success_rate_min": 0.9,
+    "cost_per_published_asset_reduction_target": 0.25
+  }
+}

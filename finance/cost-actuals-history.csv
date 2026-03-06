@@ -1,0 +1,2 @@
+captured_at_utc,workspace_id,events,estimated_cost_usd,by_model_json,by_capability_json
+2026-02-28T18:01:04Z,default,2,0.00036,"{""openai:gpt-5-mini"": 0.00036}","{""text"": 0.00036}"

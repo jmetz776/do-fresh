@@ -1,0 +1,63 @@
+Subject: Legal Review Request — DemandOrchestrator Likeness + AI Presenter Marketplace
+
+Hi,
+
+I’m requesting legal review and guidance on a planned expansion of DemandOrchestrator (CrossCurrent Ventures LLC).
+
+Business summary
+- DemandOrchestrator is a social content platform for drafting, approval, cadence scheduling, and publishing.
+- We are adding AI presenter video features and a presenter directory.
+- Initial launch path: synthetic presenters first, then a licensed real-human presenter marketplace.
+
+Planned commercial model
+1) Subscription tiers
+- Starter/Pro: core drafting + scheduling
+- Top Tier: synthetic presenter directory
+- Corporate: team avatars, seats/roles, approvals, governance
+
+2) Marketplace model (planned)
+- Real people opt in as presenters under signed agreement.
+- Customers license presenter likeness.
+- Platform takes fee; presenter receives payout.
+
+Core legal/compliance questions
+1) Likeness licensing
+- Contract structure for consent, permitted use categories, blocked categories, geography, term, revocation, and takedowns.
+
+2) Deception/deepfake controls
+- Required disclosures and prohibited-use language (impersonation, deceptive endorsements, etc.).
+
+3) Advertising and platform policy compliance
+- FTC-style disclosure, endorsement/testimonial requirements, and platform policy alignment.
+
+4) Privacy/biometric handling
+- Requirements for intro video uploads, retention, deletion, user rights, and cross-border processing.
+
+5) IP/content risk
+- UGC rights, output ownership/license language, DMCA/takedown workflow, repeat infringer policy.
+
+6) Liability allocation
+- Indemnity split between platform, customer, and model.
+- Recommended insurance posture prior to marketplace launch.
+
+Planned product guardrails
+- Allowed/prohibited use matrix per presenter
+- Policy checks before render/publish
+- Human approval before posting
+- Full audit logs per generation/render
+- Immediate kill switch/revocation support
+
+Requested deliverables
+- Priority-ranked risk memo
+- Redlines for Terms, Privacy, Model Agreement, Acceptable Use Policy
+- Compliance checklist for launch
+- Incident-response language and revocation/takedown playbook
+
+For full context, I also prepared a detailed internal brief:
+- attorney-brief-likeness-marketplace.md
+
+Thanks — looking for practical go/no-go guidance and contract language before public rollout.
+
+Best,
+Jared Metz
+CrossCurrent Ventures LLC

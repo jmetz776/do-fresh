@@ -1,0 +1,72 @@
+[
+  {
+    "id": "x_launch_01",
+    "channel": "x",
+    "task": "social_post",
+    "goal": "Drive waitlist signups",
+    "prompt": "Announce a new content engine for founders that turns ideas into published posts and tracks lead outcomes."
+  },
+  {
+    "id": "linkedin_case_01",
+    "channel": "linkedin",
+    "task": "social_post",
+    "goal": "Thought leadership",
+    "prompt": "Share a concise lesson about why content teams fail due to execution bottlenecks, not idea quality."
+  },
+  {
+    "id": "email_nurture_01",
+    "channel": "email",
+    "task": "email",
+    "goal": "Re-engage inactive leads",
+    "prompt": "Write a short re-engagement email for leads who signed up but never replied."
+  },
+  {
+    "id": "x_reply_01",
+    "channel": "x",
+    "task": "reply",
+    "goal": "Helpful conversation reply",
+    "prompt": "Reply to a founder asking how to stay consistent with content without hiring a full team."
+  },
+  {
+    "id": "hook_01",
+    "channel": "generic",
+    "task": "hook",
+    "goal": "Strong opening",
+    "prompt": "Create 5 hooks for a post about content ops and lead generation."
+  },
+  {
+    "id": "short_script_01",
+    "channel": "short-form",
+    "task": "script",
+    "goal": "Short video script",
+    "prompt": "Write a 30-second script explaining why most creators waste time on manual posting workflows."
+  },
+  {
+    "id": "x_offer_01",
+    "channel": "x",
+    "task": "social_post",
+    "goal": "Offer clarity",
+    "prompt": "Explain what DemandOrchestrator does in plain English for non-technical founders."
+  },
+  {
+    "id": "email_offer_01",
+    "channel": "email",
+    "task": "email",
+    "goal": "Early access conversion",
+    "prompt": "Write an early-access invite email that sounds premium and clear, not hypey."
+  },
+  {
+    "id": "linkedin_story_01",
+    "channel": "linkedin",
+    "task": "social_post",
+    "goal": "Narrative + CTA",
+    "prompt": "Tell a short founder story about moving from content chaos to a repeatable system."
+  },
+  {
+    "id": "x_contra_01",
+    "channel": "x",
+    "task": "social_post",
+    "goal": "Opinionated stance",
+    "prompt": "Write an opinionated post: scheduling tools alone don't drive pipeline."
+  }
+]

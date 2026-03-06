@@ -1,0 +1,4 @@
+scenario,active_users,gen_events_per_user_per_month,text_share_pct,image_share_pct,video_share_pct,avg_text_cost_usd,avg_image_cost_usd,avg_video_cost_usd,blended_cogs_per_event_usd,monthly_events,monthly_cogs_usd,annual_cogs_usd,target_gross_margin_pct,required_revenue_monthly_usd,required_arpu_monthly_usd,notes
+Starter Plan Target,100,120,80,18,2,0.008,0.06,0.7,0.0312,12000,374.4,4492.8,75,1497.6,14.98,"Maps to Starter economics; enforce guardrails"
+Pro Plan Target,500,140,78,20,2,0.008,0.06,0.7,0.03224,70000,2256.8,27081.6,75,9027.2,18.05,"Maps to Pro economics; advanced models enabled"
+Growth Plan Target,2000,160,75,22,3,0.008,0.06,0.7,0.0402,320000,12864,154368,75,51456,25.73,"Maps to Growth economics; best-tier models allowed"

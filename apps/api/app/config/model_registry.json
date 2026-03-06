@@ -1,0 +1,92 @@
+{
+  "models": [
+    {
+      "id": "openai:gpt-5-mini",
+      "provider": "openai",
+      "display_name": "GPT-5 Mini",
+      "capabilities": ["text"],
+      "quality_tier": "high",
+      "speed_tier": "fast",
+      "cost_tier": "medium",
+      "status": "active",
+      "max_context": 128000,
+      "supports_json": true,
+      "supports_tools": true,
+      "default_for": ["social_post", "hook", "email"],
+      "pricing": {
+        "input_per_1m_usd": 0.15,
+        "output_per_1m_usd": 0.60
+      }
+    },
+    {
+      "id": "anthropic:claude-sonnet",
+      "provider": "anthropic",
+      "display_name": "Claude Sonnet",
+      "capabilities": ["text"],
+      "quality_tier": "high",
+      "speed_tier": "balanced",
+      "cost_tier": "medium",
+      "status": "active",
+      "max_context": 200000,
+      "supports_json": true,
+      "supports_tools": true,
+      "default_for": ["script", "long_form"],
+      "pricing": {
+        "input_per_1m_usd": 3.0,
+        "output_per_1m_usd": 15.0
+      }
+    },
+    {
+      "id": "openrouter:google/gemini-2.0-flash-lite-001",
+      "provider": "openrouter",
+      "display_name": "Gemini 2.0 Flash Lite (OpenRouter)",
+      "capabilities": ["text"],
+      "quality_tier": "high",
+      "speed_tier": "fast",
+      "cost_tier": "low",
+      "status": "active",
+      "max_context": 1000000,
+      "supports_json": true,
+      "supports_tools": false,
+      "default_for": ["draft", "trend_cluster", "angle_select", "rewrite"],
+      "pricing": {
+        "input_per_1m_usd": 0.10,
+        "output_per_1m_usd": 0.40
+      }
+    },
+    {
+      "id": "heygen:digital-twin-v2",
+      "provider": "heygen",
+      "display_name": "Digital Twin Render v2",
+      "capabilities": ["video"],
+      "quality_tier": "best",
+      "speed_tier": "balanced",
+      "cost_tier": "high",
+      "status": "active",
+      "supports_json": false,
+      "supports_tools": false,
+      "default_for": ["faceless_video_render", "cinematic_video_render"],
+      "pricing": {
+        "input_per_1m_usd": 0.0,
+        "output_per_1m_usd": 0.0
+      }
+    },
+    {
+      "id": "runway:gen-3-alpha",
+      "provider": "runway",
+      "display_name": "Runway Gen-3 Alpha",
+      "capabilities": ["video"],
+      "quality_tier": "best",
+      "speed_tier": "balanced",
+      "cost_tier": "high",
+      "status": "active",
+      "supports_json": false,
+      "supports_tools": false,
+      "default_for": ["cinematic_video_render_backup"],
+      "pricing": {
+        "input_per_1m_usd": 0.0,
+        "output_per_1m_usd": 0.0
+      }
+    }
+  ]
+}

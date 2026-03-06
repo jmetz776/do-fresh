@@ -1,0 +1,55 @@
+{
+  "captured_at_utc": "2026-03-01T01:00:12.637267+00:00",
+  "total_target": 10,
+  "created": 10,
+  "final": {
+    "approved": 0,
+    "succeeded": 3,
+    "failed": 0,
+    "queued": 7
+  },
+  "failure_rate_pct": 0.0,
+  "pass_failure_gate_leq_2pct": true,
+  "jobs": {
+    "a9ff9522-9b4c-4bcc-83af-d52a2ded2630": {
+      "status": "succeeded",
+      "videoUri": "https://files2.heygen.ai/aws_pacific/avatar_tmp/8beb0d38d90b4a37acfeac8835eb049c/10b31e0dabaf4fb585b9df0fab13646b.mp4?Expires=1772931594&Signature=Egwamy1ohp7RB2c0bEqx2PL29V4gs1OcKD4wyMOFBlcqYr7rrM8xBulJTYV-SCs1MZ2-m1EKxT24Sp2xM2H8578HhJFdbaA9t-T9wn8PMmtsb8P5q0rUiFU5-oLujlIsLyYHZ1mGFb2WRiP9s0ue1yCPDMt~3EhcNGqLMXoOlCHLGQN7U5KbFtDsDSg7hhmTyH-ZyX39WnMTmimoENj2yOO5xOsw-bzaEBPg0NWo70q3ROV5g7-KrFFlx~cFNXSpmyHRdzrUpxFPFpm4XzpAdk1jru19PXithddTbE4A5d8S8cR4DL4kwXhGjpJDyTC0TF4Uxk76Fh3RzPv5hVL~VA__&Key-Pair-Id=K38HBHX5LX3X2H"
+    },
+    "0c4814f4-b8e3-4d0c-89d2-48e487b41d01": {
+      "status": "succeeded",
+      "videoUri": "https://files2.heygen.ai/aws_pacific/avatar_tmp/8beb0d38d90b4a37acfeac8835eb049c/910475d842284d329e75d386111e520e.mp4?Expires=1772931594&Signature=ptRe5yNzTwYEdHn9H6kjBnVKk9LZoDIf~~QKUmNr8dx6ZBXk~dEwtdb~ONpyxn1NZ0WRlKbTOwOK1zjZhIHtC79bKajNq3ZVLNYmbOlz1d7iu~Bs0QVTQTT7CTxtMwupyCNquVCIM6Nj3Lo4kA3zhuvyXpJlYRuybC6xDmxMPbdtyHWrwXkzZIRwxikmLMWMqgAkNk4hqNmKAeDBeSCQfQ92UwTVr-sx9zad~ccdVvwc4owOrAdqRoW45RN9rrllvpEqaXv3Zrotr5JUc41VPjtRhUp7Ix3M5dotR2mEvRaC~et0ow597hYofyhJgJahnkekT28v65717iUa8lrMlQ__&Key-Pair-Id=K38HBHX5LX3X2H"
+    },
+    "c6a5389b-8c4b-4ae8-840d-4aa29ea4dfce": {
+      "status": "succeeded",
+      "videoUri": "https://files2.heygen.ai/aws_pacific/avatar_tmp/8beb0d38d90b4a37acfeac8835eb049c/4224bee18b554b568262d27328754d40.mp4?Expires=1772931589&Signature=XFY29-G8U0dhkAC0uwuRsyBo5ihngHSBGvVS9Uko6UNAkKkXtjBgRM1X-LdF7gyhgeypfx2vRrER-ZeunbI2-hJeyJAsjx2n3hJbbd~2x7IZW3YgiOmXp0SYGcUlpJS5-opHtEJlLeQX4v6iAfnFSydbQVRGPzmY9IHvrrLd8i34Gd~IjcU~BNYcK1Na9itaIskwUv3o2aj2p-edLbkUtZWRYdee4FRLkjLEEXpzIdE6M3T1FBlni-AAkjvbEt98Rnn31AmZWPs805Kg8qCNQ6zUstU7KSThEnSnDBceVKAn3Yh5s~PmV6Tkn3neATtb6OkDMnQZPmtXK8OALlOq4g__&Key-Pair-Id=K38HBHX5LX3X2H"
+    },
+    "5685c9b7-6e27-4c8d-884c-467669bc523f": {
+      "status": "queued",
+      "videoUri": ""
+    },
+    "d59960ec-f8b7-46d8-87a4-ff5a9aa6c420": {
+      "status": "queued",
+      "videoUri": ""
+    },
+    "37eac861-1d62-43f1-8948-aa1d783c6fd6": {
+      "status": "queued",
+      "videoUri": ""
+    },
+    "03365c39-ffb9-464d-a640-c22bb28de108": {
+      "status": "queued",
+      "videoUri": ""
+    },
+    "1560a4bd-ab14-4760-8f08-e3eb66f78b66": {
+      "status": "queued",
+      "videoUri": ""
+    },
+    "4002ed70-515d-41f8-8034-91bfb321b2c4": {
+      "status": "queued",
+      "videoUri": ""
+    },
+    "4d750a3c-f29d-4a2b-9aa8-b5732156fb2f": {
+      "status": "queued",
+      "videoUri": ""
+    }
+  }
+}

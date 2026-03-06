@@ -1,0 +1,11 @@
+provider,sample_id,tone,naturalness,intelligibility,emotional_fit,pronunciation_accuracy,consistency,latency_sec,failed,cost_usd,notes
+ElevenLabs,vb_01,neutral,8,9.7,8,7,9,1.66,false,0.0162,"voice=Roger - Laid-Back, Casual, Resonant"
+ElevenLabs,vb_02,energetic,8,9,7,8,7,1.54,false,0.0166,"voice=Roger - Laid-Back, Casual, Resonant"
+ElevenLabs,vb_03,authoritative,8,7,9,8,7,1.61,false,0.0221,"voice=Roger - Laid-Back, Casual, Resonant"
+ElevenLabs,vb_04,neutral,7,8,9,7,8,1.52,false,0.0178,"voice=Roger - Laid-Back, Casual, Resonant"
+ElevenLabs,vb_05,energetic,9,9,8,7,9,1.57,false,0.0207,"voice=Roger - Laid-Back, Casual, Resonant"
+voicebox.sh,vb_01,neutral,,,,,,,false,,
+voicebox.sh,vb_02,energetic,,,,,,,false,,
+voicebox.sh,vb_03,authoritative,,,,,,,false,,
+voicebox.sh,vb_04,neutral,,,,,,,false,,
+voicebox.sh,vb_05,energetic,,,,,,,false,,

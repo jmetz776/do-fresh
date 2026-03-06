@@ -1,0 +1,4 @@
+plan,included_monthly_ai_cost_usd,hard_cap_monthly_ai_cost_usd,advanced_model_mode,allowed_quality_tiers,overage_policy,notes
+Starter,10,25,false,standard|high,Auto fallback + upgrade prompt at cap,"Best for early users; keeps margin predictable"
+Pro,50,120,true,standard|high,Overage billed or fallback based on setting,"Supports manual model selection"
+Growth,200,500,true,standard|high|best,Overage billed with priority throughput,"For teams with heavier generation volume"
