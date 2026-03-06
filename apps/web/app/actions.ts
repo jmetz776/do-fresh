@@ -148,9 +148,38 @@ export async function buildUnifiedQueueAction(formData: FormData) {
   const mixFaceless = Math.max(0, Number(formData.get('mix_faceless') || 25));
   const mixAvatar = Math.max(0, Number(formData.get('mix_avatar') || 15));
   const sum = Math.max(1, mixText + mixFaceless + mixAvatar);
-  const textCount = Math.max(1, Math.round((queueCap * mixText) / sum));
-  const facelessCount = Math.max(0, Math.round((queueCap * mixFaceless) / sum));
-  const avatarCount = Math.max(0, queueCap - textCount - facelessCount);
+
+  let textCount = Math.max(1, Math.round((queueCap * mixText) / sum));
+  let facelessCount = Math.max(0, Math.round((queueCap * mixFaceless) / sum));
+  let avatarCount = Math.max(0, queueCap - textCount - facelessCount);
+
+  // Tier-aware hard caps for video slots: if monthly video capacity is near/at cap,
+  // convert planned video slots into text slots automatically.
+  let capNote = '';
+  try {
+    const limRes = await fetch(`${API_BASE}/v1/consent/video/limits?workspaceId=${encodeURIComponent(workspaceId)}`, {
+      cache: 'no-store',
+      headers: actorHeaders(),
+    });
+    if (limRes.ok) {
+      const lim = await limRes.json().catch(() => ({} as any));
+      const monthlyCap = Number(lim?.limits?.monthly_video_cap || 0);
+      const monthlyUsed = Number(lim?.usage?.monthly_count || 0);
+      const remainingVideo = Math.max(0, monthlyCap - monthlyUsed);
+      const plannedVideo = facelessCount + avatarCount;
+      if (plannedVideo > remainingVideo) {
+        let overflow = plannedVideo - remainingVideo;
+        const avatarReduce = Math.min(avatarCount, overflow);
+        avatarCount -= avatarReduce;
+        overflow -= avatarReduce;
+        const facelessReduce = Math.min(facelessCount, overflow);
+        facelessCount -= facelessReduce;
+        overflow -= facelessReduce;
+        textCount = queueCap - facelessCount - avatarCount;
+        capNote = ` · video cap applied (${remainingVideo} video slots available this month)`;
+      }
+    }
+  } catch {}
 
   const oneLine = idea.replace(/\s+/g, ' ').trim();
   const escCsv = (v: string) => `"${v.replace(/"/g, '""')}"`;
@@ -188,7 +217,7 @@ export async function buildUnifiedQueueAction(formData: FormData) {
   revalidatePath('/studio');
   revalidatePath('/studio/queue');
   revalidatePath('/ops');
-  redirect(`/studio/queue?notice=${encodeURIComponent(`Unified queue built: ${textCount} text ready · ${facelessCount} faceless planned · ${avatarCount} avatar planned · timezone ${timezone}`)}`);
+  redirect(`/studio/queue?notice=${encodeURIComponent(`Unified queue built: ${textCount} text ready · ${facelessCount} faceless planned · ${avatarCount} avatar planned · timezone ${timezone}${capNote}`)}`);
 }
 
 export async function approveContentAction(formData: FormData) {
