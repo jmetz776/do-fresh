@@ -191,12 +191,16 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
               <Link className="link" href="/studio" style={{ border: '1px solid rgba(56,189,248,.45)', borderRadius: 999, padding: '8px 14px', background: 'rgba(56,189,248,.10)', fontWeight: 700 }}>Studio</Link>
               <Link className="link" href="/studio/queue" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 999, padding: '8px 14px' }}>Unified Queue</Link>
               <Link className="link" href="/studio/review" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 999, padding: '8px 14px' }}>Content Library</Link>
+              <Link className="link" href="/studio/analytics" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 999, padding: '8px 14px' }}>Analytics</Link>
+              <Link className="link" href="/help" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 999, padding: '8px 14px' }}>Help</Link>
             </div>
             <div className="tiny">Primary navigation</div>
           </div>
           <div className="row" style={{ marginTop: 10, gap: 8 }}>
             <Link className="link" href="/studio/queue" style={{ border: '1px solid rgba(34,197,94,.45)', borderRadius: 10, padding: '8px 12px', background: 'rgba(34,197,94,.10)', fontWeight: 700 }}>+ New Queue</Link>
             <Link className="link" href="/studio/review" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Review Outputs</Link>
+            <Link className="link" href="/studio/analytics" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>View Analytics</Link>
+            <Link className="link" href="/help" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>FAQ</Link>
             {isOperator ? <Link className="link" href="/ops" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Operator Console ↗</Link> : null}
             {isTopTier ? <Link className="link" href="/studio/models" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Presenter Directory</Link> : null}
             {isCorporate ? <Link className="link" href="/studio/corporate/team-avatars" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Corporate Suite</Link> : null}
