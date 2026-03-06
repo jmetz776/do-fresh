@@ -44,3 +44,30 @@ class SuggestionFeedbackEvent(SQLModel, table=True):
     edit_distance: Optional[float] = None
     metadata_json: str = Field(default="{}")
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class SignalFeature(SQLModel, table=True):
+    __tablename__ = "signal_features"
+
+    id: str = Field(primary_key=True)
+    workspace_id: str = Field(index=True)
+    suggestion_id: str = Field(index=True)
+    trend_velocity: float = 0.0
+    freshness: float = 0.0
+    brand_relevance: float = 0.0
+    saturation_penalty: float = 0.0
+    risk_penalty: float = 0.0
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class SignalScore(SQLModel, table=True):
+    __tablename__ = "signal_scores"
+
+    id: str = Field(primary_key=True)
+    workspace_id: str = Field(index=True)
+    suggestion_id: str = Field(index=True)
+    score_version: str = Field(default='v2', index=True)
+    final_score: float = 0.0
+    confidence: float = 0.0
+    explanation_json: str = Field(default='{}')
+    created_at: datetime = Field(default_factory=datetime.utcnow)

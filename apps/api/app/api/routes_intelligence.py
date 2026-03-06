@@ -10,7 +10,13 @@ from pydantic import BaseModel
 from sqlmodel import Session, select
 
 from app.db import get_session
-from app.models.intelligence import SuggestionFeedbackEvent, TrendSuggestion, WorkspaceLearningProfile
+from app.models.intelligence import (
+    SuggestionFeedbackEvent,
+    TrendSuggestion,
+    WorkspaceLearningProfile,
+    SignalFeature,
+    SignalScore,
+)
 from app.models.mvp import MVPSource, MVPSourceItem
 from app.services.authz import actor_user_id
 
@@ -72,8 +78,37 @@ def seed_suggestion(payload: SeedSuggestionRequest, session: Session = Depends(g
         created_at=now_utc(),
     )
     session.add(s)
+
+    features, final_v2, confidence, explanation = _v2_feature_score(payload.topic, payload.whyNow, payload.trendScore, payload.brandFitScore, payload.policyRiskScore)
+    sf = SignalFeature(
+        id=str(uuid4()),
+        workspace_id=payload.workspaceId,
+        suggestion_id=s.id,
+        trend_velocity=float(features['trendVelocity']),
+        freshness=float(features['freshness']),
+        brand_relevance=float(features['brandRelevance']),
+        saturation_penalty=float(features['saturationPenalty']),
+        risk_penalty=float(features['riskPenalty']),
+        created_at=now_utc(),
+    )
+    ss = SignalScore(
+        id=str(uuid4()),
+        workspace_id=payload.workspaceId,
+        suggestion_id=s.id,
+        score_version='v2',
+        final_score=float(final_v2),
+        confidence=float(confidence),
+        explanation_json=json.dumps(explanation),
+        created_at=now_utc(),
+    )
+    session.add(sf)
+    session.add(ss)
+
+    # Use v2 score as displayed final for newly seeded suggestions.
+    s.final_score = float(final_v2)
+    session.add(s)
     session.commit()
-    return {'ok': True, 'id': s.id, 'finalScore': s.final_score}
+    return {'ok': True, 'id': s.id, 'finalScore': s.final_score, 'confidence': confidence, 'explanation': explanation}
 
 
 @router.post('/feedback')
@@ -167,6 +202,38 @@ def _score_from_source_item(title: str, body: str) -> tuple[float, float, float,
     return trend, brand, risk, why
 
 
+def _v2_feature_score(topic: str, body: str, trend: float, brand: float, risk: float) -> tuple[dict, float, float, dict]:
+    txt = f"{topic} {body}".lower()
+    velocity_markers = ['breaking', 'just', 'today', 'now', 'launch', 'released']
+    hype_markers = ['viral', 'everyone', 'top 10', 'ultimate', 'best ever']
+
+    trend_velocity = min(1.0, 0.35 + 0.12 * sum(1 for t in velocity_markers if t in txt))
+    freshness = 0.82 if any(t in txt for t in ('today', 'just', 'new', 'released')) else 0.58
+    brand_relevance = max(0.0, min(1.0, brand))
+    saturation_penalty = min(0.45, 0.07 * sum(1 for t in hype_markers if t in txt))
+    risk_penalty = max(0.0, min(1.0, risk))
+
+    # Weighted quality score v2
+    base = (0.32 * trend_velocity) + (0.24 * freshness) + (0.34 * brand_relevance) + (0.10 * max(0.0, trend))
+    final = max(0.0, min(1.0, base - (0.55 * saturation_penalty) - (0.65 * risk_penalty)))
+
+    confidence = max(0.2, min(0.98, 0.45 + 0.25 * freshness + 0.2 * brand_relevance + 0.1 * trend_velocity))
+    explanation = {
+        'whyNow': f"Velocity {trend_velocity:.2f} and freshness {freshness:.2f} indicate current audience pull.",
+        'whyBrand': f"Brand relevance scored {brand_relevance:.2f} for this workspace context.",
+        'whyChannel': 'Best used for short-form social with clear hook and CTA.',
+        'riskNote': f"Risk penalty {risk_penalty:.2f}, saturation penalty {saturation_penalty:.2f}.",
+    }
+    features = {
+        'trendVelocity': trend_velocity,
+        'freshness': freshness,
+        'brandRelevance': brand_relevance,
+        'saturationPenalty': saturation_penalty,
+        'riskPenalty': risk_penalty,
+    }
+    return features, final, confidence, explanation
+
+
 @router.post('/suggestions/import-from-source')
 def import_suggestions_from_source(payload: ImportFromSourceRequest, session: Session = Depends(get_session)):
     src = session.get(MVPSource, payload.sourceId)
@@ -210,7 +277,8 @@ def import_suggestions_from_source(payload: ImportFromSourceRequest, session: Se
             continue
 
         trend, brand, risk, why = _score_from_source_item(topic, body)
-        final = max(0.0, min(1.0, profile.trend_weight * trend + profile.brand_fit_weight * brand + profile.source_weight * (1.0 - risk)))
+        baseline = max(0.0, min(1.0, profile.trend_weight * trend + profile.brand_fit_weight * brand + profile.source_weight * (1.0 - risk)))
+        features, final_v2, confidence, explanation = _v2_feature_score(topic, body, trend, brand, risk)
 
         s = TrendSuggestion(
             id=str(uuid4()),
@@ -221,10 +289,35 @@ def import_suggestions_from_source(payload: ImportFromSourceRequest, session: Se
             trend_score=trend,
             brand_fit_score=brand,
             policy_risk_score=risk,
-            final_score=final,
+            final_score=max(0.0, min(1.0, (0.35 * baseline) + (0.65 * final_v2))),
             created_at=now_utc(),
         )
         session.add(s)
+
+        sf = SignalFeature(
+            id=str(uuid4()),
+            workspace_id=payload.workspaceId,
+            suggestion_id=s.id,
+            trend_velocity=float(features['trendVelocity']),
+            freshness=float(features['freshness']),
+            brand_relevance=float(features['brandRelevance']),
+            saturation_penalty=float(features['saturationPenalty']),
+            risk_penalty=float(features['riskPenalty']),
+            created_at=now_utc(),
+        )
+        ss = SignalScore(
+            id=str(uuid4()),
+            workspace_id=payload.workspaceId,
+            suggestion_id=s.id,
+            score_version='v2',
+            final_score=float(s.final_score),
+            confidence=float(confidence),
+            explanation_json=json.dumps(explanation),
+            created_at=now_utc(),
+        )
+        session.add(sf)
+        session.add(ss)
+
         imported += 1
         seen.add(dedupe_key)
 
@@ -248,6 +341,17 @@ def list_suggestions(
         .limit(1000)
     ).all()
 
+    score_rows = session.exec(
+        select(SignalScore)
+        .where(SignalScore.workspace_id == workspaceId)
+        .order_by(SignalScore.created_at.desc())
+        .limit(5000)
+    ).all()
+    score_map: dict[str, SignalScore] = {}
+    for sr in score_rows:
+        if sr.suggestion_id not in score_map:
+            score_map[sr.suggestion_id] = sr
+
     out = []
     seen: set[tuple[str, str]] = set()
     for r in rows:
@@ -259,6 +363,16 @@ def list_suggestions(
             continue
         seen.add(key)
 
+        sr = score_map.get(r.id)
+        explanation = {}
+        confidence = None
+        if sr and sr.explanation_json:
+            try:
+                explanation = json.loads(sr.explanation_json or '{}')
+            except Exception:
+                explanation = {}
+            confidence = sr.confidence
+
         out.append({
             'id': r.id,
             'topic': r.topic,
@@ -269,6 +383,8 @@ def list_suggestions(
             'policyRiskScore': r.policy_risk_score,
             'finalScore': r.final_score,
             'status': r.status,
+            'confidence': confidence,
+            'explanation': explanation,
         })
         if len(out) >= limit:
             break
