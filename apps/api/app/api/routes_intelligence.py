@@ -61,6 +61,13 @@ class ImportFromSourceRequest(BaseModel):
     limit: int = 100
 
 
+class NarrativeGraphRequest(BaseModel):
+    workspaceId: str
+    suggestionId: str
+    audience: str = 'general'
+    objective: str = 'engagement'
+
+
 @router.post('/suggestions/seed')
 def seed_suggestion(payload: SeedSuggestionRequest, session: Session = Depends(get_session)):
     p = _get_profile(session, payload.workspaceId)
@@ -323,6 +330,118 @@ def import_suggestions_from_source(payload: ImportFromSourceRequest, session: Se
 
     session.commit()
     return {'ok': True, 'imported': imported, 'skippedDuplicates': skippedDuplicates, 'sourceId': payload.sourceId}
+
+
+@router.post('/learn/recompute-weights')
+def recompute_learning_weights(
+    workspaceId: str,
+    session: Session = Depends(get_session),
+):
+    p = _get_profile(session, workspaceId)
+
+    rows = session.exec(
+        select(SuggestionFeedbackEvent)
+        .where(SuggestionFeedbackEvent.workspace_id == workspaceId)
+        .order_by(SuggestionFeedbackEvent.created_at.desc())
+        .limit(400)
+    ).all()
+
+    accepts = sum(1 for r in rows if r.event_type == 'accepted')
+    rejects = sum(1 for r in rows if r.event_type == 'rejected')
+    published = sum(1 for r in rows if r.event_type == 'published')
+
+    # lightweight adaptive rules (v1)
+    if accepts + rejects > 0:
+        accept_rate = accepts / max(1, accepts + rejects)
+        if accept_rate >= 0.65:
+            p.brand_fit_weight = min(0.75, p.brand_fit_weight + 0.03)
+            p.trend_weight = min(0.7, p.trend_weight + 0.01)
+        elif accept_rate <= 0.35:
+            p.brand_fit_weight = max(0.2, p.brand_fit_weight - 0.03)
+            p.reject_penalty = min(0.45, p.reject_penalty + 0.03)
+
+    if published >= 5:
+        p.source_weight = min(0.45, p.source_weight + 0.02)
+
+    total = p.source_weight + p.trend_weight + p.brand_fit_weight
+    p.source_weight /= total
+    p.trend_weight /= total
+    p.brand_fit_weight /= total
+    p.updated_at = now_utc()
+    session.add(p)
+    session.commit()
+
+    return {
+        'ok': True,
+        'workspaceId': workspaceId,
+        'profile': {
+            'sourceWeight': p.source_weight,
+            'trendWeight': p.trend_weight,
+            'brandFitWeight': p.brand_fit_weight,
+            'rejectPenalty': p.reject_penalty,
+        },
+        'inputs': {'accepts': accepts, 'rejects': rejects, 'published': published},
+    }
+
+
+@router.post('/narrative/graph')
+def generate_narrative_graph(payload: NarrativeGraphRequest, session: Session = Depends(get_session)):
+    s = session.get(TrendSuggestion, payload.suggestionId)
+    if not s or s.workspace_id != payload.workspaceId:
+        raise HTTPException(status_code=404, detail='suggestion not found')
+
+    topic = s.topic
+    audience = (payload.audience or 'general').strip()
+    objective = (payload.objective or 'engagement').strip().lower()
+
+    base_cta = {
+        'engagement': 'Share your take in comments',
+        'clicks': 'Read the full breakdown',
+        'leads': 'Book a strategy call',
+    }.get(objective, 'Learn more')
+
+    branches = [
+        {
+            'angle': 'Quick take',
+            'hook': f"What most people miss about {topic}",
+            'body': f"Short insight for {audience}: why this matters now and what to do next.",
+            'cta': base_cta,
+        },
+        {
+            'angle': 'Contrarian',
+            'hook': f"Everyone is saying X about {topic} — here is the opposite case",
+            'body': 'Use data-backed counterpoint and practical takeaway.',
+            'cta': base_cta,
+        },
+        {
+            'angle': 'Checklist',
+            'hook': f"{topic}: 5-step execution checklist",
+            'body': 'Actionable list that can be implemented this week.',
+            'cta': base_cta,
+        },
+        {
+            'angle': 'Case-style',
+            'hook': f"How one team turned {topic} into measurable outcomes",
+            'body': 'Mini case format: problem, move, result, lesson.',
+            'cta': base_cta,
+        },
+        {
+            'angle': 'FAQ',
+            'hook': f"Top questions we keep hearing about {topic}",
+            'body': 'Answer objections and reduce audience uncertainty.',
+            'cta': base_cta,
+        },
+    ]
+
+    return {
+        'ok': True,
+        'workspaceId': payload.workspaceId,
+        'suggestionId': payload.suggestionId,
+        'topic': topic,
+        'audience': audience,
+        'objective': objective,
+        'branches': branches,
+    }
 
 
 @router.get('/suggestions')
