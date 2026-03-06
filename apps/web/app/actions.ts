@@ -633,6 +633,46 @@ export async function refreshQueuedVideoRendersAction(formData: FormData) {
   redirect('/ops?video_notice=queued_jobs_refreshed');
 }
 
+export async function seedAnalyticsAction(formData: FormData) {
+  const workspaceId = String(formData.get('workspace_id') || DEFAULT_WORKSPACE).trim();
+
+  const contentRes = await fetch(`${API_BASE}/content?workspaceId=${encodeURIComponent(workspaceId)}`, {
+    cache: 'no-store',
+    headers: actorHeaders(),
+  });
+  const items = (await contentRes.json().catch(() => [])) as Array<any>;
+  const target = items.find((x: any) => x?.id) || null;
+  if (!target) {
+    redirect(`/studio/analytics?error=${encodeURIComponent('No content found. Generate one draft first.')}`);
+  }
+
+  const contentId = String(target.id || '').trim();
+  const channel = String(target.channel || 'x').toLowerCase();
+  const seedEvents = [
+    { eventType: 'impression', value: 250 },
+    { eventType: 'engagement', value: 42 },
+    { eventType: 'click', value: 19 },
+    { eventType: 'lead', value: 4 },
+    { eventType: 'publish_succeeded', value: 1 },
+  ];
+
+  for (const e of seedEvents) {
+    await post('/analytics/events', {
+      workspaceId,
+      contentItemId: contentId,
+      channel,
+      eventType: e.eventType,
+      value: e.value,
+      metadata: { seeded: true },
+    });
+  }
+
+  await post(`/analytics/rollups/rebuild?workspaceId=${encodeURIComponent(workspaceId)}&days=30`);
+
+  revalidatePath('/studio/analytics');
+  redirect('/studio/analytics?notice=Seeded test analytics for latest content item');
+}
+
 export async function createAvatarVideoQuickAction(formData: FormData) {
   const workspaceId = String(formData.get('workspace_id') || DEFAULT_WORKSPACE).trim();
   const scriptText = String(formData.get('script_text') || '').trim();

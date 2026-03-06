@@ -41,6 +41,7 @@ try:
 except Exception:  # pragma: no cover - startup compatibility fallback
     MVPGenerationCostEvent = None  # type: ignore
 from app.models.auth import User, Workspace, WorkspaceMembership, WorkspaceSetting
+from app.models.analytics import ContentPerformanceEvent, ContentDailyMetric
 from app.services.publish_provider import publish_content
 from app.services.authz import actor_user_id, actor_user_email, require_workspace_role, require_corporate_email_domain
 from app.services.model_preferences import get_workspace_prefs
@@ -148,6 +149,62 @@ def now_utc() -> datetime:
 
 def now_iso() -> str:
     return now_utc().isoformat()
+
+
+def _emit_publish_analytics_event(
+    session: Session,
+    workspace_id: str,
+    content_item_id: str,
+    schedule_id: str,
+    channel: str,
+    event_type: str,
+    value: float = 1.0,
+    metadata: Optional[dict[str, Any]] = None,
+) -> None:
+    try:
+        evt = ContentPerformanceEvent(
+            id=f'cpe_{uuid4().hex[:14]}',
+            workspace_id=workspace_id,
+            content_item_id=content_item_id,
+            schedule_id=schedule_id,
+            channel=(channel or 'x').strip().lower(),
+            event_type=event_type,
+            value=float(value or 1.0),
+            metadata_json=json.dumps(metadata or {}),
+            occurred_at=now_utc(),
+            created_at=now_utc(),
+        )
+        session.add(evt)
+
+        metric_date = now_utc().date()
+        day_row = session.exec(
+            select(ContentDailyMetric).where(
+                ContentDailyMetric.workspace_id == workspace_id,
+                ContentDailyMetric.content_item_id == content_item_id,
+                ContentDailyMetric.metric_date == metric_date,
+                ContentDailyMetric.channel == (channel or 'x').strip().lower(),
+            )
+        ).first()
+        if not day_row:
+            day_row = ContentDailyMetric(
+                id=f'cdm_{uuid4().hex[:14]}',
+                workspace_id=workspace_id,
+                content_item_id=content_item_id,
+                metric_date=metric_date,
+                channel=(channel or 'x').strip().lower(),
+                updated_at=now_utc(),
+            )
+
+        inc = int(max(0, round(value or 1)))
+        if event_type == 'publish_succeeded':
+            day_row.publish_succeeded += inc
+        elif event_type == 'publish_failed':
+            day_row.publish_failed += inc
+        day_row.updated_at = now_utc()
+        session.add(day_row)
+    except Exception:
+        # Analytics should never block publish flow.
+        return
 
 
 def _voice_dna(workspace_id: str, style: str) -> dict[str, float | str]:
@@ -1280,6 +1337,15 @@ def _run_publish_for_schedules(schedules_to_process: list[MVPSchedule], session:
             sched.status = "failed"
             content.status = "failed"
             content.last_error = f'publish authorization missing for user {actor_user_id} on channel {content.channel}'
+            _emit_publish_analytics_event(
+                session=session,
+                workspace_id=content.workspace_id,
+                content_item_id=content.id,
+                schedule_id=sched.id,
+                channel=content.channel,
+                event_type='publish_failed',
+                metadata={'reason': 'authorization_missing'},
+            )
             sched.updated_at = now_utc()
             content.updated_at = now_utc()
             session.add(sched)
@@ -1340,11 +1406,29 @@ def _run_publish_for_schedules(schedules_to_process: list[MVPSchedule], session:
         if ok:
             sched.status = "published"
             content.status = "published"
+            _emit_publish_analytics_event(
+                session=session,
+                workspace_id=content.workspace_id,
+                content_item_id=content.id,
+                schedule_id=sched.id,
+                channel=content.channel,
+                event_type='publish_succeeded',
+                metadata={'providerPostId': content.provider_post_id or ''},
+            )
             succeeded += 1
         else:
             sched.status = "failed"
             content.status = "failed"
             content.last_error = last_error
+            _emit_publish_analytics_event(
+                session=session,
+                workspace_id=content.workspace_id,
+                content_item_id=content.id,
+                schedule_id=sched.id,
+                channel=content.channel,
+                event_type='publish_failed',
+                metadata={'reason': last_error or 'publish_failure'},
+            )
             failed += 1
 
         sched.updated_at = now_utc()

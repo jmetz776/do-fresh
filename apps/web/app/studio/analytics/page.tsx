@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { cookies } from 'next/headers';
+import { seedAnalyticsAction } from '../../actions';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000';
 const FALLBACK_WORKSPACE_ID = process.env.NEXT_PUBLIC_WORKSPACE_ID || 'default';
@@ -10,7 +11,7 @@ async function getJson(path: string, headers?: Record<string, string>) {
   return res.json();
 }
 
-export default async function StudioAnalyticsPage() {
+export default async function StudioAnalyticsPage({ searchParams }: { searchParams?: { notice?: string; error?: string } }) {
   const c = cookies();
   const workspaceId = c.get('do_workspace_id')?.value || FALLBACK_WORKSPACE_ID;
   const token = c.get('do_api_token')?.value || '';
@@ -44,6 +45,18 @@ export default async function StudioAnalyticsPage() {
             <Link href="/help" style={{ color: '#cce5ff' }}>FAQ / Help</Link>
           </div>
         </div>
+
+        {searchParams?.notice ? <section style={{ ...card, borderColor: 'rgba(34,197,94,.6)' }}>✅ {decodeURIComponent(searchParams.notice)}</section> : null}
+        {searchParams?.error ? <section style={{ ...card, borderColor: 'rgba(251,113,133,.6)' }}>⚠️ {decodeURIComponent(searchParams.error)}</section> : null}
+
+        <section style={card}>
+          <h2 style={{ marginTop: 0 }}>Quick test</h2>
+          <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>Seed sample analytics events for the latest content item.</p>
+          <form action={seedAnalyticsAction}>
+            <input type="hidden" name="workspace_id" value={workspaceId} />
+            <button type="submit" style={{ border: '1px solid rgba(34,197,94,.45)', borderRadius: 10, padding: '9px 12px', background: 'rgba(34,197,94,.10)', color: '#dfffea', fontWeight: 700 }}>Seed Test Analytics</button>
+          </form>
+        </section>
 
         <section style={{ display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gap: 10, marginBottom: 10 }}>
           <Metric title="Impressions (30d)" value={Number(analyticsSummary?.totals?.impressions || 0)} />
