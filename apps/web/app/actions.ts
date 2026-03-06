@@ -136,6 +136,9 @@ export async function generateContentAction(formData: FormData) {
 export async function buildUnifiedQueueAction(formData: FormData) {
   const workspaceId = String(formData.get('workspace_id') || DEFAULT_WORKSPACE).trim();
   const idea = String(formData.get('idea') || '').trim();
+  const suggestionId = String(formData.get('suggestion_id') || '').trim();
+  const audience = String(formData.get('audience') || 'general').trim();
+  const objective = String(formData.get('objective') || 'engagement').trim();
   const platform = String(formData.get('platform') || 'x').trim().toLowerCase();
   const queueCap = Math.max(3, Math.min(60, Number(formData.get('queue_cap') || 20)));
   const timezone = String(formData.get('timezone') || 'America/New_York').trim();
@@ -183,7 +186,26 @@ export async function buildUnifiedQueueAction(formData: FormData) {
 
   const oneLine = idea.replace(/\s+/g, ' ').trim();
   const escCsv = (v: string) => `"${v.replace(/"/g, '""')}"`;
-  const rawPayload = `title,body\n${escCsv(oneLine.slice(0, 80) || 'Unified queue idea')},${escCsv(oneLine)}`;
+
+  // If a suggestion is selected, generate narrative branches and seed multiple queue rows.
+  let csvRows: Array<{ title: string; body: string }> = [{ title: oneLine.slice(0, 80) || 'Unified queue idea', body: oneLine }];
+  if (suggestionId) {
+    const graph = await post('/intelligence/narrative/graph', {
+      workspaceId,
+      suggestionId,
+      audience,
+      objective,
+    });
+    const branches = ((graph as any)?.branches || []) as Array<any>;
+    if (branches.length > 0) {
+      csvRows = branches.slice(0, Math.max(1, textCount)).map((b: any, idx: number) => ({
+        title: String(b?.hook || `Narrative branch ${idx + 1}`).slice(0, 80),
+        body: `${String(b?.hook || '').trim()} | ${String(b?.body || '').trim()} | CTA: ${String(b?.cta || '').trim()}`.trim(),
+      }));
+    }
+  }
+
+  const rawPayload = `title,body\n${csvRows.map((r) => `${escCsv(r.title)},${escCsv(r.body)}`).join('\n')}`;
 
   const src = await post('/sources', { workspaceId, type: 'csv', rawPayload });
   const sourceId = String((src as any)?.id || '').trim();
@@ -193,25 +215,36 @@ export async function buildUnifiedQueueAction(formData: FormData) {
 
   await post(`/sources/${encodeURIComponent(sourceId)}/normalize`);
 
-  let sourceItemId = '';
+  let sourceItemIds: string[] = [];
   try {
     const itemsRes = await fetch(`${API_BASE}/sources/${encodeURIComponent(sourceId)}/items`, {
       cache: 'no-store',
       headers: actorHeaders(),
     });
     const items = (await itemsRes.json().catch(() => [])) as Array<any>;
-    sourceItemId = String((items?.[0] as any)?.id || '').trim();
+    sourceItemIds = items.map((x: any) => String(x?.id || '').trim()).filter(Boolean);
   } catch {}
 
-  if (!sourceItemId) {
+  if (sourceItemIds.length === 0) {
     redirect('/studio/queue?error=queue_source_item_missing');
   }
 
   const channels = [platform || 'x'];
-  const gen = await post('/content/generate', { workspaceId, sourceItemId, channels, variantCount: textCount });
-  if ((gen as any)?.ok === false) {
-    const detail = String((gen as any)?.detail || 'generate_failed').slice(0, 140);
-    redirect(`/studio/queue?error=${encodeURIComponent(detail)}`);
+  if (sourceItemIds.length > 1) {
+    // Narrative mode: generate one draft per source branch (capped by textCount)
+    for (const sid of sourceItemIds.slice(0, Math.max(1, textCount))) {
+      const genOne = await post('/content/generate', { workspaceId, sourceItemId: sid, channels, variantCount: 1 });
+      if ((genOne as any)?.ok === false) {
+        const detail = String((genOne as any)?.detail || 'generate_failed').slice(0, 140);
+        redirect(`/studio/queue?error=${encodeURIComponent(detail)}`);
+      }
+    }
+  } else {
+    const gen = await post('/content/generate', { workspaceId, sourceItemId: sourceItemIds[0], channels, variantCount: textCount });
+    if ((gen as any)?.ok === false) {
+      const detail = String((gen as any)?.detail || 'generate_failed').slice(0, 140);
+      redirect(`/studio/queue?error=${encodeURIComponent(detail)}`);
+    }
   }
 
   revalidatePath('/studio');

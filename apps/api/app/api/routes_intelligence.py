@@ -18,6 +18,7 @@ from app.models.intelligence import (
     SignalScore,
 )
 from app.models.mvp import MVPSource, MVPSourceItem
+from app.models.analytics import ContentDailyMetric
 from app.services.authz import actor_user_id
 
 router = APIRouter(prefix='/intelligence', tags=['intelligence'])
@@ -350,7 +351,18 @@ def recompute_learning_weights(
     rejects = sum(1 for r in rows if r.event_type == 'rejected')
     published = sum(1 for r in rows if r.event_type == 'published')
 
-    # lightweight adaptive rules (v1)
+    # Analytics-informed outcome signals (click/lead weighted)
+    metric_rows = session.exec(
+        select(ContentDailyMetric)
+        .where(ContentDailyMetric.workspace_id == workspaceId)
+        .limit(1000)
+    ).all()
+    impressions = sum(int(m.impressions or 0) for m in metric_rows)
+    clicks = sum(int(m.clicks or 0) for m in metric_rows)
+    leads = sum(int(m.leads or 0) for m in metric_rows)
+    ctr = (clicks / impressions) if impressions > 0 else 0.0
+
+    # lightweight adaptive rules (v2)
     if accepts + rejects > 0:
         accept_rate = accepts / max(1, accepts + rejects)
         if accept_rate >= 0.65:
@@ -360,8 +372,18 @@ def recompute_learning_weights(
             p.brand_fit_weight = max(0.2, p.brand_fit_weight - 0.03)
             p.reject_penalty = min(0.45, p.reject_penalty + 0.03)
 
+    # Outcome-aware adjustments
+    if ctr >= 0.03:
+        p.trend_weight = min(0.72, p.trend_weight + 0.02)
+    elif ctr > 0 and ctr <= 0.01:
+        p.trend_weight = max(0.18, p.trend_weight - 0.02)
+        p.brand_fit_weight = min(0.78, p.brand_fit_weight + 0.01)
+
+    if leads >= 10:
+        p.source_weight = min(0.48, p.source_weight + 0.02)
+
     if published >= 5:
-        p.source_weight = min(0.45, p.source_weight + 0.02)
+        p.source_weight = min(0.5, p.source_weight + 0.01)
 
     total = p.source_weight + p.trend_weight + p.brand_fit_weight
     p.source_weight /= total
@@ -380,7 +402,15 @@ def recompute_learning_weights(
             'brandFitWeight': p.brand_fit_weight,
             'rejectPenalty': p.reject_penalty,
         },
-        'inputs': {'accepts': accepts, 'rejects': rejects, 'published': published},
+        'inputs': {
+            'accepts': accepts,
+            'rejects': rejects,
+            'published': published,
+            'impressions': impressions,
+            'clicks': clicks,
+            'leads': leads,
+            'ctr': ctr,
+        },
     }
 
 

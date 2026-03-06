@@ -18,8 +18,9 @@ export default async function UnifiedQueuePage({ searchParams }: { searchParams?
   const token = c.get('do_api_token')?.value || '';
   const actorHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
-  const [content] = await Promise.all([
+  const [content, suggestions] = await Promise.all([
     getJson(`/content?workspaceId=${encodeURIComponent(workspaceId)}`, actorHeaders),
+    getJson(`/intelligence/suggestions?workspaceId=${encodeURIComponent(workspaceId)}&limit=20&includeBelowThreshold=true`, actorHeaders),
   ]);
 
   const drafts = (Array.isArray(content) ? content : []).filter((r: any) => r.status === 'draft').slice(0, 60);
@@ -62,6 +63,30 @@ export default async function UnifiedQueuePage({ searchParams }: { searchParams?
                 <label style={label}>Queue cap (hard limit)</label>
                 <input name="queue_cap" type="number" min={3} max={60} defaultValue={20} style={input} />
               </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 8 }}>
+              <div style={{ gridColumn: 'span 2' }}>
+                <label style={label}>Trend signal (optional, unlocks narrative branches)</label>
+                <select name="suggestion_id" style={input} defaultValue="">
+                  <option value="">None (use raw idea)</option>
+                  {(Array.isArray(suggestions) ? suggestions : []).map((s: any) => (
+                    <option key={s.id} value={s.id}>{s.topic} · score {Number(s.finalScore || 0).toFixed(2)}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={label}>Objective</label>
+                <select name="objective" style={input} defaultValue="engagement">
+                  <option value="engagement">Engagement</option>
+                  <option value="clicks">Clicks</option>
+                  <option value="leads">Leads</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label style={label}>Audience context (optional)</label>
+              <input name="audience" defaultValue="general" style={input} />
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 8 }}>

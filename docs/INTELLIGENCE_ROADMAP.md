@@ -11,6 +11,8 @@ Turn trend ingestion into a proprietary decision engine that outputs high-confid
 - [x] Data model scaffolding: `signal_features`, `signal_scores`
 - [x] Adaptive weight recompute endpoint: `POST /intelligence/learn/recompute-weights`
 - [x] Narrative graph endpoint: `POST /intelligence/narrative/graph`
+- [x] Unified Queue integration with optional suggestion-driven narrative branches
+- [x] Click/lead-aware weight recompute inputs from analytics daily metrics
 
 ## Phase 2
 - [ ] Performance-linked learning from analytics outcomes (click/lead weighted)
