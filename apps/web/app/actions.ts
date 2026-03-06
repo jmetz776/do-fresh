@@ -296,9 +296,22 @@ export async function apifyImportRunAction(formData: FormData) {
   const res = await post(`/integrations/apify/import/${encodeURIComponent(runId)}`, { workspaceId, limit });
   revalidatePath('/ops');
   cookies().set('do_last_apify_run_id', runId, { httpOnly: true, sameSite: 'lax', path: '/', secure: process.env.NODE_ENV === 'production' });
+
+  if ((res as any)?.ok === false) {
+    const detail = String((res as any)?.detail || 'Apify import failed').slice(0, 160);
+    redirect(`/ops?notice=${encodeURIComponent(`Apify import failed: ${detail}`)}`);
+  }
+
   const sourceId = String((res as any)?.sourceId || '').trim();
-  if (sourceId) redirect(`/ops?apifyRunId=${encodeURIComponent(runId)}&sourceId=${encodeURIComponent(sourceId)}`);
-  redirect(`/ops?apifyRunId=${encodeURIComponent(runId)}`);
+  if (!sourceId) {
+    redirect(`/ops?apifyRunId=${encodeURIComponent(runId)}&notice=${encodeURIComponent('Apify run imported but no sourceId returned')}`);
+  }
+
+  const sug = await post('/intelligence/suggestions/import-from-source', { workspaceId, sourceId, limit });
+  revalidatePath('/ops');
+  const imported = Number((sug as any)?.imported || 0);
+  const skipped = Number((sug as any)?.skippedDuplicates || 0);
+  redirect(`/ops?apifyRunId=${encodeURIComponent(runId)}&sourceId=${encodeURIComponent(sourceId)}&notice=${encodeURIComponent(`Imported source and ${imported} suggestions (${skipped} duplicates skipped)`)}`);
 }
 
 export async function importTrendSuggestionsAction(formData: FormData) {
