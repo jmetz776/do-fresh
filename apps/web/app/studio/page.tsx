@@ -177,7 +177,7 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
       <div className="wrap">
         <div className="top">
           <div>
-            <h1>DemandOrchestrator Studio</h1>
+            <h1>Demand Orchestrator Studio</h1>
             <p className="sub">From idea to scheduled X post in under 3 minutes.</p>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
