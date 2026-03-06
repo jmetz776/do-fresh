@@ -32,7 +32,7 @@ def init_db() -> None:
     from app.models import core  # noqa: F401
     from app.models import mvp  # noqa: F401
 
-    for optional_mod in ("consent", "auth", "intelligence", "avatar_marketplace", "analytics"):
+    for optional_mod in ("consent", "auth", "intelligence", "avatar_marketplace", "analytics", "provider_health"):
         try:
             __import__(f"app.models.{optional_mod}")
         except Exception:

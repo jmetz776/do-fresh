@@ -40,13 +40,14 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
   );
   const isOperator = operatorAllowlist.has(userEmail);
 
-  const [sources, content, accountsResp, meResp, trendSuggestions, heygenHealth] = await Promise.all([
+  const [sources, content, accountsResp, meResp, trendSuggestions, heygenHealth, providerHealth] = await Promise.all([
     getJson(`/sources?workspaceId=${WORKSPACE_ID}`, actorHeaders),
     getJson(`/content?workspaceId=${WORKSPACE_ID}`, actorHeaders),
     getJson(`/integrations/accounts?workspaceId=${WORKSPACE_ID}`, actorHeaders),
     getJson(`/auth/me`, actorHeaders),
     getJson(`/intelligence/suggestions?workspaceId=${WORKSPACE_ID}&limit=6`, actorHeaders),
     getJson(`/integrations/heygen/health`, actorHeaders),
+    getJson(`/system/provider-health`, actorHeaders),
   ]);
 
   const latestSource = Array.isArray(sources) && sources.length > 0 ? sources[0] : null;
@@ -184,6 +185,20 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
             <button type="submit">Logout</button>
           </form>
         </div>
+
+        {(providerHealth?.maintenance?.enabled || (providerHealth?.items || []).some((x: any) => x.status !== 'healthy')) ? (
+          <section className="card" style={{ marginBottom: 10, borderColor: 'rgba(251,191,36,.65)', background: 'linear-gradient(180deg, rgba(120,53,15,.25), rgba(22,34,61,.78))' }}>
+            <h2 style={{ marginBottom: 6 }}>Service Notice</h2>
+            <p className="tiny" style={{ marginTop: 0 }}>
+              {providerHealth?.maintenance?.enabled
+                ? (providerHealth?.maintenance?.message || 'Scheduled maintenance in progress. Some features may be delayed.')
+                : 'Some integrations are degraded. Core studio remains available while we auto-recover.'}
+            </p>
+            <div className="tiny">
+              {((providerHealth?.items || []) as any[]).map((x: any) => `${x.provider}: ${x.status}`).join(' · ')}
+            </div>
+          </section>
+        ) : null}
 
         <section className="card" style={{ marginBottom: 10, padding: 14 }}>
           <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>

@@ -15,6 +15,7 @@ from app.api.routes_auth import router as auth_router
 from app.api.routes_intelligence import router as intelligence_router
 from app.api.routes_avatar_marketplace import router as avatar_marketplace_router
 from app.api.routes_analytics import router as analytics_router
+from app.api.routes_status import router as status_router
 
 try:
     from app.api.routes_consent import router as consent_router
@@ -56,3 +57,4 @@ app.include_router(auth_router)
 app.include_router(intelligence_router)
 app.include_router(avatar_marketplace_router)
 app.include_router(analytics_router)
+app.include_router(status_router)
