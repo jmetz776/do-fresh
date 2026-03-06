@@ -62,6 +62,7 @@ function isHttpUrl(v?: string) {
 export default async function OpsPage({ searchParams }: { searchParams?: { apifyRunId?: string; sourceId?: string; invite?: string; video_notice?: string; video_error?: string } }) {
   const c = cookies();
   const workspaceId = c.get('do_workspace_id')?.value || FALLBACK_WORKSPACE_ID;
+  const lastApifyRunId = searchParams?.apifyRunId || c.get('do_last_apify_run_id')?.value || '';
   const userEmail = (c.get('do_user_email')?.value || '').toLowerCase();
   const operatorAllowlist = new Set(
     String(process.env.AUTH_SUPERUSER_EMAILS || process.env.WEB_SUPERUSER_EMAILS || process.env.AUTH_OWNER_EMAILS || '')
@@ -614,10 +615,13 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
               </form>
               <form action={apifyImportRunAction} className="row" style={{ marginTop: 10 }}>
                 <input type="hidden" name="workspace_id" value={workspaceId} />
-                <input name="run_id" placeholder="Run ID to import" required style={{ minWidth: 220 }} />
+                <input name="run_id" placeholder="Run ID to import" defaultValue={lastApifyRunId} required style={{ minWidth: 220 }} />
                 <input name="limit" defaultValue="100" type="number" min={1} max={1000} style={{ maxWidth: 90 }} />
                 <button type="submit">Import Run → Sources</button>
               </form>
+              <div className="tiny" style={{ marginTop: 6 }}>
+                Last run ID is remembered automatically for this operator session.
+              </div>
             </section>
 
             <section className="card">

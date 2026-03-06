@@ -280,6 +280,9 @@ export async function apifyRunAction(formData: FormData) {
   const res = await post('/integrations/apify/run', { actorId, input });
   revalidatePath('/ops');
   const runId = String((res as any)?.runId || '').trim();
+  if (runId) {
+    cookies().set('do_last_apify_run_id', runId, { httpOnly: true, sameSite: 'lax', path: '/', secure: process.env.NODE_ENV === 'production' });
+  }
   if (runId) redirect(`/ops?apifyRunId=${encodeURIComponent(runId)}`);
   redirect('/ops?apifyRunId=unknown');
 }
@@ -292,6 +295,7 @@ export async function apifyImportRunAction(formData: FormData) {
 
   const res = await post(`/integrations/apify/import/${encodeURIComponent(runId)}`, { workspaceId, limit });
   revalidatePath('/ops');
+  cookies().set('do_last_apify_run_id', runId, { httpOnly: true, sameSite: 'lax', path: '/', secure: process.env.NODE_ENV === 'production' });
   const sourceId = String((res as any)?.sourceId || '').trim();
   if (sourceId) redirect(`/ops?apifyRunId=${encodeURIComponent(runId)}&sourceId=${encodeURIComponent(sourceId)}`);
   redirect(`/ops?apifyRunId=${encodeURIComponent(runId)}`);
