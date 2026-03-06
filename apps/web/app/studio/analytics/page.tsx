@@ -16,11 +16,12 @@ export default async function StudioAnalyticsPage() {
   const token = c.get('do_api_token')?.value || '';
   const actorHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
-  const [dashboard, content, schedules, publishJobs] = await Promise.all([
+  const [dashboard, content, schedules, publishJobs, analyticsSummary] = await Promise.all([
     getJson(`/dashboard?workspaceId=${encodeURIComponent(workspaceId)}`, actorHeaders),
     getJson(`/content?workspaceId=${encodeURIComponent(workspaceId)}`, actorHeaders),
     getJson(`/schedules?workspaceId=${encodeURIComponent(workspaceId)}`, actorHeaders),
     getJson(`/publish/jobs?workspaceId=${encodeURIComponent(workspaceId)}`, actorHeaders),
+    getJson(`/analytics/summary?workspaceId=${encodeURIComponent(workspaceId)}&days=30`, actorHeaders),
   ]);
 
   const items = Array.isArray(content) ? content : [];
@@ -45,25 +46,30 @@ export default async function StudioAnalyticsPage() {
         </div>
 
         <section style={{ display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gap: 10, marginBottom: 10 }}>
-          <Metric title="Drafts" value={drafts} />
-          <Metric title="Approved" value={approved} />
-          <Metric title="Scheduled" value={scheduled} />
-          <Metric title="Publish Success" value={successJobs} />
+          <Metric title="Impressions (30d)" value={Number(analyticsSummary?.totals?.impressions || 0)} />
+          <Metric title="Engagement Rate %" value={Number(analyticsSummary?.engagementRatePct || 0)} />
+          <Metric title="Clicks (30d)" value={Number(analyticsSummary?.totals?.clicks || 0)} />
+          <Metric title="Leads (30d)" value={Number(analyticsSummary?.totals?.leads || 0)} />
         </section>
 
         <section style={card}>
           <h2 style={{ marginTop: 0 }}>What’s working</h2>
           <div style={{ color: '#9fb2d6', fontSize: 12, marginBottom: 8 }}>Top approved items (latest first)</div>
-          {items.filter((x: any) => x.status === 'approved').slice(0, 5).length === 0 ? (
-            <div style={{ color: '#9fb2d6' }}>No approved items yet.</div>
+          {(analyticsSummary?.topContent || []).length === 0 ? (
+            <div style={{ color: '#9fb2d6' }}>No ranked content yet. Analytics will populate as events are ingested.</div>
           ) : (
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 8 }}>
-              {items.filter((x: any) => x.status === 'approved').slice(0, 5).map((x: any) => (
-                <li key={x.id} style={{ border: '1px solid rgba(148,163,184,.24)', borderRadius: 10, padding: 10, background: 'rgba(2,6,23,.35)' }}>
-                  <div style={{ fontWeight: 700 }}>{x.title || x.hook || 'Untitled'}</div>
-                  <div style={{ fontSize: 12, color: '#9fb2d6', marginTop: 4 }}>{x.channel || 'channel'} · {x.status}</div>
-                </li>
-              ))}
+              {(analyticsSummary?.topContent || []).map((x: any) => {
+                const match = items.find((c: any) => c.id === x.contentItemId);
+                return (
+                  <li key={x.contentItemId} style={{ border: '1px solid rgba(148,163,184,.24)', borderRadius: 10, padding: 10, background: 'rgba(2,6,23,.35)' }}>
+                    <div style={{ fontWeight: 700 }}>{match?.title || match?.hook || x.contentItemId}</div>
+                    <div style={{ fontSize: 12, color: '#9fb2d6', marginTop: 4 }}>
+                      {(match?.channel || 'channel')} · impressions {x.impressions || 0} · engagements {x.engagements || 0} · clicks {x.clicks || 0} · leads {x.leads || 0}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </section>
