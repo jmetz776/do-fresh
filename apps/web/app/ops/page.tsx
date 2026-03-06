@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { cookies } from 'next/headers';
 import {
   approveContentAction,
   createSourceAction,
@@ -31,7 +32,7 @@ import {
 } from '../actions';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000';
-const WORKSPACE_ID = process.env.NEXT_PUBLIC_WORKSPACE_ID || 'default';
+const FALLBACK_WORKSPACE_ID = process.env.NEXT_PUBLIC_WORKSPACE_ID || 'default';
 
 async function getJson(path: string) {
   const res = await fetch(`${API_BASE}${path}`, { cache: 'no-store' });
@@ -58,23 +59,24 @@ function isHttpUrl(v?: string) {
 }
 
 export default async function OpsPage({ searchParams }: { searchParams?: { apifyRunId?: string; sourceId?: string; invite?: string; video_notice?: string; video_error?: string } }) {
+  const workspaceId = cookies().get('do_workspace_id')?.value || FALLBACK_WORKSPACE_ID;
   const [dashboard, sources, content, schedules, failedPublishes, publishJobs, apifyHealth, heygenHealth, trendSuggestions, xDrafts, models, modelPrefs, costsSummary, voiceProfiles, voiceRenders, videoRenders, backgroundTemplates] = await Promise.all([
-    getJson(`/dashboard?workspaceId=${WORKSPACE_ID}`),
-    getJson(`/sources?workspaceId=${WORKSPACE_ID}`),
-    getJson(`/content?workspaceId=${WORKSPACE_ID}`),
-    getJson(`/schedules?workspaceId=${WORKSPACE_ID}`),
-    getJson(`/publish/failed?workspaceId=${WORKSPACE_ID}`),
-    getJson(`/publish/jobs?workspaceId=${WORKSPACE_ID}`),
+    getJson(`/dashboard?workspaceId=${workspaceId}`),
+    getJson(`/sources?workspaceId=${workspaceId}`),
+    getJson(`/content?workspaceId=${workspaceId}`),
+    getJson(`/schedules?workspaceId=${workspaceId}`),
+    getJson(`/publish/failed?workspaceId=${workspaceId}`),
+    getJson(`/publish/jobs?workspaceId=${workspaceId}`),
     getJson('/integrations/apify/health'),
     getJson('/integrations/heygen/health'),
-    getJson(`/intelligence/suggestions?workspaceId=${encodeURIComponent(WORKSPACE_ID)}&limit=20`),
+    getJson(`/intelligence/suggestions?workspaceId=${encodeURIComponent(workspaceId)}&limit=20`),
     getJson('/integrations/x/drafts?status=draft&limit=12'),
     getJson('/integrations/models'),
-    getJson(`/integrations/models/preferences?workspaceId=${encodeURIComponent(WORKSPACE_ID)}`),
-    getJson(`/costs/summary?workspaceId=${encodeURIComponent(WORKSPACE_ID)}&limit=1000`),
-    getJson(`/v1/consent/voice/profiles?workspaceId=${encodeURIComponent(WORKSPACE_ID)}&limit=50`),
-    getJson(`/v1/consent/voice/renders?workspaceId=${encodeURIComponent(WORKSPACE_ID)}&limit=12`),
-    getJson(`/v1/consent/video/renders?workspaceId=${encodeURIComponent(WORKSPACE_ID)}&limit=12`),
+    getJson(`/integrations/models/preferences?workspaceId=${encodeURIComponent(workspaceId)}`),
+    getJson(`/costs/summary?workspaceId=${encodeURIComponent(workspaceId)}&limit=1000`),
+    getJson(`/v1/consent/voice/profiles?workspaceId=${encodeURIComponent(workspaceId)}&limit=50`),
+    getJson(`/v1/consent/voice/renders?workspaceId=${encodeURIComponent(workspaceId)}&limit=12`),
+    getJson(`/v1/consent/video/renders?workspaceId=${encodeURIComponent(workspaceId)}&limit=12`),
     getJson('/video/background-templates'),
   ]);
 
@@ -192,7 +194,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
             <p>Seamless content workflow, with audit + recovery built in.</p>
           </div>
           <div className="row">
-            <span className="badge"><span className="pulse" /> Workspace: {WORKSPACE_ID}</span>
+            <span className="badge"><span className="pulse" /> Workspace: {workspaceId}</span>
             <Link className="link" href="/auth/superuser-bypass">Force Enter Studio ↗</Link>
             <Link className="link" href="/waitlist">Waitlist ↗</Link>
           </div>
@@ -252,7 +254,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
             <section className="card">
               <h2>1) Create Source</h2>
               <form action={createSourceAction}>
-                <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                <input type="hidden" name="workspace_id" value={workspaceId} />
                 <div className="row" style={{ marginBottom: 8 }}>
                   <select name="type" defaultValue="csv" style={{ maxWidth: 160 }}>
                     <option value="csv">CSV</option>
@@ -285,7 +287,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
 
                   {sourceItems?.length > 0 && (
                     <form action={generateContentAction} className="row" style={{ marginTop: 10 }}>
-                      <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                      <input type="hidden" name="workspace_id" value={workspaceId} />
                       <select name="source_item_id" defaultValue={sourceItems[0].id} style={{ minWidth: 220, flex: 2 }}>
                         {sourceItems.map((s: any) => (
                           <option key={s.id} value={s.id}>{s.title || s.id}</option>
@@ -354,7 +356,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
             <section className="card">
               <h2>4) Publish Control</h2>
               <form action={runPublishAction}>
-                <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                <input type="hidden" name="workspace_id" value={workspaceId} />
                 <button className="btn-primary" type="submit">Run Publisher Now</button>
               </form>
               <div className="tiny" style={{ marginTop: 8 }}>
@@ -375,7 +377,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
                 Mode: {modelPrefs?.mode || 'auto'} (Auto is recommended for most users)
               </div>
               <form action={saveModelPreferencesAction} className="stack">
-                <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                <input type="hidden" name="workspace_id" value={workspaceId} />
                 <div className="row">
                   <select name="mode" defaultValue={modelPrefs?.mode || 'auto'} style={{ maxWidth: 220 }}>
                     <option value="auto">Auto (recommended)</option>
@@ -427,7 +429,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
 
               {(!Array.isArray(voiceProfiles?.items) || voiceProfiles.items.length === 0) && (
                 <form action={createVoiceProfileAction} className="stack" style={{ marginBottom: 10 }}>
-                  <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                  <input type="hidden" name="workspace_id" value={workspaceId} />
                   <input name="full_name" placeholder="Full name" required />
                   <input name="email" placeholder="Email" required />
                   <input name="display_name" placeholder="Voice display name" defaultValue="Jared Narration" />
@@ -439,7 +441,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
               )}
 
               <form action={createVoiceRenderAction} className="stack">
-                <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                <input type="hidden" name="workspace_id" value={workspaceId} />
                 <select name="voice_profile_id" defaultValue={(voiceProfiles?.items || [])[0]?.id || ''} required>
                   {(voiceProfiles?.items || []).map((v: any) => (
                     <option key={v.id} value={v.id}>{v.displayName} · {v.provider} · {v.status}</option>
@@ -505,7 +507,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
                 Build from approved voice renders
               </div>
               <form action={createVideoRenderAction} className="stack">
-                <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                <input type="hidden" name="workspace_id" value={workspaceId} />
                 <select name="voice_render_id" defaultValue={(voiceRenders?.items || []).find((r: any) => r.status === 'approved')?.id || ''} required>
                   {(voiceRenders?.items || []).filter((r: any) => r.status === 'approved').map((r: any) => (
                     <option key={r.id} value={r.id}>{r.id} · approved · ${Number(r.estimatedCostUsd || 0).toFixed(4)}</option>
@@ -524,7 +526,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
               </form>
 
               <form action={refreshQueuedVideoRendersAction} className="row" style={{ marginTop: 8 }}>
-                <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                <input type="hidden" name="workspace_id" value={workspaceId} />
                 <button type="submit">Refresh All Queued Jobs</button>
               </form>
 
@@ -599,7 +601,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
                 </div>
               </form>
               <form action={apifyImportRunAction} className="row" style={{ marginTop: 10 }}>
-                <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                <input type="hidden" name="workspace_id" value={workspaceId} />
                 <input name="run_id" placeholder="Run ID to import" required style={{ minWidth: 220 }} />
                 <input name="limit" defaultValue="100" type="number" min={1} max={1000} style={{ maxWidth: 90 }} />
                 <button type="submit">Import Run → Sources</button>
@@ -612,7 +614,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
                 Ranked suggestions with default quality gating.
               </div>
               <form action={importTrendSuggestionsAction} className="row" style={{ marginBottom: 10 }}>
-                <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                <input type="hidden" name="workspace_id" value={workspaceId} />
                 <input name="source_id" placeholder="Source ID to import suggestions from" required style={{ minWidth: 220 }} />
                 <input name="limit" defaultValue="100" type="number" min={1} max={500} style={{ maxWidth: 90 }} />
                 <button type="submit">Import Suggestions</button>
@@ -630,13 +632,13 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
                       <div className="tiny" style={{ marginTop: 6 }}>{s.whyNow}</div>
                       <div className="row" style={{ marginTop: 8 }}>
                         <form action={feedbackTrendSuggestionAction}>
-                          <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                          <input type="hidden" name="workspace_id" value={workspaceId} />
                           <input type="hidden" name="suggestion_id" value={s.id} />
                           <input type="hidden" name="event_type" value="accepted" />
                           <button className="btn-primary" type="submit">Accept</button>
                         </form>
                         <form action={feedbackTrendSuggestionAction}>
-                          <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                          <input type="hidden" name="workspace_id" value={workspaceId} />
                           <input type="hidden" name="suggestion_id" value={s.id} />
                           <input type="hidden" name="event_type" value="rejected" />
                           <button type="submit">Reject</button>
@@ -706,7 +708,7 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
             <section className="card">
               <h2>Needs Attention</h2>
               <form action={retryFailedPublishAction}>
-                <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+                <input type="hidden" name="workspace_id" value={workspaceId} />
                 <button className="btn-danger" type="submit">Retry All Failed</button>
               </form>
               {!Array.isArray(failedPublishes) || failedPublishes.length === 0 ? (
