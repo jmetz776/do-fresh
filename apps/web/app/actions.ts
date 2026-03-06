@@ -133,6 +133,64 @@ export async function generateContentAction(formData: FormData) {
   redirect(`${studioPath}&notice=queue_generated`);
 }
 
+export async function buildUnifiedQueueAction(formData: FormData) {
+  const workspaceId = String(formData.get('workspace_id') || DEFAULT_WORKSPACE).trim();
+  const idea = String(formData.get('idea') || '').trim();
+  const platform = String(formData.get('platform') || 'x').trim().toLowerCase();
+  const queueCap = Math.max(3, Math.min(60, Number(formData.get('queue_cap') || 20)));
+  const timezone = String(formData.get('timezone') || 'America/New_York').trim();
+
+  if (!idea) {
+    redirect('/studio/queue?error=missing_idea');
+  }
+
+  const mixText = Math.max(0, Number(formData.get('mix_text') || 60));
+  const mixFaceless = Math.max(0, Number(formData.get('mix_faceless') || 25));
+  const mixAvatar = Math.max(0, Number(formData.get('mix_avatar') || 15));
+  const sum = Math.max(1, mixText + mixFaceless + mixAvatar);
+  const textCount = Math.max(1, Math.round((queueCap * mixText) / sum));
+  const facelessCount = Math.max(0, Math.round((queueCap * mixFaceless) / sum));
+  const avatarCount = Math.max(0, queueCap - textCount - facelessCount);
+
+  const oneLine = idea.replace(/\s+/g, ' ').trim();
+  const escCsv = (v: string) => `"${v.replace(/"/g, '""')}"`;
+  const rawPayload = `title,body\n${escCsv(oneLine.slice(0, 80) || 'Unified queue idea')},${escCsv(oneLine)}`;
+
+  const src = await post('/sources', { workspaceId, type: 'csv', rawPayload });
+  const sourceId = String((src as any)?.id || '').trim();
+  if (!sourceId) {
+    redirect('/studio/queue?error=queue_source_create_failed');
+  }
+
+  await post(`/sources/${encodeURIComponent(sourceId)}/normalize`);
+
+  let sourceItemId = '';
+  try {
+    const itemsRes = await fetch(`${API_BASE}/sources/${encodeURIComponent(sourceId)}/items`, {
+      cache: 'no-store',
+      headers: actorHeaders(),
+    });
+    const items = (await itemsRes.json().catch(() => [])) as Array<any>;
+    sourceItemId = String((items?.[0] as any)?.id || '').trim();
+  } catch {}
+
+  if (!sourceItemId) {
+    redirect('/studio/queue?error=queue_source_item_missing');
+  }
+
+  const channels = [platform || 'x'];
+  const gen = await post('/content/generate', { workspaceId, sourceItemId, channels, variantCount: textCount });
+  if ((gen as any)?.ok === false) {
+    const detail = String((gen as any)?.detail || 'generate_failed').slice(0, 140);
+    redirect(`/studio/queue?error=${encodeURIComponent(detail)}`);
+  }
+
+  revalidatePath('/studio');
+  revalidatePath('/studio/queue');
+  revalidatePath('/ops');
+  redirect(`/studio/queue?notice=${encodeURIComponent(`Unified queue built: ${textCount} text ready · ${facelessCount} faceless planned · ${avatarCount} avatar planned · timezone ${timezone}`)}`);
+}
+
 export async function approveContentAction(formData: FormData) {
   const contentId = String(formData.get('content_id') || '').trim();
   if (!contentId) return;

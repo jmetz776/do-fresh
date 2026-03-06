@@ -181,10 +181,13 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
             <p className="sub">From idea to scheduled X post in under 3 minutes.</p>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <Link className="link" href="/studio/queue">Unified Queue</Link>
             {isTopTier ? <Link className="link" href="/studio/models">Presenter Directory</Link> : <span className="tiny">Presenter Directory (Top Tier)</span>}
-            <Link className="link" href="/studio/faceless">Faceless Studio</Link>
-            <Link className="link" href="/studio/avatar-video">Avatar Video</Link>
-            <Link className="link" href="/studio/review">Review Theater</Link>
+            {isOperator ? <>
+              <Link className="link" href="/studio/faceless">Faceless Studio</Link>
+              <Link className="link" href="/studio/avatar-video">Avatar Video</Link>
+              <Link className="link" href="/studio/review">Review Theater</Link>
+            </> : null}
             {isCorporate ? <>
               <Link className="link" href="/studio/corporate/team-avatars">Team Avatars</Link>
               <Link className="link" href="/studio/corporate/seats-roles">Seats & Roles</Link>
