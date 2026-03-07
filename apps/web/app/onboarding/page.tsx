@@ -72,9 +72,10 @@ export default function OnboardingPage() {
   const [defaultCadence, setDefaultCadence] = useState('weekdays');
   const [connectingPlatform, setConnectingPlatform] = useState('');
   const [devBypass, setDevBypass] = useState(false);
-  const [autoPlayStory, setAutoPlayStory] = useState(true);
+  const [autoPlayStory, setAutoPlayStory] = useState(false);
   const [voiceoverOn, setVoiceoverOn] = useState(true);
   const [premiumAudioBySlide, setPremiumAudioBySlide] = useState<string[]>([]);
+  const [voiceoverDone, setVoiceoverDone] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   async function refreshStatus() {
@@ -121,6 +122,7 @@ export default function OnboardingPage() {
     const s = STORY_SLIDES[storyStep];
     if (!s) return;
 
+    setVoiceoverDone(false);
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
@@ -128,6 +130,7 @@ export default function OnboardingPage() {
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
 
     const advanceIfNeeded = () => {
+      setVoiceoverDone(true);
       if (autoPlayStory && storyStep < STORY_SLIDES.length - 1) {
         setStoryStep((curr) => Math.min(curr + 1, STORY_SLIDES.length - 1));
       }
@@ -177,6 +180,7 @@ export default function OnboardingPage() {
       audioRef.current = null;
     }
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    setVoiceoverDone(true);
   }, [voiceoverOn]);
 
   const allConnectionsReady = useMemo(() => {
@@ -266,9 +270,16 @@ export default function OnboardingPage() {
                 <button style={secondaryBtn} onClick={() => { window.location.href = '/waitlist'; }}>No invite yet — join waitlist</button>
               </>
             )}
-            {!storyLast ? <button style={ghostBtn} onClick={() => setAutoPlayStory((v) => !v)}>{autoPlayStory ? 'Pause autoplay' : 'Resume autoplay'}</button> : null}
+            {!storyLast ? <button style={ghostBtn} onClick={() => setAutoPlayStory((v) => !v)}>{autoPlayStory ? 'Autoplay: ON' : 'Autoplay: OFF'}</button> : null}
             {!storyLast ? <button style={ghostBtn} onClick={() => setVoiceoverOn((v) => !v)}>{voiceoverOn ? `VoiceOver: ON${premiumAudioBySlide.length ? ' (Premium)' : ''}` : 'VoiceOver: OFF'}</button> : null}
           </div>
+          {!storyLast ? (
+            <p style={{ marginTop: 10, color: '#9fb1d8', fontSize: 13 }}>
+              {voiceoverOn
+                ? (voiceoverDone ? 'Voiceover finished. Click Next when you’re ready.' : 'Voiceover is playing. Read at your own pace, then click Next.')
+                : 'Read at your own pace, then click Next.'}
+            </p>
+          ) : null}
           {storyLast ? (
             <p style={{ marginTop: 10, color: '#9fb1d8', fontSize: 13 }}>
               Watch the vision. Then choose your path: instant access or waitlist.
