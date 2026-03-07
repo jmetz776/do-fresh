@@ -13,30 +13,35 @@ const STORY_SLIDES = [
     title: 'Never sound like the same brand twice',
     body: 'Every AI-assisted draft is grounded in Trend-to-Brand Intelligence or your own source content—so output stays relevant, timely, and distinct.',
     proof: 'Relevance first. Repetition last.',
+    voiceover: 'Welcome to Demand Orchestrator. Your digital spokesperson helps you stay relevant, timely, and distinct in every post.',
   },
   {
     eyebrow: 'INTELLIGENCE + ORIGINALITY',
     title: 'Intelligence gives direction. Originality earns attention.',
     body: 'We use live trend signals to guide strategy, then diversify hooks, angles, and formats so your audience sees variety—not template fatigue.',
     proof: 'Strategic consistency, creative variation.',
+    voiceover: 'We combine live demand signals with creative variation, so your brand stays consistent without sounding repetitive.',
   },
   {
     eyebrow: 'YOUR CONTENT, YOUR CONTROL',
     title: 'Bring your own content anytime',
     body: 'Start from your own video, image, script, or idea—or let DO generate from trend intelligence. You choose the source, we orchestrate the workflow.',
     proof: 'AI-assisted when useful. Human-led when preferred.',
+    voiceover: 'Start from your own ideas, videos, or scripts—or generate with intelligence. You stay in control of every output.',
   },
   {
     eyebrow: 'FORMAT DIVERSITY, ONE STUDIO',
     title: 'One strategy. Multiple content experiences.',
     body: 'Publish avatar video, live-recorded video, uploaded assets, faceless creative, image posts, and text posts from one intuitive queue flow.',
     proof: 'Variety drives engagement. Simplicity drives execution.',
+    voiceover: 'Run one strategy across avatar video, faceless creative, images, and text—from one clean studio workflow.',
   },
   {
     eyebrow: 'PERFORMANCE BRAIN',
     title: 'Your content learns what wins.',
     body: 'DemandOrchestrator tracks retention, shares, saves, clicks, and conversions per post—then automatically shifts the next content batch toward patterns your audience actually rewards.',
     proof: 'Publish → Measure → Score → Adapt.',
+    voiceover: 'Every post teaches the system what works. Publish, measure, score, and adapt—so performance compounds over time.',
   },
 ];
 
@@ -103,12 +108,12 @@ export default function OnboardingPage() {
     const s = STORY_SLIDES[storyStep];
     if (!s) return;
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(`${s.title}. ${s.body}`);
-    utterance.rate = 0.98;
-    utterance.pitch = 1.02;
-    utterance.volume = 0.9;
+    const utterance = new SpeechSynthesisUtterance(s.voiceover || `${s.title}. ${s.body}`);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+    utterance.volume = 0.92;
     const voices = window.speechSynthesis.getVoices();
-    const preferred = voices.find((v) => /Samantha|Ava|Allison|Serena|Karen/i.test(v.name));
+    const preferred = voices.find((v) => /Samantha|Ava|Allison|Serena|Karen/i.test(v.name)) || voices.find((v) => /en-US|en_US/i.test(v.lang));
     if (preferred) utterance.voice = preferred;
     window.speechSynthesis.speak(utterance);
     return () => window.speechSynthesis.cancel();
