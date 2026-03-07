@@ -15,10 +15,11 @@ Turn trend ingestion into a proprietary decision engine that outputs high-confid
 - [x] Click/lead-aware weight recompute inputs from analytics daily metrics
 
 ## Phase 2
-- [ ] Performance-linked learning from analytics outcomes (click/lead weighted)
+- [x] Performance-linked learning from analytics outcomes (click/lead weighted)
 - [ ] Channel-specific recommendation profiles
 - [ ] Contrarian opportunity scoring
-- [ ] Queue planner auto-branch selection from narrative graph
+- [x] Queue planner auto-branch selection from narrative graph
+- [x] Background automation endpoint: `POST /intelligence/background/tick` (ingest -> suggestions -> learning recompute)
 
 ## Phase 3
 - [ ] Workspace-specific Brand DNA guardrails (voice, claims, compliance)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any
 from uuid import uuid4
@@ -17,9 +18,10 @@ from app.models.intelligence import (
     SignalFeature,
     SignalScore,
 )
-from app.models.mvp import MVPSource, MVPSourceItem
+from app.models.mvp import MVPWorkspace, MVPSource, MVPSourceItem
 from app.models.analytics import ContentDailyMetric
 from app.services.authz import actor_user_id
+from app.services.apify_client import ApifyClient
 
 router = APIRouter(prefix='/intelligence', tags=['intelligence'])
 
@@ -67,6 +69,14 @@ class NarrativeGraphRequest(BaseModel):
     suggestionId: str
     audience: str = 'general'
     objective: str = 'engagement'
+
+
+class BackgroundTickRequest(BaseModel):
+    workspaceId: str
+    actorId: str = ''
+    runId: str = ''
+    limit: int = 100
+    actorInput: Optional[Dict[str, Any]] = None
 
 
 @router.post('/suggestions/seed')
@@ -179,6 +189,17 @@ def submit_feedback(
 
 def _canon_topic(v: str) -> str:
     return ' '.join((v or '').strip().lower().split())
+
+
+def _normalize_source_record(rec: dict[str, Any]) -> tuple[str, str, str, str]:
+    ext = str(rec.get('id') or rec.get('url') or rec.get('postId') or '')[:255]
+    title = str(rec.get('title') or rec.get('headline') or rec.get('name') or '').strip()
+    body = str(rec.get('body') or rec.get('text') or rec.get('description') or rec.get('content') or '').strip()
+    if not title and body:
+        title = body[:120]
+    if not body and title:
+        body = title
+    return ext, title[:240], body[:8000], json.dumps(rec, ensure_ascii=False)
 
 
 def _score_from_source_item(title: str, body: str) -> tuple[float, float, float, str]:
@@ -331,6 +352,96 @@ def import_suggestions_from_source(payload: ImportFromSourceRequest, session: Se
 
     session.commit()
     return {'ok': True, 'imported': imported, 'skippedDuplicates': skippedDuplicates, 'sourceId': payload.sourceId}
+
+
+@router.post('/background/tick')
+def intelligence_background_tick(payload: BackgroundTickRequest, session: Session = Depends(get_session)):
+    client = ApifyClient()
+    if not client.configured():
+        raise HTTPException(status_code=400, detail='APIFY_TOKEN is not configured')
+
+    run_id = str(payload.runId or '').strip()
+    actor_id = str(payload.actorId or '').strip()
+    lim = max(1, min(int(payload.limit or 100), 500))
+
+    if not run_id:
+        if not actor_id:
+            actor_id = (os.getenv('APIFY_DEFAULT_ACTOR_ID') or '').strip()
+        if not actor_id:
+            raise HTTPException(status_code=400, detail='actorId or runId is required')
+        try:
+            run = client.run_actor(actor_id=actor_id, actor_input=payload.actorInput or {})
+            run_id = str(run.get('id') or '').strip()
+        except RuntimeError as e:
+            raise HTTPException(status_code=502, detail=str(e))
+
+    try:
+        run = client.get_run(run_id)
+    except RuntimeError as e:
+        raise HTTPException(status_code=502, detail=str(e))
+
+    dataset_id = run.get('defaultDatasetId')
+    if not dataset_id:
+        raise HTTPException(status_code=400, detail='Run has no default dataset')
+
+    try:
+        items = client.get_dataset_items(str(dataset_id), limit=lim)
+    except RuntimeError as e:
+        raise HTTPException(status_code=502, detail=str(e))
+
+    ts = now_utc()
+    ws = session.get(MVPWorkspace, payload.workspaceId)
+    if not ws:
+        ws = MVPWorkspace(id=payload.workspaceId, name='MVP Workspace', created_at=ts)
+        session.add(ws)
+
+    src = MVPSource(
+        id=str(uuid4()),
+        workspace_id=payload.workspaceId,
+        type='apify',
+        raw_payload=json.dumps({'runId': run_id, 'datasetId': dataset_id, 'itemCount': len(items)}, ensure_ascii=False),
+        status='normalized',
+        created_at=ts,
+        updated_at=ts,
+    )
+    session.add(src)
+
+    created = 0
+    for rec in items:
+        if not isinstance(rec, dict):
+            continue
+        external_ref, title, body, metadata_json = _normalize_source_record(rec)
+        item = MVPSourceItem(
+            id=str(uuid4()),
+            source_id=src.id,
+            external_ref=external_ref,
+            title=title,
+            body=body,
+            metadata_json=metadata_json,
+            created_at=now_utc(),
+        )
+        session.add(item)
+        created += 1
+
+    session.commit()
+
+    # Auto import suggestions and recompute profile.
+    sug = import_suggestions_from_source(
+        ImportFromSourceRequest(workspaceId=payload.workspaceId, sourceId=src.id, limit=lim),
+        session=session,
+    )
+    learn = recompute_learning_weights(payload.workspaceId, session=session)
+
+    return {
+        'ok': True,
+        'workspaceId': payload.workspaceId,
+        'runId': run_id,
+        'datasetId': dataset_id,
+        'sourceId': src.id,
+        'importedItems': created,
+        'suggestions': sug,
+        'learning': learn,
+    }
 
 
 @router.post('/learn/recompute-weights')
