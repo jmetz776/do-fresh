@@ -323,12 +323,29 @@ function nextWeekdaySlot(base: Date, hour = 9, minute = 15) {
 export async function applyCadenceAction(formData: FormData) {
   const timezone = String(formData.get('timezone') || 'America/New_York').trim();
   const preset = String(formData.get('cadence') || 'weekdays').trim();
+  const workspaceId = String(formData.get('workspace_id') || DEFAULT_WORKSPACE).trim();
   const rawIds = String(formData.get('approved_ids') || '').trim();
-  const ids = rawIds.split(',').map((s) => s.trim()).filter(Boolean);
-  if (!ids.length) return;
+  let ids = rawIds.split(',').map((s) => s.trim()).filter(Boolean);
+
+  // Fallback: if page had stale hidden ids, fetch fresh approved IDs from API.
+  if (!ids.length) {
+    try {
+      const res = await fetch(`${API_BASE}/content?workspaceId=${encodeURIComponent(workspaceId)}`, {
+        cache: 'no-store',
+        headers: actorHeaders(),
+      });
+      const rows = (await res.json().catch(() => [])) as Array<any>;
+      ids = rows.filter((r: any) => r?.status === 'approved').map((r: any) => String(r.id || '').trim()).filter(Boolean);
+    } catch {}
+  }
+
+  if (!ids.length) {
+    redirect('/studio/queue?error=No approved drafts found to schedule');
+  }
 
   const now = new Date();
   let cursor = new Date(now);
+  let scheduledCount = 0;
 
   for (let i = 0; i < ids.length; i += 1) {
     let publish = new Date(cursor);
@@ -350,18 +367,25 @@ export async function applyCadenceAction(formData: FormData) {
       publish = nextWeekdaySlot(cursor, 9, 15);
     }
 
-    await post('/schedules', {
+    const sched = await post('/schedules', {
       contentItemId: ids[i],
       publishAt: publish.toISOString(),
       timezone,
     });
+    if ((sched as any)?.ok === false) {
+      const detail = String((sched as any)?.detail || 'schedule_failed').slice(0, 140);
+      redirect(`/studio/queue?error=${encodeURIComponent(detail)}`);
+    }
 
+    scheduledCount += 1;
     cursor = new Date(publish);
     cursor.setDate(cursor.getDate() + 1);
   }
 
   revalidatePath('/studio');
+  revalidatePath('/studio/queue');
   revalidatePath('/ops');
+  redirect(`/studio/queue?notice=${encodeURIComponent(`Scheduled ${scheduledCount} approved item(s) with ${preset} cadence`)}`);
 }
 
 export async function runPublishAction(formData: FormData) {

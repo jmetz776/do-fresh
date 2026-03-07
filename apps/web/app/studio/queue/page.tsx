@@ -112,6 +112,7 @@ export default async function UnifiedQueuePage({ searchParams }: { searchParams?
           <h2 style={{ marginTop: 0 }}>2) Scheduler Control Panel</h2>
           <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>Apply cadence to approved items while respecting queue cap and tier limits.</p>
           <form action={applyCadenceAction} className="stack">
+            <input type="hidden" name="workspace_id" value={workspaceId} />
             <input type="hidden" name="approved_ids" value={approved.map((x: any) => x.id).join(',')} />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: 8 }}>
               <div>
