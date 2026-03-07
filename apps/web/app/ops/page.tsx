@@ -60,6 +60,9 @@ function isHttpUrl(v?: string) {
 }
 
 export default async function OpsPage({ searchParams }: { searchParams?: { apifyRunId?: string; sourceId?: string; invite?: string; notice?: string; video_notice?: string; video_error?: string } }) {
+  const safeDecode = (v: unknown) => {
+    try { return decodeURIComponent(String(v ?? '')); } catch { return String(v ?? ''); }
+  };
   const c = cookies();
   const workspaceId = c.get('do_workspace_id')?.value || FALLBACK_WORKSPACE_ID;
   const lastApifyRunId = searchParams?.apifyRunId || c.get('do_last_apify_run_id')?.value || '';
@@ -216,28 +219,28 @@ export default async function OpsPage({ searchParams }: { searchParams?: { apify
         {searchParams?.invite ? (
           <section className="card" style={searchParams.invite.startsWith('ok') ? { marginBottom: 10, borderColor: 'rgba(34,197,94,.55)' } : { marginBottom: 10, borderColor: 'rgba(251,113,133,.55)' }}>
             <h2 style={{ marginBottom: 6 }}>{searchParams.invite.startsWith('ok') ? 'Invite created' : 'Invite failed'}</h2>
-            <div className="tiny">{searchParams.invite.startsWith('ok') ? 'Tester invite created successfully.' : decodeURIComponent(String(searchParams.invite || '').replace(/^error:[^:]*:/, ''))}</div>
+            <div className="tiny">{searchParams.invite.startsWith('ok') ? 'Tester invite created successfully.' : safeDecode(String(searchParams.invite || '').replace(/^error:[^:]*:/, ''))}</div>
           </section>
         ) : null}
 
         {searchParams?.video_notice ? (
           <section className="card" style={{ marginBottom: 10, borderColor: 'rgba(34,197,94,.55)' }}>
             <h2 style={{ marginBottom: 6 }}>Video action completed</h2>
-            <div className="tiny">{decodeURIComponent(String(searchParams.video_notice))}</div>
+            <div className="tiny">{safeDecode(searchParams.video_notice)}</div>
           </section>
         ) : null}
 
         {searchParams?.video_error ? (
           <section className="card" style={{ marginBottom: 10, borderColor: 'rgba(251,113,133,.55)' }}>
             <h2 style={{ marginBottom: 6 }}>Video action failed</h2>
-            <div className="tiny">{decodeURIComponent(String(searchParams.video_error))}</div>
+            <div className="tiny">{safeDecode(searchParams.video_error)}</div>
           </section>
         ) : null}
 
         {searchParams?.notice ? (
           <section className="card" style={{ marginBottom: 10, borderColor: 'rgba(34,197,94,.55)' }}>
             <h2 style={{ marginBottom: 6 }}>Update</h2>
-            <div className="tiny">{decodeURIComponent(String(searchParams.notice))}</div>
+            <div className="tiny">{safeDecode(searchParams.notice)}</div>
           </section>
         ) : null}
 
