@@ -162,11 +162,21 @@ export default function IndexPage() {
         }
         .trust-line {
           margin-bottom: 18px;
-          color: #c7d8f8;
-          font-size: 12px;
-          letter-spacing: .08em;
+          color: #e6f3ff;
+          font-size: clamp(14px, 2.2vw, 18px);
+          letter-spacing: .04em;
           text-transform: uppercase;
-          opacity: .9;
+          font-weight: 900;
+          line-height: 1.35;
+          padding: 10px 14px;
+          border: 1px solid rgba(103,232,249,.45);
+          border-radius: 999px;
+          background: linear-gradient(180deg, rgba(14,165,233,.2), rgba(15,23,42,.42));
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 12px 26px rgba(14,165,233,.25);
+        }
+        .trust-line .accent {
+          color: #a5f3fc;
+          text-shadow: 0 0 18px rgba(103,232,249,.38);
         }
         .power-link {
           text-decoration: none;
@@ -232,7 +242,7 @@ export default function IndexPage() {
           </h1>
         </Link>
         <p className="sub">{subtitle}</p>
-        <div className="trust-line">Meet your AI-assisted content engine · Trend → Script → Approval → Publish</div>
+        <div className="trust-line"><span className="accent">Meet your AI-assisted content engine</span> · Trend → Script → Approval → Publish</div>
         <div className="intro-actions">
           <Link className="intro-chip" href="/onboarding" onClick={() => typeof window !== 'undefined' && window.localStorage.setItem('do_intro_seen', '1')}>Enter onboarding</Link>
           <Link className="intro-chip" href="/waitlist">View early access</Link>
