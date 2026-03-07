@@ -49,8 +49,8 @@ export default async function AvatarVideoPage({ searchParams }: { searchParams?:
         {searchParams?.error ? <section style={errCard}>⚠️ {decodeURIComponent(searchParams.error)}</section> : null}
 
         <section style={flowCard}>
-          <h2 style={{ marginTop: 0, marginBottom: 6, letterSpacing: '-.01em' }}>Fast Path: Marketplace → Scene → Video</h2>
-          <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>Use this order for the cleanest customer flow and fewer misfires.</p>
+          <h2 style={{ marginTop: 0, marginBottom: 6, letterSpacing: '-.015em', lineHeight: 1.15 }}>Fast Path: Marketplace → Scene → Video</h2>
+          <p style={{ color: '#c4d6f7', fontSize: 13, marginTop: 0, lineHeight: 1.45 }}>Use this order for the cleanest customer flow and fewer misfires.</p>
           <div style={{ display: 'grid', gap: 8, gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))' }}>
             <Link href="/studio/models" style={flowBtn}>1) Pick presenter</Link>
             <Link href="/studio/avatar-video" style={flowBtn}>2) Choose background template</Link>
@@ -109,17 +109,19 @@ const inputArea: React.CSSProperties = { ...input, minHeight: 120 };
 const btn: React.CSSProperties = { border: '1px solid #0284c7', background: 'linear-gradient(180deg,#38bdf8,#0ea5e9)', color: '#062437', borderRadius: 10, padding: '10px 12px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 10px 24px rgba(14,165,233,.28)' };
 const btnSecondary: React.CSSProperties = { border: '1px solid rgba(148,163,184,.5)', background: 'rgba(15,23,42,.55)', color: '#dbe7ff', borderRadius: 10, padding: '10px 12px', fontWeight: 700, cursor: 'pointer', marginBottom: 8 };
 const flowBtn: React.CSSProperties = {
-  color: '#d9efff',
-  border: '1px solid rgba(56,189,248,.45)',
-  borderRadius: 12,
-  padding: '10px 12px',
-  background: 'linear-gradient(180deg, rgba(56,189,248,.16), rgba(30,41,59,.35))',
+  color: '#e5f3ff',
+  border: '1px solid rgba(56,189,248,.48)',
+  borderRadius: 14,
+  padding: '11px 13px',
+  background: 'linear-gradient(180deg, rgba(56,189,248,.2), rgba(30,41,59,.4))',
   textDecoration: 'none',
   fontWeight: 800,
+  letterSpacing: '.01em',
+  boxShadow: 'inset 0 1px 0 rgba(255,255,255,.11), 0 8px 20px rgba(2,6,23,.32)',
   textAlign: 'center',
 };
 const flowBtnMuted: React.CSSProperties = {
   ...flowBtn,
-  border: '1px solid rgba(148,163,184,.38)',
-  background: 'linear-gradient(180deg, rgba(30,41,59,.5), rgba(15,23,42,.45))',
+  border: '1px solid rgba(148,163,184,.4)',
+  background: 'linear-gradient(180deg, rgba(30,41,59,.56), rgba(15,23,42,.48))',
 };

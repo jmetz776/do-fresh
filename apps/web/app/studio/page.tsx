@@ -178,32 +178,38 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
             linear-gradient(180deg, rgba(14,165,233,.22), rgba(15,23,42,.58));
           box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 14px 34px rgba(2,6,23,.36);
         }
-        .flow-hero-title { font-weight: 900; letter-spacing: -.01em; margin-bottom: 4px; }
-        .flow-actions { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 8px; }
+        .flow-hero-title { font-weight: 900; letter-spacing: -.015em; margin-bottom: 4px; font-size: clamp(18px, 2.2vw, 24px); line-height: 1.12; }
+        .flow-sub { font-size: 13px; color: #c4d6f7; margin-bottom: 10px; line-height: 1.45; max-width: 72ch; }
+        .flow-actions { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 10px; }
         .flow-cta {
-          color: #d9efff;
+          color: #e5f3ff;
           text-decoration: none;
-          border: 1px solid rgba(56,189,248,.45);
-          border-radius: 12px;
-          padding: 10px 12px;
-          background: linear-gradient(180deg, rgba(56,189,248,.16), rgba(30,41,59,.35));
+          border: 1px solid rgba(56,189,248,.48);
+          border-radius: 14px;
+          padding: 12px 14px;
+          background: linear-gradient(180deg, rgba(56,189,248,.2), rgba(30,41,59,.42));
           font-weight: 800;
+          letter-spacing: .01em;
           text-align: center;
-          transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.11), 0 8px 20px rgba(2,6,23,.32);
+          transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease, filter .2s ease;
         }
-        .flow-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(56,189,248,.22); border-color: rgba(103,232,249,.75); }
+        .flow-cta:hover { transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 12px 26px rgba(56,189,248,.24); border-color: rgba(125,242,255,.82); filter: saturate(1.08); }
         .flow-cta.muted {
-          border-color: rgba(148,163,184,.38);
-          background: linear-gradient(180deg, rgba(30,41,59,.5), rgba(15,23,42,.45));
+          border-color: rgba(148,163,184,.4);
+          background: linear-gradient(180deg, rgba(30,41,59,.56), rgba(15,23,42,.48));
         }
         .dod-panel {
-          margin-top: 10px;
-          border: 1px solid rgba(148,163,184,.28);
-          border-radius: 12px;
-          padding: 10px 12px;
-          background: rgba(2,6,23,.4);
+          margin-top: 12px;
+          border: 1px solid rgba(148,163,184,.3);
+          border-radius: 14px;
+          padding: 12px 14px;
+          background: linear-gradient(180deg, rgba(2,6,23,.32), rgba(2,6,23,.5));
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
         }
-        .dod-panel ul { margin: 0; padding-left: 18px; line-height: 1.8; }
+        .dod-title { font-weight: 800; margin-bottom: 6px; letter-spacing: .01em; }
+        .dod-panel ul { margin: 0; padding-left: 18px; line-height: 1.85; }
+        .dod-panel li { color: #d7e4fb; }
         @media (max-width: 980px) {
           .grid-two { grid-template-columns: 1fr; }
           .flow-actions { grid-template-columns: 1fr; }
@@ -212,7 +218,9 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
           .steps { grid-template-columns: 1fr 1fr; }
           .top { flex-direction: column; }
           .flow-hero { padding: 12px; }
+          .flow-sub { font-size: 12.5px; margin-bottom: 9px; }
           .flow-cta { padding: 12px; font-size: 14px; }
+          .dod-panel { padding: 11px 12px; }
         }
       `}</style>
 
@@ -265,14 +273,14 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
           </div>
           <div className="flow-hero">
             <div className="flow-hero-title">Avatar Marketplace + Background Flow</div>
-            <div className="tiny" style={{ marginBottom: 8 }}>Fast path: choose presenter, then generate with the right scene template.</div>
+            <div className="flow-sub">Fast path: choose presenter, generate with the right scene template, then validate outcomes before scheduling.</div>
             <div className="flow-actions">
               <Link className="flow-cta" href="/studio/models">1) Open Presenter Directory</Link>
               <Link className="flow-cta" href="/studio/avatar-video">2) Create Avatar Video</Link>
               <Link className="flow-cta muted" href="/studio/review">3) Review background performance</Link>
             </div>
             <div className="dod-panel">
-              <div style={{ fontWeight: 700, marginBottom: 4 }}>Definition of Done (Operator quick check)</div>
+              <div className="dod-title">Definition of Done (Operator quick check)</div>
               <ul className="tiny">
                 <li>Presenter is selected from directory (not ad-hoc).</li>
                 <li>Background template is intentionally chosen for the script.</li>
