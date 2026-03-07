@@ -91,7 +91,14 @@ export default function IndexPage() {
           text-decoration: none;
           font-size: 12px;
         }
-        .center { text-align: center; z-index: 2; }
+        .center {
+          text-align: center;
+          z-index: 2;
+          display: grid;
+          justify-items: center;
+          align-content: center;
+          transform: translateY(-5vh);
+        }
         .wordmark {
           letter-spacing: .35em;
           font-size: clamp(1rem, 2.2vw, 1.2rem);
@@ -165,6 +172,9 @@ export default function IndexPage() {
         @keyframes gridBreathe {
           0%,100% { opacity: .55; }
           50% { opacity: .85; }
+        }
+        @media (max-width: 760px) {
+          .center { transform: translateY(-2vh); }
         }
       `}</style>
 
