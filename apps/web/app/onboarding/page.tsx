@@ -68,6 +68,7 @@ export default function OnboardingPage() {
   const [connectingPlatform, setConnectingPlatform] = useState('');
   const [devBypass, setDevBypass] = useState(false);
   const [autoPlayStory, setAutoPlayStory] = useState(true);
+  const [voiceoverOn, setVoiceoverOn] = useState(true);
 
   async function refreshStatus() {
     const res = await fetch('/api/onboarding/status', { cache: 'no-store' });
@@ -96,6 +97,22 @@ export default function OnboardingPage() {
     const t = window.setTimeout(() => setStoryStep((s) => Math.min(s + 1, STORY_SLIDES.length - 1)), 5200);
     return () => window.clearTimeout(t);
   }, [phase, autoPlayStory, storyStep]);
+
+  useEffect(() => {
+    if (phase !== 'story' || !voiceoverOn || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    const s = STORY_SLIDES[storyStep];
+    if (!s) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(`${s.title}. ${s.body}`);
+    utterance.rate = 0.98;
+    utterance.pitch = 1.02;
+    utterance.volume = 0.9;
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = voices.find((v) => /Samantha|Ava|Allison|Serena|Karen/i.test(v.name));
+    if (preferred) utterance.voice = preferred;
+    window.speechSynthesis.speak(utterance);
+    return () => window.speechSynthesis.cancel();
+  }, [phase, storyStep, voiceoverOn]);
 
   const allConnectionsReady = useMemo(() => {
     if (selectedPlatforms.length === 0) return true;
@@ -153,8 +170,11 @@ export default function OnboardingPage() {
         <div style={cinemaOverlay} />
         <section style={{ ...heroCard, maxWidth: 980, minHeight: 420 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-            <div style={{ fontSize: 12, letterSpacing: '.16em', opacity: 0.8 }}>{s.eyebrow}</div>
-            <button style={ghostBtn} onClick={() => { setAutoPlayStory(false); setStoryStep(STORY_SLIDES.length - 1); }}>Skip to Access</button>
+            <div>
+              <div style={{ fontSize: 12, letterSpacing: '.16em', opacity: 0.8 }}>{s.eyebrow}</div>
+              <div style={{ marginTop: 6, fontSize: 11, letterSpacing: '.08em', textTransform: 'uppercase', color: '#a5f3fc' }}>Digital Spokesperson Intro</div>
+            </div>
+            <button style={ghostBtn} onClick={() => { setAutoPlayStory(false); setVoiceoverOn(false); setStoryStep(STORY_SLIDES.length - 1); }}>Skip to Access</button>
           </div>
 
           <h2 style={{ margin: '0 0 10px', fontSize: 'clamp(1.8rem,5vw,3.2rem)', letterSpacing: '-.03em' }}>{s.title}</h2>
@@ -182,6 +202,7 @@ export default function OnboardingPage() {
               </>
             )}
             {!storyLast ? <button style={ghostBtn} onClick={() => setAutoPlayStory((v) => !v)}>{autoPlayStory ? 'Pause autoplay' : 'Resume autoplay'}</button> : null}
+            {!storyLast ? <button style={ghostBtn} onClick={() => setVoiceoverOn((v) => !v)}>{voiceoverOn ? 'VoiceOver: ON' : 'VoiceOver: OFF'}</button> : null}
           </div>
           {storyLast ? (
             <p style={{ marginTop: 10, color: '#9fb1d8', fontSize: 13 }}>

@@ -232,7 +232,7 @@ export default function IndexPage() {
           </h1>
         </Link>
         <p className="sub">{subtitle}</p>
-        <div className="trust-line">Trend → Script → Approval → Publish</div>
+        <div className="trust-line">Meet your digital spokesperson · Trend → Script → Approval → Publish</div>
         <div className="intro-actions">
           <Link className="intro-chip" href="/onboarding" onClick={() => typeof window !== 'undefined' && window.localStorage.setItem('do_intro_seen', '1')}>Enter onboarding</Link>
           <Link className="intro-chip" href="/waitlist">View early access</Link>
