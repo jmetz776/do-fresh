@@ -29,6 +29,7 @@ export default async function ReviewPage() {
             <p style={{ margin: '6px 0 0', color: '#9fb2d6' }}>Preview rendered videos before publish. Approve only what meets the bar.</p>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
+            <Link href="/studio" style={linkBtn}>Back to Studio</Link>
             <Link href="/studio/faceless" style={linkBtn}>Faceless Studio</Link>
             <form action={refreshQueuedVideoRendersAction}>
               <input type="hidden" name="workspace_id" value={workspaceId} />
