@@ -222,6 +222,15 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
             {isTopTier ? <Link className="link" href="/studio/models" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Presenter Directory</Link> : null}
             {isCorporate ? <Link className="link" href="/studio/corporate/team-avatars" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Corporate Suite</Link> : null}
           </div>
+          <div className="item" style={{ marginTop: 10, borderColor: 'rgba(56,189,248,.45)', background: 'linear-gradient(180deg, rgba(14,165,233,.18), rgba(15,23,42,.55))' }}>
+            <div style={{ fontWeight: 800, marginBottom: 4 }}>Avatar Marketplace + Background Flow</div>
+            <div className="tiny" style={{ marginBottom: 8 }}>Fast path: choose presenter, then generate with the right scene template.</div>
+            <div className="row" style={{ gap: 8 }}>
+              <Link className="link" href="/studio/models" style={{ border: '1px solid rgba(56,189,248,.45)', borderRadius: 10, padding: '8px 12px', background: 'rgba(56,189,248,.12)', fontWeight: 700 }}>1) Open Presenter Directory</Link>
+              <Link className="link" href="/studio/avatar-video" style={{ border: '1px solid rgba(56,189,248,.45)', borderRadius: 10, padding: '8px 12px', background: 'rgba(56,189,248,.12)', fontWeight: 700 }}>2) Create Avatar Video</Link>
+              <Link className="link" href="/studio/review" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>3) Review background performance</Link>
+            </div>
+          </div>
         </section>
 
         <section className="card" style={{ marginBottom: 10 }}>

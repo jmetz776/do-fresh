@@ -48,6 +48,16 @@ export default async function AvatarVideoPage({ searchParams }: { searchParams?:
         {searchParams?.notice ? <section style={okCard}>✅ {decodeURIComponent(searchParams.notice)}</section> : null}
         {searchParams?.error ? <section style={errCard}>⚠️ {decodeURIComponent(searchParams.error)}</section> : null}
 
+        <section style={{ ...card, borderColor: 'rgba(56,189,248,.45)', background: 'linear-gradient(180deg, rgba(14,165,233,.17), rgba(15,23,42,.7))', marginBottom: 10 }}>
+          <h2 style={{ marginTop: 0, marginBottom: 6 }}>Fast Path: Marketplace → Scene → Video</h2>
+          <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>Use this order for the cleanest customer flow and fewer misfires.</p>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <Link href="/studio/models" style={{ color: '#cce5ff', border: '1px solid rgba(56,189,248,.45)', borderRadius: 10, padding: '8px 12px', background: 'rgba(56,189,248,.12)', textDecoration: 'none', fontWeight: 700 }}>1) Pick presenter</Link>
+            <Link href="/studio/avatar-video" style={{ color: '#cce5ff', border: '1px solid rgba(56,189,248,.45)', borderRadius: 10, padding: '8px 12px', background: 'rgba(56,189,248,.12)', textDecoration: 'none', fontWeight: 700 }}>2) Choose background template</Link>
+            <Link href="/studio/review" style={{ color: '#cce5ff', border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px', textDecoration: 'none' }}>3) Check background analytics</Link>
+          </div>
+        </section>
+
         <section style={card}>
           <h2 style={{ marginTop: 0 }}>Create Avatar Video</h2>
           <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>Approved voice renders available: {approvedCount}</p>
