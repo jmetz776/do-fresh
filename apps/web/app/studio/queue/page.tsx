@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import type React from 'react';
-import { applyCadenceAction, buildUnifiedQueueAction } from '../../actions';
+import { applyCadenceAction, approveAllDraftsAction, approveContentAction, buildUnifiedQueueAction } from '../../actions';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000';
 const FALLBACK_WORKSPACE_ID = process.env.NEXT_PUBLIC_WORKSPACE_ID || 'default';
@@ -18,13 +18,15 @@ export default async function UnifiedQueuePage({ searchParams }: { searchParams?
   const token = c.get('do_api_token')?.value || '';
   const actorHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
-  const [content, suggestions] = await Promise.all([
+  const [content, suggestions, schedules] = await Promise.all([
     getJson(`/content?workspaceId=${encodeURIComponent(workspaceId)}`, actorHeaders),
     getJson(`/intelligence/suggestions?workspaceId=${encodeURIComponent(workspaceId)}&limit=20&includeBelowThreshold=true`, actorHeaders),
+    getJson(`/schedules?workspaceId=${encodeURIComponent(workspaceId)}`, actorHeaders),
   ]);
 
   const drafts = (Array.isArray(content) ? content : []).filter((r: any) => r.status === 'draft').slice(0, 60);
   const approved = (Array.isArray(content) ? content : []).filter((r: any) => r.status === 'approved').slice(0, 60);
+  const scheduled = (Array.isArray(schedules) ? schedules : []).filter((r: any) => r.status === 'scheduled').slice(0, 120);
 
   return (
     <main style={{ minHeight: '100vh', background: '#0b1220', color: '#e8eefc', padding: 22, fontFamily: 'Inter, system-ui' }}>
@@ -109,7 +111,36 @@ export default async function UnifiedQueuePage({ searchParams }: { searchParams?
         </section>
 
         <section style={card}>
-          <h2 style={{ marginTop: 0 }}>2) Scheduler Control Panel</h2>
+          <h2 style={{ marginTop: 0 }}>2) Approve Drafts</h2>
+          <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>Approve in place — no operator console detour.</p>
+          <div style={{ marginBottom: 10 }}>
+            <form action={approveAllDraftsAction}>
+              <input type="hidden" name="workspace_id" value={workspaceId} />
+              <button type="submit" style={btnSecondary} disabled={drafts.length === 0}>Approve All Drafts</button>
+            </form>
+          </div>
+          {drafts.length === 0 ? (
+            <div style={{ color: '#9fb2d6' }}>No drafts currently waiting for approval.</div>
+          ) : (
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 8 }}>
+              {drafts.slice(0, 12).map((d: any) => (
+                <li key={d.id} style={{ border: '1px solid rgba(148,163,184,.28)', borderRadius: 10, padding: 10, background: 'rgba(2,6,23,.35)' }}>
+                  <div style={{ fontWeight: 700 }}>{d.title || d.hook || 'Untitled draft'}</div>
+                  <div style={{ color: '#9fb2d6', fontSize: 12, marginTop: 4 }}>{d.channel || 'channel'} · {d.status}</div>
+                  <div style={{ marginTop: 8 }}>
+                    <form action={approveContentAction}>
+                      <input type="hidden" name="content_id" value={d.id} />
+                      <button type="submit" style={btnSecondary}>Approve</button>
+                    </form>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section style={card}>
+          <h2 style={{ marginTop: 0 }}>3) Scheduler Control Panel</h2>
           <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>Apply cadence to approved items while respecting queue cap and tier limits.</p>
           <form action={applyCadenceAction} className="stack">
             <input type="hidden" name="workspace_id" value={workspaceId} />
@@ -132,9 +163,10 @@ export default async function UnifiedQueuePage({ searchParams }: { searchParams?
               <button type="submit" style={btnSecondary} disabled={approved.length === 0}>Apply Cadence to Approved Queue</button>
             </div>
           </form>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: 10, marginTop: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 10, marginTop: 10 }}>
             <div style={miniCard}>Drafts in queue: <b>{drafts.length}</b></div>
             <div style={miniCard}>Approved ready to schedule: <b>{approved.length}</b></div>
+            <div style={miniCard}>Scheduled items: <b>{scheduled.length}</b></div>
           </div>
         </section>
       </div>

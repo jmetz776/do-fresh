@@ -265,7 +265,29 @@ export async function approveContentAction(formData: FormData) {
   await post(`/content/${contentId}/approve`);
   revalidatePath('/');
   revalidatePath('/studio');
+  revalidatePath('/studio/queue');
   revalidatePath('/ops');
+}
+
+export async function approveAllDraftsAction(formData: FormData) {
+  const workspaceId = String(formData.get('workspace_id') || DEFAULT_WORKSPACE).trim();
+  const res = await fetch(`${API_BASE}/content?workspaceId=${encodeURIComponent(workspaceId)}`, {
+    cache: 'no-store',
+    headers: actorHeaders(),
+  });
+  const items = (await res.json().catch(() => [])) as Array<any>;
+  const draftIds = items.filter((x: any) => x?.status === 'draft').map((x: any) => String(x?.id || '').trim()).filter(Boolean);
+
+  let approved = 0;
+  for (const id of draftIds) {
+    const r = await post(`/content/${encodeURIComponent(id)}/approve`);
+    if ((r as any)?.ok !== false) approved += 1;
+  }
+
+  revalidatePath('/studio');
+  revalidatePath('/studio/queue');
+  revalidatePath('/ops');
+  redirect(`/studio/queue?notice=${encodeURIComponent(`Approved ${approved} draft(s)`)});
 }
 
 export async function updateContentAction(formData: FormData) {
