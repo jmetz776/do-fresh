@@ -189,6 +189,7 @@ export async function buildUnifiedQueueAction(formData: FormData) {
 
   // If a suggestion is selected, generate narrative branches and seed multiple queue rows.
   let csvRows: Array<{ title: string; body: string }> = [{ title: oneLine.slice(0, 80) || 'Unified queue idea', body: oneLine }];
+  let narrativeBranchesUsed = 0;
   if (suggestionId) {
     const graph = await post('/intelligence/narrative/graph', {
       workspaceId,
@@ -198,7 +199,9 @@ export async function buildUnifiedQueueAction(formData: FormData) {
     });
     const branches = ((graph as any)?.branches || []) as Array<any>;
     if (branches.length > 0) {
-      csvRows = branches.slice(0, Math.max(1, textCount)).map((b: any, idx: number) => ({
+      const selected = branches.slice(0, Math.max(1, textCount));
+      narrativeBranchesUsed = selected.length;
+      csvRows = selected.map((b: any, idx: number) => ({
         title: String(b?.hook || `Narrative branch ${idx + 1}`).slice(0, 80),
         body: `${String(b?.hook || '').trim()} | ${String(b?.body || '').trim()} | CTA: ${String(b?.cta || '').trim()}`.trim(),
       }));
@@ -250,7 +253,10 @@ export async function buildUnifiedQueueAction(formData: FormData) {
   revalidatePath('/studio');
   revalidatePath('/studio/queue');
   revalidatePath('/ops');
-  redirect(`/studio/queue?notice=${encodeURIComponent(`Unified queue built: ${textCount} text ready · ${facelessCount} faceless planned · ${avatarCount} avatar planned · timezone ${timezone}${capNote}`)}`);
+  const narrativeNote = suggestionId
+    ? ` · narrative branches used: ${narrativeBranchesUsed || 0}`
+    : '';
+  redirect(`/studio/queue?notice=${encodeURIComponent(`Unified queue built: ${textCount} text ready · ${facelessCount} faceless planned · ${avatarCount} avatar planned${narrativeNote} · timezone ${timezone}${capNote}`)}`);
 }
 
 export async function approveContentAction(formData: FormData) {
