@@ -67,6 +67,7 @@ export default function OnboardingPage() {
   const [defaultCadence, setDefaultCadence] = useState('weekdays');
   const [connectingPlatform, setConnectingPlatform] = useState('');
   const [devBypass, setDevBypass] = useState(false);
+  const [autoPlayStory, setAutoPlayStory] = useState(true);
 
   async function refreshStatus() {
     const res = await fetch('/api/onboarding/status', { cache: 'no-store' });
@@ -89,6 +90,12 @@ export default function OnboardingPage() {
       if (Number.isFinite(stepRaw) && stepRaw >= 0 && stepRaw <= 3) setStep(stepRaw);
     }
   }, []);
+
+  useEffect(() => {
+    if (phase !== 'story' || !autoPlayStory || storyStep >= STORY_SLIDES.length - 1) return;
+    const t = window.setTimeout(() => setStoryStep((s) => Math.min(s + 1, STORY_SLIDES.length - 1)), 5200);
+    return () => window.clearTimeout(t);
+  }, [phase, autoPlayStory, storyStep]);
 
   const allConnectionsReady = useMemo(() => {
     if (selectedPlatforms.length === 0) return true;
@@ -147,27 +154,34 @@ export default function OnboardingPage() {
         <section style={{ ...heroCard, maxWidth: 980, minHeight: 420 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
             <div style={{ fontSize: 12, letterSpacing: '.16em', opacity: 0.8 }}>{s.eyebrow}</div>
-            <button style={ghostBtn} onClick={() => setStoryStep(STORY_SLIDES.length - 1)}>Skip to Access</button>
+            <button style={ghostBtn} onClick={() => { setAutoPlayStory(false); setStoryStep(STORY_SLIDES.length - 1); }}>Skip to Access</button>
           </div>
 
           <h2 style={{ margin: '0 0 10px', fontSize: 'clamp(1.8rem,5vw,3.2rem)', letterSpacing: '-.03em' }}>{s.title}</h2>
           <p style={{ color: '#d6e3ff', lineHeight: 1.75, fontSize: 18, maxWidth: 760 }}>{s.body}</p>
           <div style={{ marginTop: 14, fontSize: 13, letterSpacing: '.08em', textTransform: 'uppercase', color: '#7dd3fc' }}>{s.proof}</div>
-
-          <div style={{ width: '100%', height: 6, borderRadius: 999, background: 'rgba(148,163,184,.25)', overflow: 'hidden', margin: '20px 0 14px' }}>
-            <div style={{ width: `${((storyStep + 1) / STORY_SLIDES.length) * 100}%`, height: '100%', background: 'linear-gradient(90deg,#38bdf8,#22d3ee)' }} />
+          <div style={{ marginTop: 12, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <span style={storyChip}>Trend-to-Brand intelligence</span>
+            <span style={storyChip}>Multi-format publishing</span>
+            <span style={storyChip}>Studio-first workflow</span>
           </div>
 
+          <div style={{ width: '100%', height: 6, borderRadius: 999, background: 'rgba(148,163,184,.25)', overflow: 'hidden', margin: '20px 0 10px' }}>
+            <div style={{ width: `${((storyStep + 1) / STORY_SLIDES.length) * 100}%`, height: '100%', background: 'linear-gradient(90deg,#38bdf8,#22d3ee)' }} />
+          </div>
+          <div style={{ fontSize: 12, color: '#9fb1d8', letterSpacing: '.06em', textTransform: 'uppercase' }}>Slide {storyStep + 1} of {STORY_SLIDES.length}</div>
+
           <div style={{ display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap' }}>
-            {storyStep > 0 ? <button style={secondaryBtn} onClick={() => setStoryStep(storyStep - 1)}>Back</button> : null}
+            {storyStep > 0 ? <button style={secondaryBtn} onClick={() => { setAutoPlayStory(false); setStoryStep(storyStep - 1); }}>Back</button> : null}
             {!storyLast ? (
-              <button style={primaryBtn} onClick={() => setStoryStep(storyStep + 1)}>Next</button>
+              <button style={primaryBtn} onClick={() => { setAutoPlayStory(false); setStoryStep(storyStep + 1); }}>Next</button>
             ) : (
               <>
                 <button style={primaryBtn} onClick={() => { window.location.href = '/login'; }}>I have early access — enter now</button>
                 <button style={secondaryBtn} onClick={() => { window.location.href = '/waitlist'; }}>No invite yet — join waitlist</button>
               </>
             )}
+            {!storyLast ? <button style={ghostBtn} onClick={() => setAutoPlayStory((v) => !v)}>{autoPlayStory ? 'Pause autoplay' : 'Resume autoplay'}</button> : null}
           </div>
           {storyLast ? (
             <p style={{ marginTop: 10, color: '#9fb1d8', fontSize: 13 }}>
@@ -418,4 +432,15 @@ const ghostBtn: React.CSSProperties = {
   padding: '7px 12px',
   fontWeight: 700,
   cursor: 'pointer',
+};
+
+const storyChip: React.CSSProperties = {
+  border: '1px solid rgba(125,211,252,.35)',
+  borderRadius: 999,
+  padding: '6px 10px',
+  fontSize: 11,
+  letterSpacing: '.04em',
+  textTransform: 'uppercase',
+  color: '#d6ecff',
+  background: 'rgba(14,165,233,.14)',
 };

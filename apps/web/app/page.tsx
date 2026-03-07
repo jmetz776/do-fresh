@@ -3,30 +3,44 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 
-const INTRO_MS = 10000;
+const INTRO_MS = 3200;
 
 export default function IndexPage() {
   const [canEnter, setCanEnter] = useState(false);
   const [introDone, setIntroDone] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
 
   useEffect(() => {
     const seen = typeof window !== 'undefined' && window.localStorage.getItem('do_intro_seen') === '1';
     if (seen) {
       setIntroDone(true);
       setCanEnter(true);
+      setLoadingStep(3);
       return;
     }
 
+    const checkpointA = window.setTimeout(() => setLoadingStep(1), 700);
+    const checkpointB = window.setTimeout(() => setLoadingStep(2), 1700);
     const timer = window.setTimeout(() => {
       setCanEnter(true);
       setIntroDone(true);
+      setLoadingStep(3);
       window.localStorage.setItem('do_intro_seen', '1');
     }, INTRO_MS);
 
-    return () => window.clearTimeout(timer);
+    return () => {
+      window.clearTimeout(checkpointA);
+      window.clearTimeout(checkpointB);
+      window.clearTimeout(timer);
+    };
   }, []);
 
-  const subtitle = useMemo(() => (canEnter ? 'Press power to enter workflow' : 'Initializing…'), [canEnter]);
+  const subtitle = useMemo(() => {
+    if (canEnter) return 'Ready. Press power to enter workflow';
+    if (loadingStep === 2) return 'Scoring demand signals…';
+    if (loadingStep === 1) return 'Loading workspace intelligence…';
+    return 'Initializing premium workspace…';
+  }, [canEnter, loadingStep]);
 
   return (
     <main className="intro-root">
@@ -137,14 +151,22 @@ export default function IndexPage() {
           font-size: .82em;
         }
         .sub {
-          margin: 10px 0 24px;
+          margin: 10px 0 18px;
           color: var(--muted);
-          font-size: 14px;
+          font-size: 13px;
           letter-spacing: .06em;
           text-transform: uppercase;
           opacity: 0;
           animation: fadeInUp .7s ease forwards;
           animation-delay: 1.25s;
+        }
+        .trust-line {
+          margin-bottom: 18px;
+          color: #c7d8f8;
+          font-size: 12px;
+          letter-spacing: .08em;
+          text-transform: uppercase;
+          opacity: .9;
         }
         .power-link {
           text-decoration: none;
@@ -156,6 +178,16 @@ export default function IndexPage() {
           filter: drop-shadow(0 0 18px rgba(103,232,249,.25));
         }
         .power-link:hover { transform: scale(1.03); }
+        .intro-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .intro-chip {
+          border: 1px solid rgba(148,163,184,.35);
+          border-radius: 999px;
+          padding: 8px 12px;
+          font-size: 12px;
+          color: #dbe7ff;
+          text-decoration: none;
+          background: rgba(15,23,42,.45);
+        }
         @keyframes pulse {
           0%,100% { text-shadow: 0 0 10px rgba(103,232,249,.28); }
           50% { text-shadow: 0 0 26px rgba(103,232,249,.48); }
@@ -200,6 +232,11 @@ export default function IndexPage() {
           </h1>
         </Link>
         <p className="sub">{subtitle}</p>
+        <div className="trust-line">Trend → Script → Approval → Publish</div>
+        <div className="intro-actions">
+          <Link className="intro-chip" href="/onboarding" onClick={() => typeof window !== 'undefined' && window.localStorage.setItem('do_intro_seen', '1')}>Enter onboarding</Link>
+          <Link className="intro-chip" href="/waitlist">View early access</Link>
+        </div>
       </section>
     </main>
   );
