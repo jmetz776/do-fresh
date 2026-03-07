@@ -214,6 +214,8 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
           <div className="row" style={{ marginTop: 10, gap: 8 }}>
             <Link className="link" href="/studio/queue" style={{ border: '1px solid rgba(34,197,94,.45)', borderRadius: 10, padding: '8px 12px', background: 'rgba(34,197,94,.10)', fontWeight: 700 }}>+ New Queue</Link>
             <Link className="link" href="/studio/review" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Review Outputs</Link>
+            <Link className="link" href="/studio/faceless" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Faceless Studio</Link>
+            <Link className="link" href="/studio/avatar-video" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Avatar Video</Link>
             <Link className="link" href="/studio/analytics" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>View Analytics</Link>
             <Link className="link" href="/help" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>FAQ</Link>
             {isOperator ? <Link className="link" href="/ops" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Operator Console ↗</Link> : null}
