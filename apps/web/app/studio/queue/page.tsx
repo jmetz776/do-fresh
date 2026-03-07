@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import type React from 'react';
-import { applyCadenceAction, approveAllDraftsAction, approveContentAction, buildUnifiedQueueAction } from '../../actions';
+import { applyCadenceAction, approveAllDraftsAction, approveContentAction, buildUnifiedQueueAction, refreshQueuedVideoRendersAction } from '../../actions';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000';
 const FALLBACK_WORKSPACE_ID = process.env.NEXT_PUBLIC_WORKSPACE_ID || 'default';
@@ -151,20 +151,32 @@ export default async function UnifiedQueuePage({ searchParams }: { searchParams?
               <div style={{ fontWeight: 700 }}>Text</div>
               <div className="tiny">Built directly in this queue page.</div>
               <div className="tiny" style={{ marginTop: 6 }}>Drafts: <b>{drafts.length}</b> · Approved: <b>{approved.length}</b></div>
+              <div className="row" style={{ marginTop: 8, gap: 8 }}>
+                <form action={approveAllDraftsAction}>
+                  <input type="hidden" name="workspace_id" value={workspaceId} />
+                  <button type="submit" style={btnSecondary} disabled={drafts.length === 0}>Approve All Text</button>
+                </form>
+              </div>
             </div>
             <div style={miniCard}>
               <div style={{ fontWeight: 700 }}>Faceless Video</div>
               <div className="tiny">Generate faceless assets with templates.</div>
               <div style={{ marginTop: 8 }}><Link href="/studio/faceless" style={{ color: '#cce5ff' }}>Open Faceless Studio →</Link></div>
+              <div className="tiny" style={{ marginTop: 8 }}>Approval/scheduling handled inside Faceless Studio.</div>
             </div>
             <div style={miniCard}>
               <div style={{ fontWeight: 700 }}>Avatar Video</div>
               <div className="tiny">Generate avatar videos with premium backgrounds.</div>
               <div style={{ marginTop: 8 }}><Link href="/studio/avatar-video" style={{ color: '#cce5ff' }}>Open Avatar Studio →</Link></div>
+              <div className="tiny" style={{ marginTop: 8 }}>Approval/scheduling handled inside Avatar Studio.</div>
             </div>
           </div>
-          <div className="tiny" style={{ marginTop: 10 }}>
-            Video pipeline: queued <b>{videoQueued}</b> · ready <b>{videoReady}</b>
+          <div className="row" style={{ marginTop: 10, gap: 8 }}>
+            <div className="tiny">Video pipeline: queued <b>{videoQueued}</b> · ready <b>{videoReady}</b></div>
+            <form action={refreshQueuedVideoRendersAction}>
+              <input type="hidden" name="workspace_id" value={workspaceId} />
+              <button type="submit" style={btnSecondary}>Refresh Video Queue</button>
+            </form>
           </div>
         </section>
 
