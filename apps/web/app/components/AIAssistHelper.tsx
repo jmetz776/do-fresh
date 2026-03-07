@@ -34,6 +34,7 @@ export default function AIAssistHelper({ context, stage }: Props) {
   const [msg, setMsg] = useState('');
   const idleRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const clickRef = useRef<{ key: string; count: number; ts: number }>({ key: '', count: 0, ts: 0 });
 
   const helpText = useMemo(() => buildHelpText(context, stage), [context, stage]);
 
@@ -41,15 +42,47 @@ export default function AIAssistHelper({ context, stage }: Props) {
     const reset = () => {
       setNudge(false);
       if (idleRef.current) window.clearTimeout(idleRef.current);
-      idleRef.current = window.setTimeout(() => setNudge(true), 30000);
+      idleRef.current = window.setTimeout(() => {
+        setMsg('Looks like you may be paused. Want a quick walkthrough?');
+        setNudge(true);
+      }, 30000);
+    };
+
+    const onClick = (ev: Event) => {
+      reset();
+      const target = ev.target as HTMLElement | null;
+      if (!target) return;
+      const btn = target.closest('button,a,[role="button"]') as HTMLElement | null;
+      const key = `${btn?.tagName || target.tagName}:${(btn?.textContent || target.textContent || '').trim().slice(0, 40)}`;
+      const now = Date.now();
+      const prev = clickRef.current;
+      if (prev.key === key && now - prev.ts < 12000) {
+        clickRef.current = { key, count: prev.count + 1, ts: now };
+      } else {
+        clickRef.current = { key, count: 1, ts: now };
+      }
+      if (clickRef.current.count >= 3) {
+        setMsg('I noticed repeated clicks. I can guide you through this step.');
+        setNudge(true);
+      }
+    };
+
+    const onInvalid = () => {
+      setMsg('Some required fields still need attention. I can point you to the exact next step.');
+      setNudge(true);
     };
 
     reset();
-    const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+    const events = ['mousemove', 'keydown', 'scroll', 'touchstart'];
     events.forEach((e) => window.addEventListener(e, reset, { passive: true }));
+    window.addEventListener('click', onClick, { passive: true });
+    document.addEventListener('invalid', onInvalid, true);
+
     return () => {
       if (idleRef.current) window.clearTimeout(idleRef.current);
       events.forEach((e) => window.removeEventListener(e, reset));
+      window.removeEventListener('click', onClick);
+      document.removeEventListener('invalid', onInvalid, true);
       if (audioRef.current) audioRef.current.pause();
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     };
