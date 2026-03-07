@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 type Status = {
   connections: { x: boolean; linkedin: boolean; instagram: boolean; youtube: boolean };
@@ -74,6 +74,8 @@ export default function OnboardingPage() {
   const [devBypass, setDevBypass] = useState(false);
   const [autoPlayStory, setAutoPlayStory] = useState(true);
   const [voiceoverOn, setVoiceoverOn] = useState(true);
+  const [premiumAudioBySlide, setPremiumAudioBySlide] = useState<string[]>([]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   async function refreshStatus() {
     const res = await fetch('/api/onboarding/status', { cache: 'no-store' });
@@ -98,26 +100,84 @@ export default function OnboardingPage() {
   }, []);
 
   useEffect(() => {
-    if (phase !== 'story' || !autoPlayStory || storyStep >= STORY_SLIDES.length - 1) return;
-    const t = window.setTimeout(() => setStoryStep((s) => Math.min(s + 1, STORY_SLIDES.length - 1)), 5200);
-    return () => window.clearTimeout(t);
-  }, [phase, autoPlayStory, storyStep]);
+    if (phase !== 'story') return;
+    fetch('/api/onboarding/voiceover', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        const rows = Array.isArray(data?.audioBySlide) ? data.audioBySlide : [];
+        setPremiumAudioBySlide(rows.map((x: any) => String(x.audioUrl || '')).filter(Boolean));
+      })
+      .catch(() => setPremiumAudioBySlide([]));
+  }, [phase]);
 
   useEffect(() => {
-    if (phase !== 'story' || !voiceoverOn || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (phase !== 'story' || !autoPlayStory || voiceoverOn || storyStep >= STORY_SLIDES.length - 1) return;
+    const t = window.setTimeout(() => setStoryStep((s) => Math.min(s + 1, STORY_SLIDES.length - 1)), 9000);
+    return () => window.clearTimeout(t);
+  }, [phase, autoPlayStory, voiceoverOn, storyStep]);
+
+  useEffect(() => {
+    if (phase !== 'story' || !voiceoverOn || typeof window === 'undefined') return;
     const s = STORY_SLIDES[storyStep];
     if (!s) return;
-    window.speechSynthesis.cancel();
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+    const advanceIfNeeded = () => {
+      if (autoPlayStory && storyStep < STORY_SLIDES.length - 1) {
+        setStoryStep((curr) => Math.min(curr + 1, STORY_SLIDES.length - 1));
+      }
+    };
+
+    const premiumAudio = premiumAudioBySlide[storyStep] || '';
+    if (premiumAudio) {
+      const a = new Audio(premiumAudio);
+      a.preload = 'auto';
+      a.onended = advanceIfNeeded;
+      audioRef.current = a;
+      a.play().catch(() => {
+        if (!('speechSynthesis' in window)) return;
+        const utterance = new SpeechSynthesisUtterance(s.voiceover || `${s.title}. ${s.body}`);
+        utterance.rate = 0.95;
+        utterance.pitch = 1.0;
+        utterance.volume = 0.92;
+        utterance.onend = () => advanceIfNeeded();
+        const voices = window.speechSynthesis.getVoices();
+        const preferred = voices.find((v) => /Samantha|Ava|Allison|Serena|Karen/i.test(v.name)) || voices.find((v) => /en-US|en_US/i.test(v.lang));
+        if (preferred) utterance.voice = preferred;
+        window.speechSynthesis.speak(utterance);
+      });
+      return () => {
+        a.pause();
+        a.onended = null;
+      };
+    }
+
+    if (!('speechSynthesis' in window)) return;
     const utterance = new SpeechSynthesisUtterance(s.voiceover || `${s.title}. ${s.body}`);
     utterance.rate = 0.95;
     utterance.pitch = 1.0;
     utterance.volume = 0.92;
+    utterance.onend = () => advanceIfNeeded();
     const voices = window.speechSynthesis.getVoices();
     const preferred = voices.find((v) => /Samantha|Ava|Allison|Serena|Karen/i.test(v.name)) || voices.find((v) => /en-US|en_US/i.test(v.lang));
     if (preferred) utterance.voice = preferred;
     window.speechSynthesis.speak(utterance);
     return () => window.speechSynthesis.cancel();
-  }, [phase, storyStep, voiceoverOn]);
+  }, [phase, storyStep, voiceoverOn, autoPlayStory, premiumAudioBySlide]);
+
+  useEffect(() => {
+    if (voiceoverOn || typeof window === 'undefined') return;
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }, [voiceoverOn]);
 
   const allConnectionsReady = useMemo(() => {
     if (selectedPlatforms.length === 0) return true;
@@ -207,7 +267,7 @@ export default function OnboardingPage() {
               </>
             )}
             {!storyLast ? <button style={ghostBtn} onClick={() => setAutoPlayStory((v) => !v)}>{autoPlayStory ? 'Pause autoplay' : 'Resume autoplay'}</button> : null}
-            {!storyLast ? <button style={ghostBtn} onClick={() => setVoiceoverOn((v) => !v)}>{voiceoverOn ? 'VoiceOver: ON' : 'VoiceOver: OFF'}</button> : null}
+            {!storyLast ? <button style={ghostBtn} onClick={() => setVoiceoverOn((v) => !v)}>{voiceoverOn ? `VoiceOver: ON${premiumAudioBySlide.length ? ' (Premium)' : ''}` : 'VoiceOver: OFF'}</button> : null}
           </div>
           {storyLast ? (
             <p style={{ marginTop: 10, color: '#9fb1d8', fontSize: 13 }}>
