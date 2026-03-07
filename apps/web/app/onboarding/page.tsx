@@ -13,7 +13,7 @@ const STORY_SLIDES = [
     title: 'Never sound like the same brand twice',
     body: 'Every AI-assisted draft is grounded in Trend-to-Brand Intelligence or your own source content—so output stays relevant, timely, and distinct.',
     proof: 'Relevance first. Repetition last.',
-    voiceover: 'Welcome to Demand Orchestrator. Your digital spokesperson helps you stay relevant, timely, and distinct in every post.',
+    voiceover: 'Welcome to Demand Orchestrator, your AI-assisted content engine. Stay relevant, timely, and distinct in every post.',
   },
   {
     eyebrow: 'INTELLIGENCE + ORIGINALITY',
@@ -177,7 +177,7 @@ export default function OnboardingPage() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
             <div>
               <div style={{ fontSize: 12, letterSpacing: '.16em', opacity: 0.8 }}>{s.eyebrow}</div>
-              <div style={{ marginTop: 6, fontSize: 11, letterSpacing: '.08em', textTransform: 'uppercase', color: '#a5f3fc' }}>Digital Spokesperson Intro</div>
+              <div style={{ marginTop: 6, fontSize: 11, letterSpacing: '.08em', textTransform: 'uppercase', color: '#a5f3fc' }}>AI-Assisted Content Engine Intro</div>
             </div>
             <button style={ghostBtn} onClick={() => { setAutoPlayStory(false); setVoiceoverOn(false); setStoryStep(STORY_SLIDES.length - 1); }}>Skip to Access</button>
           </div>
