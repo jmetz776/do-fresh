@@ -2,9 +2,14 @@
 
 > **Living document:** this blueprint is intentionally fluid and must be updated continuously as architecture, product scope, security posture, and go-to-market decisions evolve.
 
-_Last updated: 2026-03-02 (10:22 ET)_
+_Last updated: 2026-03-07 (16:46 ET)_
 
 ## Update Log (Rolling)
+- Added premium onboarding/landing experience pass (faster intro gate, cinematic story controls, clearer CTA hierarchy).
+- Added positioning pivot copy: **"Meet your AI-assisted content engine"** across intro + onboarding voiceover.
+- Added ElevenLabs-backed onboarding narration pipeline with approved voice renders + browser speech fallback.
+- Added in-app AI assisted helper (onboarding + studio) with premium voice guidance endpoint.
+- Added smart stuck triggers for helper activation (idle inactivity, repeated click loops, form validation errors).
 - Added token lifecycle hardening: refresh/logout routes + studio logout UX.
 - Replaced header-based identity path with bearer-token session enforcement.
 - Added entitlement enforcement for enterprise-only governance endpoints.
@@ -48,12 +53,16 @@ This document is the canonical build record for partner diligence, acquisition d
 
 ## 3.1 Web App (Next.js)
 Key routes:
+- `/`
+- `/onboarding`
 - `/login`
 - `/register` (personal/corporate)
 - `/studio`
 - `/auth/set-session` (web route)
 - `/auth/refresh` (web route)
 - `/auth/logout` (web route)
+- `/api/onboarding/voiceover` (web API proxy for premium narrated slides)
+- `/api/assist/voice` (web API endpoint for AI helper voice guidance)
 
 Session cookies used:
 - `do_user_id`
@@ -72,6 +81,7 @@ Key routers:
 - `routes_auth.py`
 - `routes_mvp.py`
 - `routes_integrations.py`
+- `routes_consent.py` (voice/avatar consent, profiles, render jobs)
 
 Authentication:
 - Bearer token required for actor identity (Authorization header)
@@ -192,6 +202,12 @@ Still recommended next:
 - strict approval and authorization enforcement
 - org controls (e.g., LinkedIn org selection)
 - richer audit visibility
+
+## Cross-account premium onboarding behavior (new)
+- Story slides default to **manual progression** (autoplay off by default for readability).
+- Premium voice narration supported through approved ElevenLabs renders when available.
+- Browser speech fallback remains available for resilience.
+- “AI assisted helper” can provide contextual text + voice guidance and activates nudges on stuck signals.
 
 ---
 

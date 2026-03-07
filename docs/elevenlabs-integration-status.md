@@ -7,17 +7,32 @@
   - `POST /v1/consent/voice/renders`
   - `GET /v1/consent/voice/renders`
   - `POST /v1/consent/voice/renders/{id}/approve`
+- Voice render audio retrieval endpoint:
+  - `GET /v1/consent/voice/renders/{id}/audio`
+- Web onboarding premium voice endpoint:
+  - `GET /api/onboarding/voiceover`
+- AI helper premium voice endpoint:
+  - `POST /api/assist/voice`
 - Audio artifact persistence to:
-  - `quality/audio/renders/*.mp3`
+  - `/app/data/audio/renders/*.mp3` (runtime)
 
-## Validation run
+## Validation run (2026-03-07)
 - Created consent record -> verified identity
 - Created active ElevenLabs voice profile
+- Configured active profile:
+  - Display name: `Harper Premium Voice`
+  - Voice ID: `QLAlOeRuLwKX0skeTR7R`
 - Rendered sample voice job successfully
 - Approved rendered job successfully
+- Generated and approved 5 onboarding slide narration renders
+
+## Current product behavior
+- Onboarding uses premium ElevenLabs slide audio when available.
+- If premium audio fails/unavailable, fallback is browser speech synthesis.
+- AI helper can generate and play contextual premium guidance on demand.
 
 ## Remaining (next)
 - `/ops` UI panel for voice render queue and in-browser playback
-- Retry endpoint for failed voice render jobs
 - Persist provider usage data for invoice-grade cost reconciliation
-- Tie approved voice renders into video render pipeline step
+- Add voice moderation/quality checks before auto-approval in helper flow
+- Optional pre-baked static onboarding audio assets to reduce per-session render latency/cost
