@@ -261,7 +261,7 @@ export default function OnboardingPage() {
           </div>
           <div style={{ fontSize: 12, color: '#9fb1d8', letterSpacing: '.06em', textTransform: 'uppercase' }}>Slide {storyStep + 1} of {STORY_SLIDES.length}</div>
 
-          <div style={{ display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap', position: 'sticky', bottom: 10, zIndex: 8, padding: '10px 8px', borderRadius: 12, background: 'linear-gradient(180deg, rgba(12,18,32,.15), rgba(12,18,32,.78))', backdropFilter: 'blur(4px)' }}>
             {storyStep > 0 ? <button style={secondaryBtn} onClick={() => { setAutoPlayStory(false); setStoryStep(storyStep - 1); }}>Back</button> : null}
             {!storyLast ? (
               <button
