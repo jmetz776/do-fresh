@@ -10,6 +10,7 @@ import {
   updateContentAction,
   regenerateContentAction,
 } from '../actions';
+import AIAssistHelper from '../components/AIAssistHelper';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000';
 const FALLBACK_WORKSPACE_ID = process.env.NEXT_PUBLIC_WORKSPACE_ID || 'default';
@@ -573,6 +574,7 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
           )}
         </section>
       </div>
+      <AIAssistHelper context="studio" />
     </main>
   );
 }

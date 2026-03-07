@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import AIAssistHelper from '../components/AIAssistHelper';
 
 type Status = {
   connections: { x: boolean; linkedin: boolean; instagram: boolean; youtube: boolean };
@@ -286,6 +287,7 @@ export default function OnboardingPage() {
             </p>
           ) : null}
         </section>
+        <AIAssistHelper context="onboarding" stage={`story-${storyStep + 1}`} />
       </main>
     );
   }
@@ -473,6 +475,7 @@ export default function OnboardingPage() {
           )}
         </div>
       </section>
+      <AIAssistHelper context="onboarding" stage={`setup-${step + 1}`} />
     </main>
   );
 }
