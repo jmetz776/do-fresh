@@ -287,7 +287,7 @@ export async function approveAllDraftsAction(formData: FormData) {
   revalidatePath('/studio');
   revalidatePath('/studio/queue');
   revalidatePath('/ops');
-  redirect(`/studio/queue?notice=${encodeURIComponent(`Approved ${approved} draft(s)`)});
+  redirect(`/studio/queue?notice=${encodeURIComponent(`Approved ${approved} draft(s)`)}`);
 }
 
 export async function updateContentAction(formData: FormData) {
