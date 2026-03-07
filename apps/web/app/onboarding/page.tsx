@@ -14,35 +14,35 @@ const STORY_SLIDES = [
     title: 'Never sound like the same brand twice',
     body: 'Every AI-assisted draft is grounded in Trend-to-Brand Intelligence or your own source content—so output stays relevant, timely, and distinct.',
     proof: 'Relevance first. Repetition last.',
-    voiceover: 'Welcome to Demand Orchestrator, your AI-assisted content engine. Stay relevant, timely, and distinct in every post.',
+    voiceover: 'Welcome to Demand Orchestrator, your AI-assisted content engine. In this quick walkthrough, you will see how we keep your brand relevant, timely, and distinct without sacrificing your voice or control.',
   },
   {
     eyebrow: 'INTELLIGENCE + ORIGINALITY',
     title: 'Intelligence gives direction. Originality earns attention.',
     body: 'We use live trend signals to guide strategy, then diversify hooks, angles, and formats so your audience sees variety—not template fatigue.',
     proof: 'Strategic consistency, creative variation.',
-    voiceover: 'We combine live demand signals with creative variation, so your brand stays consistent without sounding repetitive.',
+    voiceover: 'We combine live demand signals with creative variation, so your brand stays consistent without sounding repetitive. That means stronger strategic direction with fresh hooks, formats, and story angles your audience actually wants to engage with.',
   },
   {
     eyebrow: 'YOUR CONTENT, YOUR CONTROL',
     title: 'Bring your own content anytime',
     body: 'Start from your own video, image, script, or idea—or let DO generate from trend intelligence. You choose the source, we orchestrate the workflow.',
     proof: 'AI-assisted when useful. Human-led when preferred.',
-    voiceover: 'Start from your own ideas, videos, or scripts—or generate with intelligence. You stay in control of every output.',
+    voiceover: 'Start from your own ideas, videos, or scripts—or generate with intelligence when you want a faster first draft. You stay in control of every output, with a reviewable workflow designed for quality and brand safety.',
   },
   {
     eyebrow: 'FORMAT DIVERSITY, ONE STUDIO',
     title: 'One strategy. Multiple content experiences.',
     body: 'Publish avatar video, live-recorded video, uploaded assets, faceless creative, image posts, and text posts from one intuitive queue flow.',
     proof: 'Variety drives engagement. Simplicity drives execution.',
-    voiceover: 'Run one strategy across avatar video, faceless creative, images, and text—from one clean studio workflow.',
+    voiceover: 'Run one strategy across avatar video, faceless creative, images, and text—from one clean studio workflow. Instead of juggling disconnected tools, your team can plan, create, review, and publish in one place.',
   },
   {
     eyebrow: 'PERFORMANCE BRAIN',
     title: 'Your content learns what wins.',
     body: 'DemandOrchestrator tracks retention, shares, saves, clicks, and conversions per post—then automatically shifts the next content batch toward patterns your audience actually rewards.',
     proof: 'Publish → Measure → Score → Adapt.',
-    voiceover: 'Every post teaches the system what works. Publish, measure, score, and adapt—so performance compounds over time.',
+    voiceover: 'Every post teaches the system what works. Publish, measure, score, and adapt—so performance compounds over time and your next content decisions are guided by outcomes, not guesswork.',
   },
 ];
 
@@ -264,7 +264,18 @@ export default function OnboardingPage() {
           <div style={{ display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap' }}>
             {storyStep > 0 ? <button style={secondaryBtn} onClick={() => { setAutoPlayStory(false); setStoryStep(storyStep - 1); }}>Back</button> : null}
             {!storyLast ? (
-              <button style={primaryBtn} onClick={() => { setAutoPlayStory(false); setStoryStep(storyStep + 1); }}>Next</button>
+              <button
+                style={{
+                  ...primaryBtn,
+                  padding: '12px 18px',
+                  fontSize: 16,
+                  boxShadow: '0 14px 28px rgba(14,165,233,.35)',
+                  border: '1px solid #38bdf8',
+                }}
+                onClick={() => { setAutoPlayStory(false); setStoryStep(storyStep + 1); }}
+              >
+                Next Slide →
+              </button>
             ) : (
               <>
                 <button style={primaryBtn} onClick={() => { window.location.href = '/login'; }}>I have early access — enter now</button>
