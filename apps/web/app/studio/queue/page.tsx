@@ -18,15 +18,19 @@ export default async function UnifiedQueuePage({ searchParams }: { searchParams?
   const token = c.get('do_api_token')?.value || '';
   const actorHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
-  const [content, suggestions, schedules] = await Promise.all([
+  const [content, suggestions, schedules, videoRenders] = await Promise.all([
     getJson(`/content?workspaceId=${encodeURIComponent(workspaceId)}`, actorHeaders),
     getJson(`/intelligence/suggestions?workspaceId=${encodeURIComponent(workspaceId)}&limit=20&includeBelowThreshold=true`, actorHeaders),
     getJson(`/schedules?workspaceId=${encodeURIComponent(workspaceId)}`, actorHeaders),
+    getJson(`/v1/consent/video/renders?workspaceId=${encodeURIComponent(workspaceId)}&limit=120`, actorHeaders),
   ]);
 
   const drafts = (Array.isArray(content) ? content : []).filter((r: any) => r.status === 'draft').slice(0, 60);
   const approved = (Array.isArray(content) ? content : []).filter((r: any) => r.status === 'approved').slice(0, 60);
   const scheduled = (Array.isArray(schedules) ? schedules : []).filter((r: any) => r.status === 'scheduled').slice(0, 120);
+  const renderItems = Array.isArray(videoRenders?.items) ? videoRenders.items : [];
+  const videoQueued = renderItems.filter((r: any) => ['queued', 'processing', 'rendering'].includes(String(r.status || '').toLowerCase())).length;
+  const videoReady = renderItems.filter((r: any) => String(r.status || '').toLowerCase() === 'succeeded').length;
 
   return (
     <main style={{ minHeight: '100vh', background: '#0b1220', color: '#e8eefc', padding: 22, fontFamily: 'Inter, system-ui' }}>
@@ -140,7 +144,32 @@ export default async function UnifiedQueuePage({ searchParams }: { searchParams?
         </section>
 
         <section style={card}>
-          <h2 style={{ marginTop: 0 }}>3) Scheduler Control Panel</h2>
+          <h2 style={{ marginTop: 0 }}>3) Content Modes (Simple Control)</h2>
+          <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>One queue, three modes. Generate/approve/schedule from intuitive pathways.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 10 }}>
+            <div style={miniCard}>
+              <div style={{ fontWeight: 700 }}>Text</div>
+              <div className="tiny">Built directly in this queue page.</div>
+              <div className="tiny" style={{ marginTop: 6 }}>Drafts: <b>{drafts.length}</b> · Approved: <b>{approved.length}</b></div>
+            </div>
+            <div style={miniCard}>
+              <div style={{ fontWeight: 700 }}>Faceless Video</div>
+              <div className="tiny">Generate faceless assets with templates.</div>
+              <div style={{ marginTop: 8 }}><Link href="/studio/faceless" style={{ color: '#cce5ff' }}>Open Faceless Studio →</Link></div>
+            </div>
+            <div style={miniCard}>
+              <div style={{ fontWeight: 700 }}>Avatar Video</div>
+              <div className="tiny">Generate avatar videos with premium backgrounds.</div>
+              <div style={{ marginTop: 8 }}><Link href="/studio/avatar-video" style={{ color: '#cce5ff' }}>Open Avatar Studio →</Link></div>
+            </div>
+          </div>
+          <div className="tiny" style={{ marginTop: 10 }}>
+            Video pipeline: queued <b>{videoQueued}</b> · ready <b>{videoReady}</b>
+          </div>
+        </section>
+
+        <section style={card}>
+          <h2 style={{ marginTop: 0 }}>4) Scheduler Control Panel</h2>
           <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>Apply cadence to approved items while respecting queue cap and tier limits.</p>
           <form action={applyCadenceAction} className="stack">
             <input type="hidden" name="workspace_id" value={workspaceId} />
