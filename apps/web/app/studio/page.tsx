@@ -230,6 +230,14 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
               <Link className="link" href="/studio/avatar-video" style={{ border: '1px solid rgba(56,189,248,.45)', borderRadius: 10, padding: '8px 12px', background: 'rgba(56,189,248,.12)', fontWeight: 700 }}>2) Create Avatar Video</Link>
               <Link className="link" href="/studio/review" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>3) Review background performance</Link>
             </div>
+            <div style={{ marginTop: 10, border: '1px solid rgba(148,163,184,.28)', borderRadius: 10, padding: 10, background: 'rgba(2,6,23,.35)' }}>
+              <div style={{ fontWeight: 700, marginBottom: 4 }}>Definition of Done (Operator quick check)</div>
+              <ul className="tiny" style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7 }}>
+                <li>Presenter is selected from directory (not ad-hoc).</li>
+                <li>Background template is intentionally chosen for the script.</li>
+                <li>Draft is reviewed for visual fit + message clarity before scheduling.</li>
+              </ul>
+            </div>
           </div>
         </section>
 

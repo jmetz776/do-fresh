@@ -60,7 +60,7 @@ export default async function AvatarVideoPage({ searchParams }: { searchParams?:
 
         <section style={card}>
           <h2 style={{ marginTop: 0 }}>Create Avatar Video</h2>
-          <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>Approved voice renders available: {approvedCount}</p>
+          <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>Approved voice renders available: {approvedCount} · pick a scene and generate in one pass.</p>
           {approvedCount === 0 ? (
             <form action={bootstrapSampleVoiceRenderAction}>
               <input type="hidden" name="workspace_id" value={workspaceId} />
@@ -79,7 +79,7 @@ export default async function AvatarVideoPage({ searchParams }: { searchParams?:
               })}
             </select>
             <div style={{ marginTop: 8 }}>
-              <button type="submit" style={btn}>Create Video Job</button>
+              <button type="submit" style={btn}>Generate Avatar Video</button>
             </div>
           </form>
           <p style={{ color: '#9fb2d6', fontSize: 12 }}>Uses latest approved voice render automatically.</p>
