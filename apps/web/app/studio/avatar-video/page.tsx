@@ -48,13 +48,13 @@ export default async function AvatarVideoPage({ searchParams }: { searchParams?:
         {searchParams?.notice ? <section style={okCard}>✅ {decodeURIComponent(searchParams.notice)}</section> : null}
         {searchParams?.error ? <section style={errCard}>⚠️ {decodeURIComponent(searchParams.error)}</section> : null}
 
-        <section style={{ ...card, borderColor: 'rgba(56,189,248,.45)', background: 'linear-gradient(180deg, rgba(14,165,233,.17), rgba(15,23,42,.7))', marginBottom: 10 }}>
-          <h2 style={{ marginTop: 0, marginBottom: 6 }}>Fast Path: Marketplace → Scene → Video</h2>
+        <section style={flowCard}>
+          <h2 style={{ marginTop: 0, marginBottom: 6, letterSpacing: '-.01em' }}>Fast Path: Marketplace → Scene → Video</h2>
           <p style={{ color: '#9fb2d6', fontSize: 12, marginTop: 0 }}>Use this order for the cleanest customer flow and fewer misfires.</p>
           <div style={{ display: 'grid', gap: 8, gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))' }}>
-            <Link href="/studio/models" style={{ color: '#cce5ff', border: '1px solid rgba(56,189,248,.45)', borderRadius: 10, padding: '8px 12px', background: 'rgba(56,189,248,.12)', textDecoration: 'none', fontWeight: 700, textAlign: 'center' }}>1) Pick presenter</Link>
-            <Link href="/studio/avatar-video" style={{ color: '#cce5ff', border: '1px solid rgba(56,189,248,.45)', borderRadius: 10, padding: '8px 12px', background: 'rgba(56,189,248,.12)', textDecoration: 'none', fontWeight: 700, textAlign: 'center' }}>2) Choose background template</Link>
-            <Link href="/studio/review" style={{ color: '#cce5ff', border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px', textDecoration: 'none', textAlign: 'center' }}>3) Check background analytics</Link>
+            <Link href="/studio/models" style={flowBtn}>1) Pick presenter</Link>
+            <Link href="/studio/avatar-video" style={flowBtn}>2) Choose background template</Link>
+            <Link href="/studio/review" style={flowBtnMuted}>3) Check background analytics</Link>
           </div>
         </section>
 
@@ -89,10 +89,37 @@ export default async function AvatarVideoPage({ searchParams }: { searchParams?:
   );
 }
 
-const card: React.CSSProperties = { border: '1px solid rgba(148,163,184,.28)', borderRadius: 14, background: 'rgba(15,23,42,.7)', padding: 16 };
+const card: React.CSSProperties = {
+  border: '1px solid rgba(148,163,184,.28)',
+  borderRadius: 14,
+  background: 'linear-gradient(180deg, rgba(18,28,51,.86), rgba(15,23,42,.72))',
+  padding: 16,
+  boxShadow: '0 18px 40px rgba(2,6,23,.4)',
+};
+const flowCard: React.CSSProperties = {
+  ...card,
+  borderColor: 'rgba(56,189,248,.5)',
+  marginBottom: 10,
+  background: 'radial-gradient(420px 150px at 10% -20%, rgba(56,189,248,.22), transparent 62%), linear-gradient(180deg, rgba(14,165,233,.2), rgba(15,23,42,.72))',
+};
 const okCard: React.CSSProperties = { ...card, borderColor: 'rgba(34,197,94,.6)', marginBottom: 10 };
 const errCard: React.CSSProperties = { ...card, borderColor: 'rgba(251,113,133,.6)', marginBottom: 10 };
 const input: React.CSSProperties = { width: '100%', border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '10px 12px', background: 'rgba(15,23,42,.55)', color: '#e8eefc', marginTop: 8 };
 const inputArea: React.CSSProperties = { ...input, minHeight: 120 };
-const btn: React.CSSProperties = { border: '1px solid #0284c7', background: 'linear-gradient(180deg,#38bdf8,#0ea5e9)', color: '#062437', borderRadius: 10, padding: '10px 12px', fontWeight: 800, cursor: 'pointer' };
+const btn: React.CSSProperties = { border: '1px solid #0284c7', background: 'linear-gradient(180deg,#38bdf8,#0ea5e9)', color: '#062437', borderRadius: 10, padding: '10px 12px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 10px 24px rgba(14,165,233,.28)' };
 const btnSecondary: React.CSSProperties = { border: '1px solid rgba(148,163,184,.5)', background: 'rgba(15,23,42,.55)', color: '#dbe7ff', borderRadius: 10, padding: '10px 12px', fontWeight: 700, cursor: 'pointer', marginBottom: 8 };
+const flowBtn: React.CSSProperties = {
+  color: '#d9efff',
+  border: '1px solid rgba(56,189,248,.45)',
+  borderRadius: 12,
+  padding: '10px 12px',
+  background: 'linear-gradient(180deg, rgba(56,189,248,.16), rgba(30,41,59,.35))',
+  textDecoration: 'none',
+  fontWeight: 800,
+  textAlign: 'center',
+};
+const flowBtnMuted: React.CSSProperties = {
+  ...flowBtn,
+  border: '1px solid rgba(148,163,184,.38)',
+  background: 'linear-gradient(180deg, rgba(30,41,59,.5), rgba(15,23,42,.45))',
+};

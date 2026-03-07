@@ -168,12 +168,51 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
         .item { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: rgba(15,23,42,.55); }
         .caption { color: #dbe7ff; margin-top: 8px; line-height: 1.5; }
         .empty { color: var(--muted); margin: 0; }
-        @media (max-width: 980px) { .grid-two { grid-template-columns: 1fr; } }
+        .flow-hero {
+          margin-top: 12px;
+          border: 1px solid rgba(56,189,248,.5);
+          border-radius: 14px;
+          padding: 14px;
+          background:
+            radial-gradient(420px 160px at 8% -20%, rgba(56,189,248,.24), transparent 62%),
+            linear-gradient(180deg, rgba(14,165,233,.22), rgba(15,23,42,.58));
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 14px 34px rgba(2,6,23,.36);
+        }
+        .flow-hero-title { font-weight: 900; letter-spacing: -.01em; margin-bottom: 4px; }
+        .flow-actions { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 8px; }
+        .flow-cta {
+          color: #d9efff;
+          text-decoration: none;
+          border: 1px solid rgba(56,189,248,.45);
+          border-radius: 12px;
+          padding: 10px 12px;
+          background: linear-gradient(180deg, rgba(56,189,248,.16), rgba(30,41,59,.35));
+          font-weight: 800;
+          text-align: center;
+          transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+        }
+        .flow-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(56,189,248,.22); border-color: rgba(103,232,249,.75); }
+        .flow-cta.muted {
+          border-color: rgba(148,163,184,.38);
+          background: linear-gradient(180deg, rgba(30,41,59,.5), rgba(15,23,42,.45));
+        }
+        .dod-panel {
+          margin-top: 10px;
+          border: 1px solid rgba(148,163,184,.28);
+          border-radius: 12px;
+          padding: 10px 12px;
+          background: rgba(2,6,23,.4);
+        }
+        .dod-panel ul { margin: 0; padding-left: 18px; line-height: 1.8; }
+        @media (max-width: 980px) {
+          .grid-two { grid-template-columns: 1fr; }
+          .flow-actions { grid-template-columns: 1fr; }
+        }
         @media (max-width: 760px) {
           .steps { grid-template-columns: 1fr 1fr; }
           .top { flex-direction: column; }
-          .flow-actions { display: grid !important; grid-template-columns: 1fr; width: 100%; }
-          .flow-actions .link { text-align: center; }
+          .flow-hero { padding: 12px; }
+          .flow-cta { padding: 12px; font-size: 14px; }
         }
       `}</style>
 
@@ -224,17 +263,17 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
             {isTopTier ? <Link className="link" href="/studio/models" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Presenter Directory</Link> : null}
             {isCorporate ? <Link className="link" href="/studio/corporate/team-avatars" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>Corporate Suite</Link> : null}
           </div>
-          <div className="item" style={{ marginTop: 10, borderColor: 'rgba(56,189,248,.45)', background: 'linear-gradient(180deg, rgba(14,165,233,.18), rgba(15,23,42,.55))' }}>
-            <div style={{ fontWeight: 800, marginBottom: 4 }}>Avatar Marketplace + Background Flow</div>
+          <div className="flow-hero">
+            <div className="flow-hero-title">Avatar Marketplace + Background Flow</div>
             <div className="tiny" style={{ marginBottom: 8 }}>Fast path: choose presenter, then generate with the right scene template.</div>
-            <div className="row flow-actions" style={{ gap: 8 }}>
-              <Link className="link" href="/studio/models" style={{ border: '1px solid rgba(56,189,248,.45)', borderRadius: 10, padding: '8px 12px', background: 'rgba(56,189,248,.12)', fontWeight: 700 }}>1) Open Presenter Directory</Link>
-              <Link className="link" href="/studio/avatar-video" style={{ border: '1px solid rgba(56,189,248,.45)', borderRadius: 10, padding: '8px 12px', background: 'rgba(56,189,248,.12)', fontWeight: 700 }}>2) Create Avatar Video</Link>
-              <Link className="link" href="/studio/review" style={{ border: '1px solid rgba(148,163,184,.35)', borderRadius: 10, padding: '8px 12px' }}>3) Review background performance</Link>
+            <div className="flow-actions">
+              <Link className="flow-cta" href="/studio/models">1) Open Presenter Directory</Link>
+              <Link className="flow-cta" href="/studio/avatar-video">2) Create Avatar Video</Link>
+              <Link className="flow-cta muted" href="/studio/review">3) Review background performance</Link>
             </div>
-            <div style={{ marginTop: 10, border: '1px solid rgba(148,163,184,.28)', borderRadius: 10, padding: 10, background: 'rgba(2,6,23,.35)' }}>
+            <div className="dod-panel">
               <div style={{ fontWeight: 700, marginBottom: 4 }}>Definition of Done (Operator quick check)</div>
-              <ul className="tiny" style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7 }}>
+              <ul className="tiny">
                 <li>Presenter is selected from directory (not ad-hoc).</li>
                 <li>Background template is intentionally chosen for the script.</li>
                 <li>Draft is reviewed for visual fit + message clarity before scheduling.</li>
