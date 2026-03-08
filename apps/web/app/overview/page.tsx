@@ -1,6 +1,43 @@
 import Link from 'next/link';
 
-const platforms = ['X', 'LinkedIn', 'Instagram', 'TikTok', 'YouTube'];
+const platformMatrix: Array<{ name: string; publish: string[]; generate: string[]; status: 'live' | 'next' }> = [
+  {
+    name: 'X',
+    publish: ['Text posts', 'Threads', 'Image + caption'],
+    generate: ['Hooks', 'Replies', 'Thread variants'],
+    status: 'live',
+  },
+  {
+    name: 'LinkedIn',
+    publish: ['Text posts', 'Image posts', 'Document/carousel'],
+    generate: ['Authority posts', 'Carousel slide plans', 'Thought-leadership variants'],
+    status: 'live',
+  },
+  {
+    name: 'Instagram',
+    publish: ['Feed caption + image', 'Carousels', 'Reel caption packs'],
+    generate: ['Short hooks', 'Carousel narratives', 'Story sequence copy'],
+    status: 'live',
+  },
+  {
+    name: 'YouTube Shorts',
+    publish: ['Short scripts', 'Title/description package'],
+    generate: ['Hook-first scripts', 'CTA variants', 'Thumbnail briefs'],
+    status: 'live',
+  },
+  {
+    name: 'Email / Newsletter',
+    publish: ['Campaign emails', 'Newsletter snippets', 'Follow-up emails'],
+    generate: ['Subject lines', 'Preview text', 'Segment variants'],
+    status: 'next',
+  },
+  {
+    name: 'Reddit / Pinterest / Threads',
+    publish: ['Community-native posts', 'Pin packages', 'Series posts'],
+    generate: ['Platform-native variants', 'Conversation starters'],
+    status: 'next',
+  },
+];
 
 export default function OverviewPage() {
   return (
@@ -30,6 +67,16 @@ export default function OverviewPage() {
         .pwrap { margin-top: 24px; }
         .chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
         .chip { border:1px solid rgba(103,232,249,.35); border-radius:999px; padding:7px 10px; font-size:12px; color:#d7ecff; }
+        .matrix { margin-top: 26px; display:grid; gap:12px; }
+        .row { border:1px solid rgba(148,163,184,.28); border-radius:14px; padding:14px; background:linear-gradient(180deg, rgba(15,23,42,.52), rgba(15,23,42,.35)); }
+        .row h4 { margin:0 0 8px; font-size: 18px; letter-spacing:-.01em; }
+        .badge { font-size:11px; border-radius:999px; padding:5px 9px; border:1px solid rgba(148,163,184,.35); text-transform:uppercase; letter-spacing:.07em; }
+        .badge.live { border-color: rgba(34,197,94,.5); color:#bbf7d0; background:rgba(34,197,94,.12); }
+        .badge.next { border-color: rgba(56,189,248,.5); color:#bae6fd; background:rgba(56,189,248,.12); }
+        .cols { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+        .cols ul { margin:6px 0 0; padding-left:18px; color:#c9d6f3; }
+        .cols li { margin:4px 0; }
+        @media (max-width: 760px) { .cols { grid-template-columns: 1fr; } }
       `}</style>
 
       <div className="wrap">
@@ -72,10 +119,28 @@ export default function OverviewPage() {
         </section>
 
         <section className="pwrap">
-          <h3>Platforms we support</h3>
-          <div className="chips">
-            {platforms.map((p) => (
-              <span className="chip" key={p}>{p}</span>
+          <h3>Platform + Content Coverage</h3>
+          <p className="hero" style={{ marginTop: 6, fontSize: 14, color: '#9fb1d8' }}>
+            Major selling point: one engine that generates and publishes platform-native content across channels.
+          </p>
+          <div className="matrix">
+            {platformMatrix.map((p) => (
+              <article className="row" key={p.name}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                  <h4>{p.name}</h4>
+                  <span className={`badge ${p.status}`}>{p.status === 'live' ? 'Live' : 'Next'}</span>
+                </div>
+                <div className="cols">
+                  <div>
+                    <div className="chip" style={{ display: 'inline-block' }}>Publish formats</div>
+                    <ul>{p.publish.map((x) => <li key={x}>{x}</li>)}</ul>
+                  </div>
+                  <div>
+                    <div className="chip" style={{ display: 'inline-block' }}>Generate outputs</div>
+                    <ul>{p.generate.map((x) => <li key={x}>{x}</li>)}</ul>
+                  </div>
+                </div>
+              </article>
             ))}
           </div>
         </section>
