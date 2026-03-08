@@ -1,0 +1,8 @@
+mode,scenario,llm_cost_usd,voice_cost_usd,video_render_cost_usd,image_cost_usd,compute_overhead_usd,storage_cost_usd,egress_cost_usd,failure_rate,retry_attempts,retry_overhead_usd,total_cogs_generated_usd,total_cogs_delivered_usd,revenue_per_asset_usd,gross_margin_pct,notes
+avatar_video,expected,0.04,0.06,0.75,0.00,0.05,0.03,0.08,0.08,1.2,0.08,0.90,1.01,3.50,0.71,"validate provider and bitrate assumptions"
+avatar_video,worst_case,0.07,0.10,1.20,0.00,0.08,0.05,0.14,0.18,1.5,0.33,1.45,1.64,3.50,0.53,"high retries + high egress"
+faceless_video,expected,0.03,0.00,0.45,0.06,0.04,0.02,0.06,0.07,1.1,0.04,0.58,0.66,2.50,0.74,"includes image/bg generation"
+image_post,expected,0.02,0.00,0.00,0.05,0.01,0.005,0.005,0.03,1.0,0.00,0.08,0.09,0.75,0.88,"low infra cost mode"
+text_post,expected,0.015,0.00,0.00,0.00,0.005,0.001,0.001,0.02,1.0,0.00,0.02,0.02,0.40,0.95,"highest margin mode"
+repurpose_pack,expected,0.06,0.00,0.00,0.04,0.02,0.01,0.01,0.05,1.1,0.01,0.12,0.14,1.50,0.91,"1 source to multiple outputs"
+email_campaign_per_1k,expected,0.03,0.00,0.00,0.02,0.02,0.002,0.004,0.01,1.0,0.00,0.07,0.08,15.00,0.99,"excluding ESP pass-through fees"
