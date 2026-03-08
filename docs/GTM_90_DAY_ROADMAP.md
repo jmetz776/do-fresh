@@ -63,6 +63,7 @@ Owner: DO Core Team
   - capabilities matrix
   - reliability posture
   - transparent AI-assisted language
+- Ship a platform/channel matrix so users understand available content modes per destination.
 
 ### Phase 1 KPIs
 - Indexed page growth
