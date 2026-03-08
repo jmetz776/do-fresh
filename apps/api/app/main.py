@@ -23,6 +23,11 @@ except Exception:
     repurpose_router = None  # type: ignore
 
 try:
+    from app.api.routes_email import router as email_router
+except Exception:
+    email_router = None  # type: ignore
+
+try:
     from app.api.routes_consent import router as consent_router
 except Exception:
     consent_router = None  # type: ignore
@@ -65,3 +70,5 @@ app.include_router(analytics_router)
 app.include_router(status_router)
 if repurpose_router is not None:
     app.include_router(repurpose_router)
+if email_router is not None:
+    app.include_router(email_router)
