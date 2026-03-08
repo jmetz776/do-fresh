@@ -18,6 +18,11 @@ from app.api.routes_analytics import router as analytics_router
 from app.api.routes_status import router as status_router
 
 try:
+    from app.api.routes_repurpose import router as repurpose_router
+except Exception:
+    repurpose_router = None  # type: ignore
+
+try:
     from app.api.routes_consent import router as consent_router
 except Exception:
     consent_router = None  # type: ignore
@@ -58,3 +63,5 @@ app.include_router(intelligence_router)
 app.include_router(avatar_marketplace_router)
 app.include_router(analytics_router)
 app.include_router(status_router)
+if repurpose_router is not None:
+    app.include_router(repurpose_router)
