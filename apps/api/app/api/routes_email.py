@@ -114,17 +114,27 @@ def disconnect_sender(sender_id: str, session: Session = Depends(get_session)):
 def import_audience_csv(
     workspaceId: str = Form(default='default'),
     listName: str = Form(default='Imported List'),
+    listOrigin: str = Form(default='external_csv'),
+    consentAttestation: bool = Form(default=False),
     file: UploadFile = File(...),
     session: Session = Depends(get_session),
 ):
+    if not consentAttestation:
+        raise HTTPException(status_code=400, detail='consent_attestation_required')
+
     content = file.file.read()
     text = content.decode('utf-8', errors='ignore')
     reader = csv.DictReader(io.StringIO(text))
 
+    required_cols = {'email', 'consent_status'}
+    cols = {c.strip() for c in (reader.fieldnames or []) if c}
+    if not required_cols.issubset(cols):
+        raise HTTPException(status_code=400, detail='csv_requires_columns: email, consent_status')
+
     audience = AudienceList(
         id=str(uuid4()),
         workspace_id=workspaceId,
-        name=listName.strip() or 'Imported List',
+        name=(listName.strip() or 'Imported List')[:180],
         source_type='csv',
         status='active',
         updated_at=datetime.utcnow(),
@@ -133,10 +143,24 @@ def import_audience_csv(
     session.commit()
 
     imported = 0
+    opted_in = 0
+    suppressed = 0
+    skipped = 0
+    allowed_status = {'opted_in', 'unknown', 'unsubscribed'}
+
     for row in reader:
         email = str(row.get('email') or '').strip().lower()
         if '@' not in email:
+            skipped += 1
             continue
+
+        consent_status = str(row.get('consent_status') or 'unknown').strip().lower()
+        if consent_status not in allowed_status:
+            consent_status = 'unknown'
+
+        tags = str(row.get('tags') or '').strip()
+        tags_json = json.dumps([t.strip() for t in tags.split(',') if t.strip()]) if tags else '[]'
+
         contact = AudienceContact(
             id=str(uuid4()),
             list_id=audience.id,
@@ -144,17 +168,30 @@ def import_audience_csv(
             email=email,
             first_name=str(row.get('first_name') or row.get('firstName') or '').strip(),
             last_name=str(row.get('last_name') or row.get('lastName') or '').strip(),
-            tags_json=json.dumps([]),
-            consent_status='opted_in',
+            tags_json=tags_json,
+            consent_status=consent_status,
         )
         session.add(contact)
         imported += 1
+
+        if consent_status == 'opted_in':
+            opted_in += 1
+        else:
+            suppressed += 1
 
     audience.updated_at = datetime.utcnow()
     session.add(audience)
     session.commit()
 
-    return {'ok': True, 'listId': audience.id, 'imported': imported}
+    return {
+        'ok': True,
+        'listId': audience.id,
+        'listOrigin': listOrigin,
+        'imported': imported,
+        'eligibleOptedIn': opted_in,
+        'suppressedOrUnknown': suppressed,
+        'skippedInvalid': skipped,
+    }
 
 
 @router.get('/audiences')
