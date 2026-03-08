@@ -758,6 +758,54 @@ export async function seedAnalyticsAction(formData: FormData) {
   redirect('/studio/analytics?notice=Seeded test analytics for latest content item');
 }
 
+export async function createRepurposeJobAction(formData: FormData) {
+  const workspaceId = String(formData.get('workspace_id') || DEFAULT_WORKSPACE).trim();
+  const sourceTitle = String(formData.get('source_title') || '').trim();
+  const sourceBody = String(formData.get('source_body') || '').trim();
+  const audience = String(formData.get('audience') || '').trim();
+  const goal = String(formData.get('goal') || 'awareness').trim();
+  const cta = String(formData.get('cta') || '').trim();
+  const includeX = String(formData.get('include_x') || '') === 'on';
+  const includeLinkedIn = String(formData.get('include_linkedin') || '') === 'on';
+  const includeInstagram = String(formData.get('include_instagram') || '') === 'on';
+  const includeEmail = String(formData.get('include_email') || '') === 'on';
+
+  if (!sourceTitle && !sourceBody) {
+    redirect('/studio?error=repurpose_source_required');
+  }
+
+  const targets: Array<{ channel: string; formats: string[] }> = [];
+  if (includeX) targets.push({ channel: 'x', formats: ['text_post'] });
+  if (includeLinkedIn) targets.push({ channel: 'linkedin', formats: ['text_post', 'carousel'] });
+  if (includeInstagram) targets.push({ channel: 'instagram', formats: ['caption', 'carousel'] });
+  if (includeEmail) targets.push({ channel: 'email', formats: ['newsletter_snippet'] });
+  if (!targets.length) {
+    targets.push({ channel: 'x', formats: ['text_post'] });
+  }
+
+  const res = await post('/v1/repurpose/jobs', {
+    workspaceId,
+    source: {
+      type: 'idea',
+      title: sourceTitle,
+      body: sourceBody,
+    },
+    intent: {
+      goal,
+      audience,
+      cta,
+    },
+    targets,
+    constraints: {
+      qualityThreshold: 0.78,
+    },
+  });
+
+  const jobId = String((res as any)?.jobId || '').trim();
+  revalidatePath('/studio');
+  redirect(`/studio?notice=${encodeURIComponent(jobId ? `repurpose_job_created:${jobId}` : 'repurpose_job_created')}`);
+}
+
 export async function createAvatarVideoQuickAction(formData: FormData) {
   const workspaceId = String(formData.get('workspace_id') || DEFAULT_WORKSPACE).trim();
   const scriptText = String(formData.get('script_text') || '').trim();

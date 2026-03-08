@@ -9,6 +9,7 @@ import {
   applyCadenceAction,
   updateContentAction,
   regenerateContentAction,
+  createRepurposeJobAction,
 } from '../actions';
 import AIAssistHelper from '../components/AIAssistHelper';
 
@@ -41,7 +42,7 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
   );
   const isOperator = operatorAllowlist.has(userEmail);
 
-  const [sources, content, accountsResp, meResp, trendSuggestions, heygenHealth, providerHealth] = await Promise.all([
+  const [sources, content, accountsResp, meResp, trendSuggestions, heygenHealth, providerHealth, repurposeJobsResp] = await Promise.all([
     getJson(`/sources?workspaceId=${WORKSPACE_ID}`, actorHeaders),
     getJson(`/content?workspaceId=${WORKSPACE_ID}`, actorHeaders),
     getJson(`/integrations/accounts?workspaceId=${WORKSPACE_ID}`, actorHeaders),
@@ -49,6 +50,7 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
     getJson(`/intelligence/suggestions?workspaceId=${WORKSPACE_ID}&limit=6`, actorHeaders),
     getJson(`/integrations/heygen/health`, actorHeaders),
     getJson(`/system/provider-health`, actorHeaders),
+    getJson(`/v1/repurpose/jobs?workspaceId=${WORKSPACE_ID}&limit=5`, actorHeaders),
   ]);
 
   const latestSource = Array.isArray(sources) && sources.length > 0 ? sources[0] : null;
@@ -63,6 +65,7 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
     .slice(0, 20);
   const approved = drafts.filter((c: any) => c.status === 'approved');
   const accountItems = (accountsResp?.items || []) as Array<any>;
+  const repurposeJobs = (repurposeJobsResp?.items || []) as Array<any>;
   const defaultCountMap: Record<string, number> = { x: 8, linkedin: 6, instagram: 8, tiktok: 4, youtube: 4 };
   const selectedCount = defaultCountMap[selectedPlatform] || 8;
   const queueCap = 20;
@@ -389,6 +392,49 @@ export default async function StudioPage({ searchParams }: { searchParams?: { pl
               ))}
             </ul>
           )}
+        </section>
+
+        <section className="card" style={{ marginBottom: 10, borderColor: 'rgba(125,211,252,.5)', background: 'linear-gradient(180deg, rgba(14,165,233,.14), rgba(15,23,42,.72))' }}>
+          <h2>Repurpose Engine (Simple Mode)</h2>
+          <p className="tiny">One source in, channel-ready variants out. Keep it simple: choose channels and generate.</p>
+          <form action={createRepurposeJobAction}>
+            <input type="hidden" name="workspace_id" value={WORKSPACE_ID} />
+            <input name="source_title" placeholder="Source title (example: Youth Soccer age-group update)" />
+            <textarea name="source_body" placeholder="Paste source text, script, or core idea" style={{ marginTop: 8 }} />
+            <div className="row" style={{ marginTop: 8 }}>
+              <input name="audience" placeholder="Audience (optional)" style={{ maxWidth: 280 }} />
+              <select name="goal" defaultValue="awareness" style={{ maxWidth: 220 }}>
+                <option value="awareness">Goal: Awareness</option>
+                <option value="education">Goal: Education</option>
+                <option value="lead_gen">Goal: Lead Gen</option>
+                <option value="conversion">Goal: Conversion</option>
+              </select>
+              <input name="cta" placeholder="CTA (optional)" style={{ maxWidth: 240 }} />
+            </div>
+            <div className="row" style={{ marginTop: 8 }}>
+              <label className="tiny"><input type="checkbox" name="include_x" defaultChecked /> X</label>
+              <label className="tiny"><input type="checkbox" name="include_linkedin" defaultChecked /> LinkedIn</label>
+              <label className="tiny"><input type="checkbox" name="include_instagram" /> Instagram</label>
+              <label className="tiny"><input type="checkbox" name="include_email" /> Email</label>
+            </div>
+            <div className="row" style={{ marginTop: 8 }}>
+              <button className="primary" type="submit">Generate repurpose package</button>
+            </div>
+          </form>
+          <div style={{ marginTop: 10 }}>
+            <div className="tiny" style={{ marginBottom: 6 }}>Recent repurpose jobs</div>
+            {!repurposeJobs.length ? (
+              <p className="empty">No repurpose jobs yet.</p>
+            ) : (
+              <ul className="list">
+                {repurposeJobs.map((j: any) => (
+                  <li key={j.id} className="item">
+                    <b>{j.sourceType || 'source'}</b> · {j.intentGoal || 'goal'} · <span className="tiny">{j.status}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </section>
 
         {approved.length > 0 && (
