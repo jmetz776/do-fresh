@@ -57,3 +57,20 @@ class SuppressionEntry(SQLModel, table=True):
     email: str = Field(index=True)
     reason: str = Field(default='manual')
     created_at: datetime = Field(default_factory=datetime.utcnow, index=True)
+
+
+class EmailImportAudit(SQLModel, table=True):
+    __tablename__ = 'email_import_audits'
+
+    id: str = Field(primary_key=True)
+    workspace_id: str = Field(index=True)
+    list_id: str = Field(index=True)
+    uploaded_by_email: str = Field(default='', index=True)
+    list_origin: str = Field(default='external_csv')
+    consent_attested: bool = Field(default=False)
+    imported_count: int = Field(default=0)
+    eligible_opted_in_count: int = Field(default=0)
+    suppressed_or_unknown_count: int = Field(default=0)
+    skipped_invalid_count: int = Field(default=0)
+    notes_json: str = Field(default='{}')
+    created_at: datetime = Field(default_factory=datetime.utcnow, index=True)

@@ -8,12 +8,30 @@ from typing import Optional
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
+from pydantic import BaseModel
 from sqlmodel import Session, select
 
 from app.db import get_session
-from app.models.email import EmailSenderConnection, AudienceList, AudienceContact
+from app.models.email import EmailSenderConnection, AudienceList, AudienceContact, SuppressionEntry, EmailImportAudit
 
 router = APIRouter(prefix='/v1/email', tags=['email'])
+
+
+class SendRepurposeEmailRequest(
+    BaseModel
+):
+    workspaceId: str = 'default'
+    senderConnectionId: str
+    audienceListId: str
+    subject: str
+    body: str
+    includeUnsubscribe: bool = True
+
+
+class UnsubscribeRequest(BaseModel):
+    workspaceId: str = 'default'
+    email: str
+    reason: str = 'user_unsubscribe'
 
 
 @router.post('/senders/connect/{provider}')
@@ -116,6 +134,7 @@ def import_audience_csv(
     listName: str = Form(default='Imported List'),
     listOrigin: str = Form(default='external_csv'),
     consentAttestation: bool = Form(default=False),
+    uploadedByEmail: str = Form(default=''),
     file: UploadFile = File(...),
     session: Session = Depends(get_session),
 ):
@@ -181,6 +200,21 @@ def import_audience_csv(
 
     audience.updated_at = datetime.utcnow()
     session.add(audience)
+
+    audit = EmailImportAudit(
+        id=str(uuid4()),
+        workspace_id=workspaceId,
+        list_id=audience.id,
+        uploaded_by_email=uploadedByEmail.strip().lower(),
+        list_origin=(listOrigin or 'external_csv')[:120],
+        consent_attested=bool(consentAttestation),
+        imported_count=imported,
+        eligible_opted_in_count=opted_in,
+        suppressed_or_unknown_count=suppressed,
+        skipped_invalid_count=skipped,
+        notes_json=json.dumps({'required_columns_enforced': True}),
+    )
+    session.add(audit)
     session.commit()
 
     return {
@@ -191,6 +225,8 @@ def import_audience_csv(
         'eligibleOptedIn': opted_in,
         'suppressedOrUnknown': suppressed,
         'skippedInvalid': skipped,
+        'complianceWarning': suppressed > 0,
+        'auditId': audit.id,
     }
 
 
@@ -209,19 +245,104 @@ def list_audiences(
 
     items = []
     for r in rows:
-        count = session.exec(
+        contacts = session.exec(
             select(AudienceContact)
             .where(AudienceContact.list_id == r.id)
         ).all()
+        opted_in = sum(1 for c in contacts if c.consent_status == 'opted_in')
+        blocked = len(contacts) - opted_in
+        warnings = []
+        if blocked > 0:
+            warnings.append('list_contains_non_opted_in_contacts')
         items.append(
             {
                 'id': r.id,
                 'name': r.name,
                 'sourceType': r.source_type,
                 'status': r.status,
-                'contactCount': len(count),
+                'contactCount': len(contacts),
+                'eligibleOptedIn': opted_in,
+                'blockedContacts': blocked,
+                'complianceWarnings': warnings,
                 'updatedAt': r.updated_at.isoformat(),
             }
         )
 
     return {'items': items}
+
+
+@router.post('/unsubscribe')
+def unsubscribe_contact(payload: UnsubscribeRequest, session: Session = Depends(get_session)):
+    email = payload.email.strip().lower()
+    if '@' not in email:
+        raise HTTPException(status_code=400, detail='valid_email_required')
+
+    entry = SuppressionEntry(
+        workspace_id=payload.workspaceId,
+        email=email,
+        reason=(payload.reason or 'user_unsubscribe')[:120],
+    )
+    session.add(entry)
+
+    contacts = session.exec(
+        select(AudienceContact).where(
+            AudienceContact.workspace_id == payload.workspaceId,
+            AudienceContact.email == email,
+        )
+    ).all()
+    for c in contacts:
+        c.consent_status = 'unsubscribed'
+        session.add(c)
+
+    session.commit()
+    return {'ok': True, 'email': email, 'updatedContacts': len(contacts)}
+
+
+@router.post('/repurpose/send')
+def send_repurpose_email(payload: SendRepurposeEmailRequest, session: Session = Depends(get_session)):
+    sender = session.get(EmailSenderConnection, payload.senderConnectionId)
+    if not sender or sender.workspace_id != payload.workspaceId or sender.status != 'active':
+        raise HTTPException(status_code=400, detail='active_sender_required')
+
+    audience = session.get(AudienceList, payload.audienceListId)
+    if not audience or audience.workspace_id != payload.workspaceId:
+        raise HTTPException(status_code=400, detail='audience_list_not_found')
+
+    if not payload.includeUnsubscribe:
+        raise HTTPException(status_code=400, detail='unsubscribe_footer_required')
+
+    contacts = session.exec(
+        select(AudienceContact).where(
+            AudienceContact.list_id == payload.audienceListId,
+            AudienceContact.workspace_id == payload.workspaceId,
+        )
+    ).all()
+
+    suppression = session.exec(
+        select(SuppressionEntry).where(SuppressionEntry.workspace_id == payload.workspaceId)
+    ).all()
+    suppressed_set = {s.email.strip().lower() for s in suppression}
+
+    eligible = [c for c in contacts if c.consent_status == 'opted_in' and c.email.strip().lower() not in suppressed_set]
+    blocked = len(contacts) - len(eligible)
+    if not eligible:
+        raise HTTPException(status_code=400, detail='no_eligible_opted_in_contacts')
+
+    rendered = (payload.body.strip() + '\n\n---\nUnsubscribe: {{unsubscribe_link}}').strip()
+
+    # Sending is stubbed in v1 scaffold; compliance gating is enforced before this step.
+    return {
+        'ok': True,
+        'mode': 'dry_run_stub',
+        'senderEmail': sender.sender_email,
+        'audienceListId': audience.id,
+        'subject': payload.subject[:180],
+        'eligibleRecipients': len(eligible),
+        'blockedRecipients': blocked,
+        'enforced': {
+            'opted_in_only': True,
+            'suppression_enforced': True,
+            'unsubscribe_footer_required': True,
+        },
+        'renderedBodyPreview': rendered[:500],
+    }
